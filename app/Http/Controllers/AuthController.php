@@ -13,22 +13,21 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $fields = $request->all();
 
-        $errors = Validator::make($fields, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email'=> 'required|string|email|unique:users,email',
             'password' => 'required|max:20'
         ]);
 
-        if($errors->fails()){
-            return response($errors->errors()->all(), 422);
+        if($validator->fails()){
+            return response(['errors' => $validator->errors()], 422);
         }
 
         $user = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password'])
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
         ]);
 
         return response([
@@ -39,20 +38,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $fields = $request->all();
-
-        $errors = Validator::make($fields, [
+        $validator = Validator::make($request->all(), [
             'email'=> 'required|string|email',
             'password' => 'required|max:20',
         ]);
 
-        if($errors->fails()){
-            return response($errors->errors()->all(), 422);
+        if($validator->fails()){
+            return response($validator->errors(), 422);
         }
 
-        $user = User::where('email', $fields['email'])->first();
+        $user = User::where('email', $request->email)->first();
 
-        if(!$user || !Hash::check($fields['password'], $user->password)){
+        if(!$user || !Hash::check($request->password, $user->password)){
             return response(['message' => 'Invalid email or password'], 401);
         }
 
@@ -68,10 +65,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $userId = $request->userId;
 
         DB::table('personal_access_tokens')
-        ->where('tokenable_id', $userId)
+        ->where('tokenable_id', $request->userId)
         ->delete();
 
         // $request
