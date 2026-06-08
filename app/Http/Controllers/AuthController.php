@@ -44,18 +44,19 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response($validator->errors(), 422);
+            return response(['status' => false, 'errors' => $validator->errors()], 422);
         }
 
         $user = User::where('email', $request->email)->first();
 
         if(!$user || !Hash::check($request->password, $user->password)){
-            return response(['message' => 'Invalid email or password'], 401);
+            return response(['status' => false, 'message' => 'Invalid email or password'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response([
+            'status' => true,
             'user' => $user,
             'token' => $token
         ]);
