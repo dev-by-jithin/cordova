@@ -66,16 +66,18 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        try {
 
-        DB::table('personal_access_tokens')
-        ->where('tokenable_id', $request->userId)
-        ->delete();
+            $request
+            ->user()
+            ->currentAccessToken()
+            ->delete();
 
-        // $request
-        //     ->user()
-        //     ->currentAccessToken()
-        //     ->delete();
+            return response(['status' => true, 'message' => 'User logged out']);
 
-        return response(['message' => 'User logged out']);
+        } catch (\Throwable $th) {
+            return response(['status' => false, 'message' => $th->getMessage()]);
+        }
+
     }
 }
