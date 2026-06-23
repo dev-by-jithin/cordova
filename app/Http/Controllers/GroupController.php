@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\group;
+use App\Models\Group;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -11,7 +11,7 @@ class GroupController extends Controller
     {
         $search = $request->search;
 
-        $groups = group::query()
+        $groups = Group::query()
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
             })
