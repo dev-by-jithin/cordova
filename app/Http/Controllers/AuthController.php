@@ -4,80 +4,74 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function index(Request $request)
+    {
+        return view('auth.login');
+    }
 
     public function register(Request $request)
     {
+        return view('auth.register');
+    }
 
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email'=> 'required|string|email|unique:users,email',
-            'password' => 'required|max:20'
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|max:20|min:3'
         ]);
 
-        if($validator->fails()){
-            return response($validator->errors(), 422);
+        if ($validator->fails()) {
+            return redirect('register')
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
+            'role' => 'Admin',
             'password' => bcrypt($request->password)
         ]);
 
-        return response([
-            'user' => $user,
-            'message' => 'The user has been created successfully.'
-        ]);
+        return redirect()->route('login')->with('success', 'Your account has been created.');
     }
 
-    public function login(Request $request)
+    public function authenticate(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
-            'email'=> 'required|string|email',
+            'email' => 'required|string|email',
             'password' => 'required|max:20',
         ]);
 
-        if($validator->fails()){
-            return response(['status' => false, 'errors' => $validator->errors()], 422);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->onlyInput('email');
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if(!$user || !Hash::check($request->password, $user->password)){
-            return response(['status' => false, 'message' => 'Invalid email or password'], 401);
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => 'Yes'])) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard')->with('success', 'Hi, welcome ' . Auth::user()->name);
+        } else {
+            return back()->with('error', 'Invalid email or password !');
         }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response([
-            'status' => true,
-            'user' => $user,
-            'token' => $token
-        ]);
-
-
     }
 
     public function logout(Request $request)
     {
-        try {
+        Auth::logout();
 
-            $request
-            ->user()
-            ->currentAccessToken()
-            ->delete();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-            return response(['status' => true, 'message' => 'User logged out']);
-
-        } catch (\Throwable $th) {
-            return response(['status' => false, 'message' => $th->getMessage()]);
-        }
-
+        return redirect()->route('login');
     }
 }
