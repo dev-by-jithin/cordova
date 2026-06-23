@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
             ModeSeeder::class,
             TicketSeeder::class,
             RateSeeder::class,
-            SchemeRateSeeder::class,
             PriceSeeder::class
         ]);
     }

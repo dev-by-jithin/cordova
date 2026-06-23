@@ -36,6 +36,7 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Role</th>
+                                    <th scope="col">Scheme</th>
                                     <th scope="col">Is Active</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Action</th>
@@ -48,6 +49,7 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->role }}</td>
+                                    <td>{{ $user->scheme->name }}</td>
                                     <td><span class="badge rounded-pill text-bg-{{ $user->is_active == 'Yes' ? 'success' : 'danger' }}">{{ $user->is_active }}</span></td>
                                     <td>{{ $user->created_at->format('d-m-Y') }}</td>
                                     <td class="text-center">
@@ -57,7 +59,7 @@
                                 </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">
+                                        <td colspan="8" class="text-center">
                                             No users found
                                         </td>
                                     </tr>

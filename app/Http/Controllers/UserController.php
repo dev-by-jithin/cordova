@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Scheme;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,6 +14,7 @@ class UserController extends Controller
         $search = $request->search;
 
         $users = User::query()
+            ->whereIn('role', ['Agent', 'Super Agent'])
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('username', 'like', "%{$search}%")
@@ -28,8 +30,9 @@ class UserController extends Controller
 
     public function create(Request $request)
     {
+        $schemes = Scheme::where('is_active', '=', 'yes')->pluck('name', 'id');
         $superAgents = User::where('role', 'Super Agent')->pluck('username', 'id');
-        return view('user.create', compact('superAgents'));
+        return view('user.create', compact('superAgents', 'schemes'));
     }
 
     public function store(Request $request)
@@ -41,6 +44,7 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users,email',
             'role' => 'required|in:Super Agent,Agent',
             'super_agent' => 'required_if:role,Agent|nullable|exists:users,id',
+            'scheme_id' => 'required|exists:schemes,id',
             'is_active' => 'required|in:Yes,No',
             'description' => 'nullable|max:255'
         ]);
@@ -58,6 +62,7 @@ class UserController extends Controller
                 'role' => $request->role,
                 'super_agent_id' => $request->role === 'Agent' ? $request->super_agent : null,
                 'is_active' => $request->is_active,
+                'scheme_id' => $request->scheme_id,
                 'description' => $request->description
             ]);
             return redirect()->route('user.index')->with('success', 'New user created successfully.');
@@ -71,9 +76,10 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        $schemes = Scheme::where('is_active', '=', 'yes')->pluck('name', 'id');
         $superAgents = User::where('role', 'Super Agent')->pluck('username', 'id');
         $user = User::findOrFail($id);
-        return view('user.edit', compact('user','superAgents'));
+        return view('user.edit', compact('user', 'superAgents', 'schemes'));
     }
 
     public function update(Request $request)
@@ -86,6 +92,7 @@ class UserController extends Controller
             'role' => 'required|in:Super Agent,Agent',
             'super_agent' => 'required_if:role,Agent|nullable|exists:users,id',
             'is_active' => 'required|in:Yes,No',
+            'scheme_id' => 'required|exists:schemes,id',
             'description' => 'nullable|max:255'
         ]);
 
@@ -102,6 +109,7 @@ class UserController extends Controller
                 'role' => $request->role,
                 'super_agent_id' => $request->role === 'Agent' ? $request->super_agent : null,
                 'is_active' => $request->is_active,
+                'scheme_id' => $request->scheme_id,
                 'description' => $request->description
             ]);
             return redirect()->route('user.index')->with('success', 'User details updated successfully.');

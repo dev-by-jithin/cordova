@@ -15,4 +15,9 @@ class Rate extends Model
     {
         return $this->belongsTo(Mode::class);
     }
+
+    public function scheme()
+    {
+        return $this->belongsTo(Scheme::class);
+    }
 }

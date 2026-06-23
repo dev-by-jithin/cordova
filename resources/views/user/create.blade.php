@@ -91,6 +91,18 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="col-md-6">
+                            <label for="scheme_id" class="form-label">Scheme</label>
+                            <select id="scheme_id" name="scheme_id" class="form-select @error('scheme_id') is-invalid @enderror">
+                                <option value="" selected>Select Scheme</option>
+                                @foreach ($schemes as $id => $scheme)
+                                    <option value="{{ $id }}">{{ $scheme }}</option>
+                                @endforeach
+                            </select>
+                            @error('scheme_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="col-12">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description"

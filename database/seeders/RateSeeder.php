@@ -23,12 +23,26 @@ class RateSeeder extends Seeder
         foreach ($tickets as $ticketId) {
             foreach ($modes as $modeId) {
 
-                $rate = in_array($modeId, [1, 2, 3]) ? 30 : 10;
+                if (in_array($modeId, [1, 2, 3])) {
+                    $rate = 30;
+                    $admin = 10;
+                    $superAgent = 10;
+                    $agent = 10;
+                } else {
+                    $rate = 10;
+                    $admin = 5;
+                    $superAgent = 2;
+                    $agent = 3;
+                }
 
                 $data[] = [
                     'ticket_id' => $ticketId,
                     'mode_id' => $modeId,
+                    'scheme_id' => 1,
                     'rate' => $rate,
+                    'admin_amount' => $admin,
+                    'super_agent_amount' => $superAgent,
+                    'agent_amount' => $agent,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -37,8 +51,14 @@ class RateSeeder extends Seeder
 
         Rate::upsert(
             $data,
-            ['ticket_id', 'mode_id'],
-            ['rate', 'updated_at']
+            ['ticket_id', 'mode_id', 'scheme_id'],
+            [
+                'rate',
+                'admin_amount',
+                'super_agent_amount',
+                'agent_amount',
+                'updated_at'
+            ]
         );
     }
 }

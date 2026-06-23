@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Users')
+@section('title', 'Edit User')
 
 @section('breadcrumb')
     <!-- <div class="container-fluid px-4">
@@ -91,6 +91,18 @@
                                 <option value="No" {{ $user->is_active == 'No' ? 'selected' : '' }}>No</option>
                             </select>
                             @error('is_active')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scheme_id" class="form-label">Scheme</label>
+                            <select id="scheme_id" name="scheme_id" class="form-select @error('scheme_id') is-invalid @enderror">
+                                <option value="" selected>Select Scheme</option>
+                                @foreach ($schemes as $id => $scheme)
+                                    <option value="{{ $id }}" {{ $id === $user->scheme_id ? 'selected' : '' }}>{{ $scheme }}</option>
+                                @endforeach
+                            </select>
+                            @error('scheme_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

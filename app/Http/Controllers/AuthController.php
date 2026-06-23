@@ -74,4 +74,35 @@ class AuthController extends Controller
 
         return redirect()->route('login');
     }
+
+    public function profile(Request $request)
+    {
+        $user = User::find(1);
+        return view('auth.profile', compact('user'));
+    }
+
+      public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|max:20',
+            'email' => 'nullable|email|unique:users,email,' . $request->id,
+            'password' => 'required|max:10',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('user.edit', $request->id)->withErrors($validator)->withInput();
+        }
+
+        try {
+            User::where('id', $request->id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password)
+            ]);
+            return redirect()->route('profile')->with('success', 'Profile details updated successfully.');
+        } catch (\Throwable $th) {
+
+            return redirect()->route('profile')->with('error', $th->getMessage());
+        }
+    }
 }

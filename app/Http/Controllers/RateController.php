@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mode;
 use App\Models\Rate;
+use App\Models\Scheme;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RateController extends Controller
 {
@@ -32,5 +36,55 @@ class RateController extends Controller
             ->withQueryString();
 
         return view('rate.index', compact('rates'));
+    }
+
+     public function edit($id)
+    {
+        $tickets = Ticket::pluck('name', 'id');
+        $modes = Mode::pluck('name', 'id');
+        $schemes = Scheme::pluck('name', 'id');
+        $rates = Rate::findOrFail($id);
+        return view('price.edit', compact('rates','tickets', 'modes', 'schemes'));
+    }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'rate' => 'required|numeric|max:50',
+            'admin_amount' => 'required|numeric|decimal:0,2|min:0',
+            'super_agent_amount' => 'required|numeric|decimal:0,2|min:0',
+            'agent_amount' => 'required|numeric|decimal:0,2|min:0',
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+
+            $total = (float) $request->admin_amount
+                + (float) $request->super_agent_amount
+                + (float) $request->agent_amount;
+
+            if (round($total, 2) != round((float) $request->rate, 2)) {
+                $validator->errors()->add(
+                    'total_amount',
+                    'The sum of Admin Amount, Super Agent Amount and Agent Amount must be equal to the Rate.'
+                );
+            }
+        });
+
+        if ($validator->fails()) {
+            return redirect()->route('price.edit', $request->id)->withErrors($validator)->withInput();
+        }
+
+        try {
+            Rate::where('id', $request->id)->update([
+                'rate' => $request->rate,
+                'admin_amount' => $request->admin_amount,
+                'super_agent_amount' => $request->super_agent_amount,
+                'agent_amount' => $request->agent_amount
+            ]);
+            return redirect()->route('rate.index')->with('success', 'Rate details updated successfully.');
+        } catch (\Throwable $th) {
+
+            return redirect()->route('rate.edit')->with('error', $th->getMessage());
+        }
     }
 }

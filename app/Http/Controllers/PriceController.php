@@ -37,12 +37,12 @@ class PriceController extends Controller
         return view('price.index', compact('prices'));
     }
 
-     public function edit($id)
+    public function edit($id)
     {
         $tickets = Ticket::pluck('name', 'id');
         $modes = Mode::pluck('name', 'id');
         $price = Price::findOrFail($id);
-        return view('price.edit', compact('price','tickets', 'modes'));
+        return view('price.edit', compact('price', 'tickets', 'modes'));
     }
 
     public function update(Request $request)

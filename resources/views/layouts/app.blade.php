@@ -155,23 +155,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('rate.index') ? 'active' : '' }}" href="{{ route('rate.index') }}">
-
-                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path fill="var(--ci-primary-color, currentColor)" d="M480 48H32v416h448ZM64 432V80h384v352Z"
-                            class="ci-primary" />
-                        <path fill="var(--ci-primary-color, currentColor)"
-                            d="M120 136h104v24h-28.8c12.6 8.2 20.8 21.4 22.8 40H224v24h-6.5c-3.8 28.3-25.7 47.4-58.8 47.9L224 344h-42l-58-64v-24h30c17.7 0 29.2-8.8 33-24H120v-24h67c-4.8-14.5-16-24-35-24h-32Z"
-                            class="ci-primary" />
-                        <path fill="var(--ci-primary-color, currentColor)"
-                            d="M280 152h120v24H280zm0 64h120v24H280zm0 64h80v24h-80z" class="ci-primary" />
-                        <path fill="var(--ci-primary-color, currentColor)" d="M120 344h160v24H120z"
-                            class="ci-primary" />
-                    </svg>
-                    Rate
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('scheme.index') ? 'active' : '' }}" href="{{ route('scheme.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
@@ -185,16 +168,19 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="widgetss.html">
+                <a class="nav-link {{ request()->routeIs('rate.index') ? 'active' : '' }}" href="{{ route('rate.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path fill="var(--ci-primary-color, currentcolor)"
-                            d="M472 40H40a24.03 24.03 0 0 0-24 24v384a24.03 24.03 0 0 0 24 24h432a24.03 24.03 0 0 0 24-24V64a24.03 24.03 0 0 0-24-24m-8 400H48V72h416Z"
-                            class="ci-primary"></path>
-                        <path fill="var(--ci-primary-color, currentcolor)"
-                            d="M152 240h32v-40h40v-32h-40v-40h-32v40h-40v32h40zm44.284 45.089L168 313.373l-28.284-28.284-22.627 22.627L145.373 336l-28.284 28.284 22.627 22.627L168 358.627l28.284 28.284 22.627-22.627L190.627 336l28.284-28.284zM288 168h112v32H288zm0 120h112v32H288zm0 64h112v32H288z"
-                            class="ci-primary"></path>
+                        <path fill="var(--ci-primary-color, currentColor)" d="M480 48H32v416h448ZM64 432V80h384v352Z"
+                            class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)"
+                            d="M120 136h104v24h-28.8c12.6 8.2 20.8 21.4 22.8 40H224v24h-6.5c-3.8 28.3-25.7 47.4-58.8 47.9L224 344h-42l-58-64v-24h30c17.7 0 29.2-8.8 33-24H120v-24h67c-4.8-14.5-16-24-35-24h-32Z"
+                            class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)"
+                            d="M280 152h120v24H280zm0 64h120v24H280zm0 64h80v24h-80z" class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)" d="M120 344h160v24H120z"
+                            class="ci-primary" />
                     </svg>
-                    Scheme Rate
+                    Rate
                 </a>
             </li>
             <li class="nav-item">
@@ -313,36 +299,16 @@
                                     src="{{ asset('assets/img/avatars/9.jpg') }}" alt="user@email.com"></div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end pt-0">
-                            <a class="dropdown-item mt-2" href="#">
-                                <svg class="icon me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                    <path fill="var(--ci-primary-color, currentcolor)"
-                                        d="m411.6 343.656-72.823-47.334 27.455-50.334A80.2 80.2 0 0 0 376 207.681V128a112 112 0 0 0-224 0v79.681a80.24 80.24 0 0 0 9.768 38.308l27.455 50.333-72.823 47.334A79.72 79.72 0 0 0 80 410.732V496h368v-85.268a79.73 79.73 0 0 0-36.4-67.076M416 464H112v-53.268a47.84 47.84 0 0 1 21.841-40.246l97.66-63.479-41.64-76.341A48.15 48.15 0 0 1 184 207.681V128a80 80 0 0 1 160 0v79.681a48.15 48.15 0 0 1-5.861 22.985L296.5 307.007l97.662 63.479A47.84 47.84 0 0 1 416 410.732Z"
-                                        class="ci-primary" />
-                                </svg>
+                            <a class="dropdown-item mt-2" href="{{ route('profile') }}">
+                                <i class="icon icon me-2 cil-user"></i>
                                 Profile
                             </a>
-                            <a class="dropdown-item" href="#">
-                                <svg class="icon me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                    <path fill="var(--ci-primary-color, currentcolor)"
-                                        d="M245.151 168a88 88 0 1 0 88 88 88.1 88.1 0 0 0-88-88m0 144a56 56 0 1 1 56-56 56.063 56.063 0 0 1-56 56"
-                                        class="ci-primary" />
-                                    <path fill="var(--ci-primary-color, currentcolor)"
-                                        d="m464.7 322.319-31.77-26.153a193.1 193.1 0 0 0 0-80.332l31.77-26.153a19.94 19.94 0 0 0 4.606-25.439l-32.612-56.483a19.936 19.936 0 0 0-24.337-8.73l-38.561 14.447a192 192 0 0 0-69.54-40.192l-6.766-40.571A19.936 19.936 0 0 0 277.762 16H212.54a19.94 19.94 0 0 0-19.728 16.712l-6.762 40.572a192 192 0 0 0-69.54 40.192L77.945 99.027a19.94 19.94 0 0 0-24.334 8.731L21 164.245a19.94 19.94 0 0 0 4.61 25.438l31.767 26.151a193.1 193.1 0 0 0 0 80.332l-31.77 26.153A19.94 19.94 0 0 0 21 347.758l32.612 56.483a19.94 19.94 0 0 0 24.337 8.73l38.562-14.447a192 192 0 0 0 69.54 40.192l6.762 40.571A19.94 19.94 0 0 0 212.54 496h65.222a19.936 19.936 0 0 0 19.728-16.712l6.763-40.572a192 192 0 0 0 69.54-40.192l38.564 14.449a19.94 19.94 0 0 0 24.334-8.731l32.609-56.487a19.94 19.94 0 0 0-4.6-25.436m-50.636 57.12-48.109-18.024-7.285 7.334a159.96 159.96 0 0 1-72.625 41.973l-10 2.636L267.6 464h-44.89l-8.442-50.642-10-2.636a159.96 159.96 0 0 1-72.625-41.973l-7.285-7.334-48.117 18.024L53.8 340.562l39.629-32.624-2.7-9.973a160.9 160.9 0 0 1 0-83.93l2.7-9.972L53.8 171.439l22.446-38.878 48.109 18.024 7.285-7.334a159.96 159.96 0 0 1 72.625-41.973l10-2.636L222.706 48H267.6l8.442 50.642 10 2.636a159.96 159.96 0 0 1 72.625 41.973l7.285 7.334 48.109-18.024 22.447 38.877-39.629 32.625 2.7 9.972a160.9 160.9 0 0 1 0 83.93l-2.7 9.973 39.629 32.623Z"
-                                        class="ci-primary" />
-                                </svg>
-                                Settings
-                            </a>
+
                             <div class="dropdown-divider"></div>
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
                                 <button type="submit" class="dropdown-item">
-                                    <svg class="icon me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <path fill="var(--ci-primary-color, currentcolor)"
-                                            d="M77.155 272.034H351.75v-32.001H77.155l75.053-75.053v-.001l-22.628-22.626-113.681 113.68.001.001h-.001L129.58 369.715l22.628-22.627v-.001z"
-                                            class="ci-primary" />
-                                        <path fill="var(--ci-primary-color, currentcolor)"
-                                            d="M160 16v32h304v416H160v32h336V16z" class="ci-primary" />
-                                    </svg>
+                                    <i class="icon icon me-2 cil-account-logout"></i>
                                     Logout
                                 </button>
                             </form>

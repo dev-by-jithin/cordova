@@ -21,6 +21,8 @@ Route::group(['middleware' => 'guest'], function() {
 
 Route::group(['middleware' => 'auth'], function(){
 
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile/update', [AuthController::class, 'update'])->name('profile.update');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -35,9 +37,13 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/modes', [ModeController::class, 'index'])->name('mode.index');
     Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
     Route::get('/rates', [RateController::class, 'index'])->name('rate.index');
+    Route::get('/rates/{id}/edit', [RateController::class, 'edit'])->name('rate.edit');
+    Route::put('/rates/update', [RateController::class, 'update'])->name('rate.update');
+
     Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
     Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');
     Route::post('/scheme/store', [SchemeController::class, 'store'])->name('scheme.store');
+
     Route::get('/price', [PriceController::class, 'index'])->name('price.index');
     Route::get('/price/{id}/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::put('/price/update', [PriceController::class, 'update'])->name('price.update');
