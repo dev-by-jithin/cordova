@@ -22,10 +22,22 @@
                 </div>
                 <div class="card-body pt-2 pb-1">
                     <form action="{{ route('rate.index') }}" method="GET">
-                        <div class="input-group mb-1 w-25">
-                            <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                placeholder="Search.." aria-label="Search">
-                            <button class="btn btn-secondary btn-sm" type="submit"><i class="icon cil-search"></i></button>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <select class="form-select form-select-md" name="scheme" aria-label="Scheme">
+                                    <option selected>Select Scheme</option>
+                                    @foreach ($schemes as $id => $scheme )
+                                        <option value="{{ $id }}" {{ $id == request('scheme') ? 'selected' : '' }}>{{ $scheme }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group mb-1">
+                                    <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                        placeholder="Search.." aria-label="Search">
+                                    <button class="btn btn-secondary btn-sm" type="submit"><i class="icon cil-search"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                     <div class="table-responsive">

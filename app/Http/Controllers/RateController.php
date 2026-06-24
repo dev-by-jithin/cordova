@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mode;
 use App\Models\Rate;
 use App\Models\Scheme;
-use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,8 +13,12 @@ class RateController extends Controller
     {
         $rates = Rate::with([
             'ticket:id,name',
-            'mode:id,name'
+            'mode:id,name',
+            'scheme:id,name'
         ])
+            ->when($request->scheme, function ($query) use ($request) {
+                $query->where('scheme_id', $request->scheme);
+            })
             ->when($request->search, function ($query) use ($request) {
 
                 $query->where(function ($q) use ($request) {
@@ -35,16 +37,14 @@ class RateController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('rate.index', compact('rates'));
+        $schemes = Scheme::pluck('name', 'id');
+        return view('rate.index', compact('rates', 'schemes'));
     }
 
-     public function edit($id)
+    public function edit($id)
     {
-        $tickets = Ticket::pluck('name', 'id');
-        $modes = Mode::pluck('name', 'id');
-        $schemes = Scheme::pluck('name', 'id');
-        $rates = Rate::findOrFail($id);
-        return view('price.edit', compact('rates','tickets', 'modes', 'schemes'));
+        $rate = Rate::findOrFail($id);
+        return view('rate.edit', compact('rate'));
     }
 
     public function update(Request $request)

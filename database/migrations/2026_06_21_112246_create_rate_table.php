@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
-             $table->foreignId('scheme_id')->constrained('schemes')->cascadeOnDelete();
-            $table->decimal('rate', 10, 2);
-            $table->decimal('admin_amount', 10, 2);
-            $table->decimal('super_agent_amount', 10, 2);
-            $table->decimal('agent_amount', 10, 2);
+            $table->foreignId('scheme_id')->constrained('schemes')->cascadeOnDelete();
+            $table->decimal('rate', 10, 2)->nullable();
+            $table->decimal('admin_amount', 10, 2)->nullable();
+            $table->decimal('super_agent_amount', 10, 2)->nullable();
+            $table->decimal('agent_amount', 10, 2)->nullable();
             $table->unique(['ticket_id', 'mode_id', 'scheme_id']);
             $table->timestamps();
         });

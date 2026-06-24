@@ -18,12 +18,7 @@ class SchemeSeeder extends Seeder
                 'name' => 'Scheme-1',
                 'is_active' => 'Yes',
                 'created_at' => now()
-            ],
-            [
-                'name' => 'Scheme-2',
-                'is_active' => 'No',
-                'created_at' => now()
-            ],
+            ]
         ]);
     }
 }

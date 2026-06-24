@@ -12,10 +12,12 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'guest'], function() {
+
     Route::get('/', [AuthController::class, 'index'])->name('login');
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/create-user', [AuthController::class, 'store'])->name('auth.store');
+
 });
 
 
@@ -33,9 +35,6 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('/users/update', [UserController::class, 'update'])->name('user.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('/groups', [GroupController::class, 'index'])->name('group.index');
-    Route::get('/modes', [ModeController::class, 'index'])->name('mode.index');
-    Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
     Route::get('/rates', [RateController::class, 'index'])->name('rate.index');
     Route::get('/rates/{id}/edit', [RateController::class, 'edit'])->name('rate.edit');
     Route::put('/rates/update', [RateController::class, 'update'])->name('rate.update');
@@ -43,10 +42,17 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
     Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');
     Route::post('/scheme/store', [SchemeController::class, 'store'])->name('scheme.store');
+    Route::get('/scheme/{id}/edit', [SchemeController::class, 'edit'])->name('scheme.edit');
+     Route::put('/scheme/update', [SchemeController::class, 'update'])->name('scheme.update');
+    Route::put('/scheme/status', [SchemeController::class, 'status'])->name('scheme.status');
 
     Route::get('/price', [PriceController::class, 'index'])->name('price.index');
     Route::get('/price/{id}/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::put('/price/update', [PriceController::class, 'update'])->name('price.update');
+
+    Route::get('/groups', [GroupController::class, 'index'])->name('group.index');
+    Route::get('/modes', [ModeController::class, 'index'])->name('mode.index');
+    Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
 
 });
 
