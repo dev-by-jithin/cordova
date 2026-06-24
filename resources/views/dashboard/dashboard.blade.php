@@ -224,42 +224,36 @@
         </div>
     </div>
     <div class="card-footer">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 row-cols-xl-5 g-4 mb-2 text-center">
-        <div class="col">
-            <div class="text-body-secondary">Visits</div>
-            <div class="fw-semibold text-truncate">29.703 Users (40%)</div>
-            <div class="progress progress-thin mt-2">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+
+        <div class="row g-4 mb-2 text-center">
+            <div class="col">
+                <div class="text-body-secondary">Admin</div>
+                <div class="fw-semibold text-truncate">29.703 Users (40%)</div>
+                <div class="progress progress-thin mt-2">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="text-body-secondary">Unique</div>
-            <div class="fw-semibold text-truncate">24.093 Users (20%)</div>
-            <div class="progress progress-thin mt-2">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="col">
+                <div class="text-body-secondary">Super Agent</div>
+                <div class="fw-semibold text-truncate">24.093 Users (20%)</div>
+                <div class="progress progress-thin mt-2">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="text-body-secondary">Pageviews</div>
-            <div class="fw-semibold text-truncate">78.706 Views (60%)</div>
-            <div class="progress progress-thin mt-2">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="col">
+                <div class="text-body-secondary">Agent</div>
+                <div class="fw-semibold text-truncate">78.706 Views (60%)</div>
+                <div class="progress progress-thin mt-2">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="text-body-secondary">New Users</div>
-            <div class="fw-semibold text-truncate">22.123 Users (80%)</div>
-            <div class="progress progress-thin mt-2">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="col">
+                <div class="text-body-secondary">Winner</div>
+                <div class="fw-semibold text-truncate">22.123 Users (80%)</div>
+                <div class="progress progress-thin mt-2">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
-        </div>
-        <div class="col d-none d-xl-block">
-            <div class="text-body-secondary">Bounce Rate</div>
-            <div class="fw-semibold text-truncate">40.15%</div>
-            <div class="progress progress-thin mt-2">
-            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-        </div>
         </div>
     </div>
 </div>

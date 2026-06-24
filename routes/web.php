@@ -6,6 +6,8 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\RateController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -53,6 +55,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/groups', [GroupController::class, 'index'])->name('group.index');
     Route::get('/modes', [ModeController::class, 'index'])->name('mode.index');
     Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
+    Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+    Route::get('/result', [ResultController::class, 'index'])->name('result.index');
 
 });
 

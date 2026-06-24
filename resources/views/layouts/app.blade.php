@@ -86,7 +86,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link {{ request()->routeIs('result.index') ? 'active' : '' }}" href="{{ route('result.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M105.361 398.32A195.891 195.891 0 0 1 343.42 91.125l23.256-23.255A227.875 227.875 0 0 0 82.733 420.948 228.03 228.03 0 0 0 366.24 452.1l-23.312-23.312c-75.028 43.98-173.271 33.829-237.567-30.468"
@@ -99,7 +99,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="widgets.html">
+                <a class="nav-link {{ request()->routeIs('report.index') ? 'active' : '' }}" href="{{ route('report.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M112 152h288v32H112zm0 88h288v32H112zm0 88h152v32H112z" class="ci-primary" />
