@@ -36,7 +36,7 @@
                 role="tab" aria-controls="net-pay" aria-selected="false">Net Pay Report</button>
         </li>
     </ul>
-    <div class="tab-content" id="myTabContent">
+    <div class="tab-content mb-2" id="myTabContent">
 
         <div class="tab-pane fade show active bg-white border border-top-0" id="sales" role="tabpanel"
             aria-labelledby="sales-tab" tabindex="0">
