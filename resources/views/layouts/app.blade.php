@@ -335,10 +335,6 @@
             <div>
                 &copy; 2026 All Rights Reserved.
             </div>
-            <div class="ms-auto">
-                Powered by&nbsp;
-                <a href="https://dev-by-jithin.github.io" target="_blank">Jithin Pillakkat</a>
-            </div>
         </footer>
     </div>
     <!-- CoreUI and necessary plugins-->
