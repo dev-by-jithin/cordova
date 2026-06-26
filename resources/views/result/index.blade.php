@@ -21,8 +21,8 @@
                     <h5 class="fw-bold mb-0">Results</h5>
                 </div>
                 <div class="card-body pb-2">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2 g-md-auto">
+                        <div class="col-md-3">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -33,7 +33,7 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -44,14 +44,14 @@
                                 <label for="floatingSelect">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <button class="btn btn-primary h-100 w-100">Search</button>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary h-100 w-100"><i class="icon cil-search me-1"></i> Search</button>
                         </div>
                     </div>
 

@@ -22,9 +22,14 @@
                 </div>
                 <div class="card-body pt-2 pb-1">
                     <form action="{{ route('price.index') }}" method="GET">
-                        <div class="input-group mb-1 w-25">
-                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search.." aria-label="Search">
-                            <button class="btn btn-secondary btn-sm" type="submit"><i class="icon cil-search"></i></button>
+                        <div class="row mb-1 g-1">
+                            <div class="col-md-3">
+                                    <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                        placeholder="Search.." aria-label="Search">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-secondary" type="submit"><i class="icon cil-search"></i></button>
+                            </div>
                         </div>
                     </form>
                     <div class="table-responsive">

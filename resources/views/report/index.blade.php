@@ -4,12 +4,12 @@
 
 @section('breadcrumb')
     <!-- <div class="container-fluid px-4">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb my-0">
-                                <li class="breadcrumb-item active"><span>Dashboard</span></li>
-                            </ol>
-                        </nav>
-                    </div> -->
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb my-0">
+                                            <li class="breadcrumb-item active"><span>Dashboard</span></li>
+                                        </ol>
+                                    </nav>
+                                </div> -->
 @endsection
 
 @section('content')
@@ -37,12 +37,13 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
+
         <div class="tab-pane fade show active bg-white border border-top-0" id="sales" role="tabpanel"
             aria-labelledby="sales-tab" tabindex="0">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -53,27 +54,25 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
                                 <label for="floatingInput">Ticket Numer</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">From Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">To Date</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -84,7 +83,7 @@
                                 <label for="floatingSelect">Group</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -95,7 +94,7 @@
                                 <label for="floatingInput">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -106,7 +105,7 @@
                                 <label for="floatingInput">Super Agent</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -117,24 +116,21 @@
                                 <label for="floatingInput">Agent</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-3">
-                            <button class="btn btn-primary w-100">Generate Report</button>
+                        <div class="col-md-3 col-sm-12">
+                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
+                                Report</button>
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
+
         <div class="tab-pane fade bg-white border border-top-0" id="winning" role="tabpanel" aria-labelledby="winning-tab"
             tabindex="1">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -145,27 +141,25 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
                                 <label for="floatingInput">Ticket Numer</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">From Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">To Date</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -176,7 +170,7 @@
                                 <label for="floatingSelect">Group</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -187,7 +181,7 @@
                                 <label for="floatingInput">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -198,7 +192,7 @@
                                 <label for="floatingInput">Super Agent</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -209,24 +203,21 @@
                                 <label for="floatingInput">Agent</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-3">
-                            <button class="btn btn-primary w-100">Generate Report</button>
+                        <div class="col-md-3 col-sm-12">
+                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
+                                Report</button>
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
+
         <div class="tab-pane fade bg-white border border-top-0" id="number-wise" role="tabpanel"
             aria-labelledby="number-wise-tab" tabindex="2">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -237,27 +228,25 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
                                 <label for="floatingInput">Ticket Numer</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">From Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">To Date</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -268,7 +257,7 @@
                                 <label for="floatingSelect">Group</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -279,7 +268,7 @@
                                 <label for="floatingInput">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -290,7 +279,7 @@
                                 <label for="floatingInput">Super Agent</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -301,22 +290,21 @@
                                 <label for="floatingInput">Agent</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-3">
-                            <button class="btn btn-primary w-100">Generate Report</button>
+                        <div class="col-md-3 col-sm-12">
+                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
+                                Report</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane fade bg-white border border-top-0" id="account" role="tabpanel" aria-labelledby="account-tab"
             tabindex="3">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -327,27 +315,25 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
                                 <label for="floatingInput">Ticket Numer</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">From Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">To Date</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -358,7 +344,7 @@
                                 <label for="floatingSelect">Group</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -369,7 +355,7 @@
                                 <label for="floatingInput">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -380,7 +366,7 @@
                                 <label for="floatingInput">Super Agent</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -391,22 +377,21 @@
                                 <label for="floatingInput">Agent</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-3">
-                            <button class="btn btn-primary w-100">Generate Report</button>
+                        <div class="col-md-3 col-sm-12">
+                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
+                                Report</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="tab-pane fade bg-white border border-top-0" id="net-pay" role="tabpanel" aria-labelledby="net-pay-tab"
             tabindex="4">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-2">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>All</option>
@@ -417,27 +402,25 @@
                                 <label for="floatingSelect">Ticket</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
                                 <label for="floatingInput">Ticket Numer</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">From Date</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="floatingInput" placeholder="">
                                 <label for="floatingInput">To Date</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -448,7 +431,7 @@
                                 <label for="floatingSelect">Group</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -459,7 +442,7 @@
                                 <label for="floatingInput">Mode</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -470,7 +453,7 @@
                                 <label for="floatingInput">Super Agent</label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-3 col-sm-6">
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                     <option selected>Select</option>
@@ -481,11 +464,9 @@
                                 <label for="floatingInput">Agent</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-3">
-                            <button class="btn btn-primary w-100">Generate Report</button>
+                        <div class="col-md-3 cols-ms-12">
+                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
+                                Report</button>
                         </div>
                     </div>
                 </div>
