@@ -25,7 +25,7 @@
                         <div class="row mb-1 g-1">
                             <div class="col-md-3">
                                 <select class="form-select" name="scheme" aria-label="Scheme">
-                                    <option selected>Select Scheme</option>
+                                    <option value=" " selected>Select Scheme</option>
                                     @foreach ($schemes as $id => $scheme )
                                         <option value="{{ $id }}" {{ $id == request('scheme') ? 'selected' : '' }}>{{ $scheme }}</option>
                                     @endforeach

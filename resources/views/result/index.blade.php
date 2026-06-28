@@ -4,12 +4,12 @@
 
 @section('breadcrumb')
     <!-- <div class="container-fluid px-4">
-                                <nav aria-label="breadcrumb">
-                                    <ol class="breadcrumb my-0">
-                                        <li class="breadcrumb-item active"><span>Dashboard</span></li>
-                                    </ol>
-                                </nav>
-                            </div> -->
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb my-0">
+                                            <li class="breadcrumb-item active"><span>Dashboard</span></li>
+                                        </ol>
+                                    </nav>
+                                </div> -->
 @endsection
 
 @section('content')
@@ -59,40 +59,40 @@
                         <div class="col-md-2">
                             <div class="card shadow border-primary">
                                 <div class="card-body text-center">
-                                    <h2 class="card-title">1</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary">748</h5>
+                                    <h2 class="card-title fw-bold">1</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">748</h5>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="card shadow border-primary">
                                 <div class="card-body text-center">
-                                    <h2 class="card-title ">2</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary">289</h5>
+                                    <h2 class="card-title fw-bold">2</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">289</h5>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="card shadow border-primary">
                                 <div class="card-body text-center">
-                                    <h2 class="card-title ">3</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary">008</h5>
+                                    <h2 class="card-title fw-bold">3</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">008</h5>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="card shadow border-primary">
                                 <div class="card-body text-center">
-                                    <h2 class="card-title ">4</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary">157</h5>
+                                    <h2 class="card-title fw-bold">4</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">157</h5>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="card shadow border-primary">
                                 <div class="card-body text-center">
-                                    <h2 class="card-title ">5</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary">335</h5>
+                                    <h2 class="card-title fw-bold">5</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">335</h5>
                                 </div>
                             </div>
                         </div>
@@ -154,4 +154,14 @@
         <!-- /.col-->
     </div>
 
+    <style>
+        .card.shadow.border-primary:hover {
+            background: var(--cui-primary);
+            color: white !important;
+            cursor: default;
+        }
+        .card.shadow.border-primary {
+            transition: all 400ms ease-in;
+        }
+    </style>
 @endsection

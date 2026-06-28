@@ -20,7 +20,7 @@
 
 <div class="row g-4 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -34,7 +34,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -48,7 +48,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -62,7 +62,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -79,7 +79,7 @@
 
 <div class="row g-4 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -93,7 +93,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -107,7 +107,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -121,7 +121,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -138,7 +138,7 @@
 
 <div class="row g-4 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -152,7 +152,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -166,7 +166,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -180,7 +180,7 @@
     </div>
     <!-- /.col-->
     <div class="col-sm-6 col-xl-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary shadow">
             <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                 <div>
                     <div class="fs-4">
@@ -257,6 +257,12 @@
         </div>
     </div>
 </div>
+
+<style>
+    .card{
+        cursor: default;
+    }
+</style>
 
 @endsection
 

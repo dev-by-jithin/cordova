@@ -57,4 +57,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Scheme::class);
     }
+
+    public function superAgent()
+    {
+        return $this->belongsTo(User::class, 'super_agent_id');
+    }
+
 }

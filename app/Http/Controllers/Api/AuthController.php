@@ -10,46 +10,55 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function createAgent(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email'=> 'required|string|email|unique:users,email',
-            'password' => 'required|max:20'
+            'user_name' => 'required|unique:users,username',
+            'password' => 'min:3|max:10|confirmed',
+            'scheme_id' => 'required|exists:schemes,id'
         ]);
 
-        if($validator->fails()){
-            return response($validator->errors(), 422);
+        if ($validator->fails()) {
+            return response(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
+        $superAgentId = $request->user()->id;
 
-        return response([
-            'user' => $user,
-            'message' => 'The user has been created successfully.'
-        ]);
+        try {
+            User::create([
+                'username' => $request->user_name,
+                'super_agent_id' => $superAgentId,
+                'scheme_id' => $request->scheme_id,
+                'role' => 'Agent',
+                'password' => bcrypt($request->password)
+            ]);
+            return response([
+                'status' => true,
+                'message' => 'The agent has been created successfully.'
+            ]);
+        } catch (\Throwable $th) {
+            return response([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email'=> 'required|string|email',
+            'user_name' => 'required',
             'password' => 'required|max:20',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response(['status' => false, 'errors' => $validator->errors()], 422);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('username', $request->user_name)->first();
 
-        if(!$user || !Hash::check($request->password, $user->password)){
-            return response(['status' => false, 'message' => 'Invalid email or password'], 401);
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response(['status' => false, 'message' => 'Invalid user name or password'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -59,8 +68,6 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token
         ]);
-
-
     }
 
     public function logout(Request $request)
@@ -68,15 +75,14 @@ class AuthController extends Controller
         try {
 
             $request
-            ->user()
-            ->currentAccessToken()
-            ->delete();
+                ->user()
+                ->currentAccessToken()
+                ->delete();
 
             return response(['status' => true, 'message' => 'User logged out']);
 
         } catch (\Throwable $th) {
             return response(['status' => false, 'message' => $th->getMessage()]);
         }
-
     }
 }
