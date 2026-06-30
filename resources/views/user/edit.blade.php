@@ -54,8 +54,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password *</label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                id="password" name="password">
+                            <input type="text" class="form-control @error('password') is-invalid @enderror"
+                                id="password" name="password" value="{{ $user->decrypted }}">
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -83,17 +83,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label for="is_active" class="form-label">Is Active</label>
-                            <select id="is_active" name="is_active"
-                                class="form-select @error('is_active') is-invalid @enderror">
-                                <option value="Yes" {{ $user->is_active == 'Yes' ? 'selected' : '' }}>Yes</option>
-                                <option value="No" {{ $user->is_active == 'No' ? 'selected' : '' }}>No</option>
-                            </select>
-                            @error('is_active')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+
                         <div class="col-md-6">
                             <label for="scheme_id" class="form-label">Scheme</label>
                             <select id="scheme_id" name="scheme_id" class="form-select @error('scheme_id') is-invalid @enderror">
@@ -103,6 +93,28 @@
                                 @endforeach
                             </select>
                             @error('scheme_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="login_status" class="form-label">Login Status</label>
+                            <select id="login_status" name="login_status"
+                                class="form-select @error('login_status') is-invalid @enderror">
+                                <option value="Active" {{ $user->login_status == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option value="Blocked" {{ $user->login_status == 'Blocked' ? 'selected' : '' }}>Blocked</option>
+                            </select>
+                            @error('login_status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sale_status" class="form-label">Sale Status</label>
+                            <select id="sale_status" name="sale_status"
+                                class="form-select @error('sale_status') is-invalid @enderror">
+                                <option value="Active" {{ $user->sale_status == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option value="Blocked" {{ $user->sale_status == 'Blocked' ? 'selected' : '' }}>Blocked</option>
+                            </select>
+                            @error('sale_status')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

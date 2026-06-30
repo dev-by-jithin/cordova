@@ -24,10 +24,12 @@ class User extends Authenticatable
         'email',
         'username',
         'password',
+        'decrypted',
         'role',
         'super_agent_id',
         'scheme_id',
-        'is_active'
+        'login_status',
+        'sale_status'
     ];
 
     /**

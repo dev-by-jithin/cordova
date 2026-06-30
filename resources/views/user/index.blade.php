@@ -39,10 +39,12 @@
                                 <tr>
                                     <th scope="col">S.NO</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">Super Agent</th>
                                     <th scope="col">Role</th>
                                     <th scope="col">Scheme</th>
-                                    <th scope="col">Is Active</th>
+                                    <th scope="col">Login Status</th>
+                                    <th scope="col">Sale Status</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Action</th>
                                 </tr>
@@ -52,10 +54,12 @@
                                 <tr id="row-{{ $user->id }}">
                                     <td>{{ $users->firstItem() + $loop->index }}</td>
                                     <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->superAgent?->username ?? '-' }}</td>
                                     <td>{{ $user->role }}</td>
                                     <td>{{ $user->scheme->name }}</td>
-                                    <td><span class="badge rounded-pill text-bg-{{ $user->is_active == 'Yes' ? 'success' : 'danger' }}">{{ $user->is_active }}</span></td>
+                                    <td><span class="badge rounded-pill text-bg-{{ $user->login_status == 'Active' ? 'success' : 'danger' }}">{{ $user->login_status }}</span></td>
+                                    <td><span class="badge rounded-pill text-bg-{{ $user->sale_status == 'Active' ? 'success' : 'danger' }}">{{ $user->sale_status }}</span></td>
                                     <td>{{ $user->created_at->format('d-m-Y') }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('user.edit', $user->id) }}" class="btn btn-secondary btn-sm py-0 px-1" title="Edit"><i class="icon cil-pencil"></i></a>
@@ -64,7 +68,7 @@
                                 </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">
+                                        <td colspan="10" class="text-center">
                                             No users found
                                         </td>
                                     </tr>

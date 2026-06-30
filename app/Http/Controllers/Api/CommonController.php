@@ -27,11 +27,32 @@ class CommonController extends Controller
             'scheme:id,name'
         ])
             ->select('id', 'username', 'super_agent_id', 'scheme_id')
-            ->where('is_active', 'Yes')
             ->where('role', 'Agent')
             ->where('super_agent_id', $superAgentId)
             ->get();
-        return response(['agents' => $agents, 'superAgent' => ['id' => $request->user()->id, 'userName' => $request->user()->username] ], 200);
+        return response(['agents' => $agents, 'superAgent' => ['id' => $request->user()->id, 'userName' => $request->user()->username]], 200);
+    }
+
+    public function agent(Request $request)
+    {
+        $agent = User::with([
+            'superAgent:id,username',
+            'scheme:id,name'
+        ])
+            ->select(
+                'id',
+                'username',
+                'decrypted',
+                'super_agent_id',
+                'scheme_id',
+                'login_status',
+                'sale_status',
+                'role'
+            )
+            ->find($request->userId);
+
+        $schemes = Scheme::select('id', 'name')->where('is_active', 'Yes')->get();
+        return response(['agent' => $agent, 'schemes' => $schemes], 200);
     }
 
 
@@ -51,12 +72,14 @@ class CommonController extends Controller
     {
         $ticketId = $request->ticket_id;
         $agentId = $request->agent_id;
-        $schemeId = User::where('id', $agentId)->value('scheme_id');
+        $user = User::find($agentId);
+
+
         $rates = Rate::with(['ticket:id,name', 'mode:id,name'])
-                ->where('ticket_id', $ticketId)
-                ->where('scheme_id', $schemeId)
-                ->orderBy('mode_id', 'DESC')
-                ->get();
-        return response($rates, 200);
+            ->where('ticket_id', $ticketId)
+            ->where('scheme_id', $user->scheme_id)
+            ->orderBy('mode_id', 'DESC')
+            ->get();
+        return response(['rates' => $rates, 'role' => $user->role], 200);
     }
 }

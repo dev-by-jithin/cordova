@@ -30,7 +30,8 @@ class AuthController extends Controller
                 'super_agent_id' => $superAgentId,
                 'scheme_id' => $request->scheme_id,
                 'role' => 'Agent',
-                'password' => bcrypt($request->password)
+                'password' => bcrypt($request->password),
+                'decrypted' => $request->password
             ]);
             return response([
                 'status' => true,
@@ -52,22 +53,35 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response(['status' => false, 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         $user = User::where('username', $request->user_name)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response(['status' => false, 'message' => 'Invalid user name or password'], 401);
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid username or password.'
+            ], 401);
+        }
+
+        if ($user->login_status !== 'Active') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Your account has been blocked.'
+            ], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response([
+        return response()->json([
             'status' => true,
             'user' => $user,
-            'token' => $token
-        ]);
+            'token' => $token,
+        ], 200);
     }
 
     public function logout(Request $request)
@@ -83,6 +97,32 @@ class AuthController extends Controller
 
         } catch (\Throwable $th) {
             return response(['status' => false, 'message' => $th->getMessage()]);
+        }
+    }
+
+    public function changeLoginStatus(Request $request)
+    {
+        $userId = $request->userId;
+        $status = $request->loginStatus == 'Active' ? 'Blocked' : 'Active';
+
+        try {
+
+            User::where('id', $userId)->update([
+                'login_status' => $status,
+            ]);
+
+            return response()->json([
+                'status' => $status == 'Active' ? true : false,
+                'loginStatus' => $status,
+                'message' => "Agent login status changed to {$status}."
+            ]);
+
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }

@@ -13,17 +13,18 @@ class UserController extends Controller
     {
         $search = $request->search;
 
-        $users = User::query()
+        $users = User::with(['superAgent:id,username'])
             ->whereIn('role', ['Agent', 'Super Agent'])
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('role', 'like', "%{$search}%");
+                });
             })
             ->latest()
             ->paginate(10)
             ->withQueryString();
-
 
         return view('user.index', compact('users', 'search'));
     }
@@ -45,7 +46,8 @@ class UserController extends Controller
             'role' => 'required|in:Super Agent,Agent',
             'super_agent' => 'required_if:role,Agent|nullable|exists:users,id',
             'scheme_id' => 'required|exists:schemes,id',
-            'is_active' => 'required|in:Yes,No',
+            'login_status' => 'required|in:Active,Blocked',
+            'sale_status' => 'required|in:Active,Blocked',
             'description' => 'nullable|max:255'
         ]);
 
@@ -59,9 +61,11 @@ class UserController extends Controller
                 'email' => $request->email,
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
+                'decrypted' => $request->password,
                 'role' => $request->role,
                 'super_agent_id' => $request->role === 'Agent' ? $request->super_agent : null,
-                'is_active' => $request->is_active,
+                'login_status' => $request->login_status,
+                'sale_status' => $request->sale_status,
                 'scheme_id' => $request->scheme_id,
                 'description' => $request->description
             ]);
@@ -91,7 +95,8 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users,email,' . $request->id,
             'role' => 'required|in:Super Agent,Agent',
             'super_agent' => 'required_if:role,Agent|nullable|exists:users,id',
-            'is_active' => 'required|in:Yes,No',
+            'login_status' => 'required|in:Active,Blocked',
+            'sale_status' => 'required|in:Active,Blocked',
             'scheme_id' => 'required|exists:schemes,id',
             'description' => 'nullable|max:255'
         ]);
@@ -106,9 +111,11 @@ class UserController extends Controller
                 'email' => $request->email,
                 'username' => $request->username,
                 'password' => bcrypt($request->password),
+                'decrypted' => $request->password,
                 'role' => $request->role,
                 'super_agent_id' => $request->role === 'Agent' ? $request->super_agent : null,
-                'is_active' => $request->is_active,
+                'login_status' => $request->login_status,
+                'sale_status' => $request->sale_status,
                 'scheme_id' => $request->scheme_id,
                 'description' => $request->description
             ]);

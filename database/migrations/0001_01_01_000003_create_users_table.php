@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('decrypted')->nullable();
             $table->enum('role', ['Admin', 'Super Agent', 'Agent']);
-            $table->enum('is_active', ['Yes', 'No'])->default('Yes');
+            $table->enum('login_status', ['Active', 'Blocked'])->default('Active');
+            $table->enum('sale_status', ['Active', 'Blocked'])->default('Active');
             $table->tinyText('description')->nullable();
             $table->rememberToken();
             $table->timestamps();

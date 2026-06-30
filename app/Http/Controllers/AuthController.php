@@ -57,7 +57,7 @@ class AuthController extends Controller
             return back()->withErrors($validator)->onlyInput('email');
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => 'Yes'])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'login_status' => 'Active'])) {
             $request->session()->regenerate();
             return redirect()->route('dashboard')->with('success', 'Hi, welcome ' . Auth::user()->name);
         } else {

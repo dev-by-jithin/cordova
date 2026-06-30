@@ -12,12 +12,15 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
 
     Route::get('groups', [CommonController::class, 'groups']);
     Route::get('agents', [CommonController::class, 'agents']);
+    Route::get('agent', [CommonController::class, 'agent']);
     Route::get('schemes', [CommonController::class, 'schemes']);
     Route::get('tickets', [CommonController::class, 'tickets']);
     Route::get('rates', [CommonController::class, 'rates']);
 
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);
+    Route::put('/change-login-status', [AuthController::class, 'changeLoginStatus']);
+    Route::put('/change-sale-status', [AuthController::class, 'changeSaleStatus']);
 
 
 
