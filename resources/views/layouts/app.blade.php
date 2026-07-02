@@ -27,9 +27,10 @@
 <body>
 
     <div class="sidebar sidebar-light sidebar-fixed border-end" id="sidebar">
-        <div class="sidebar-header border-bottom">
+        <div class="sidebar-header border-bottom" style="padding-bottom:14px;">
             <div class="sidebar-brand me-auto">
-                <i class="icon icon-xxl cil-apps ms-2"></i> <h3 class="d-inline fw-bold">Admin</h3>
+                <div class="sidebar-brand-full"><i class="icon icon-xxl cil-apps ms-2"></i> <h3 class="d-inline fw-bold">Admin</h3></div>
+                <div class="sidebar-brand-narrow"><i class="icon icon-xxl cil-apps ms-3"></i></div>
             </div>
             <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close"
                 onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>

@@ -45,6 +45,39 @@ class AuthController extends Controller
         }
     }
 
+    public function updateAgent(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required|unique:users,username,' . $request->user_id,
+            'password' => 'min:3|max:10',
+            'scheme_id' => 'required|exists:schemes,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            User::where('id', $request->user_id)
+            ->update([
+                'username' => $request->user_name,
+                'scheme_id' => $request->scheme_id,
+                'password' => bcrypt($request->password),
+                'decrypted' => $request->password
+            ]);
+            return response([
+                'status' => true,
+                'message' => 'User details updated successfully.'
+            ]);
+        } catch (\Throwable $th) {
+            return response([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -115,6 +148,32 @@ class AuthController extends Controller
                 'status' => $status == 'Active' ? true : false,
                 'loginStatus' => $status,
                 'message' => "Agent login status changed to {$status}."
+            ]);
+
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function changeSaleStatus(Request $request)
+    {
+        $userId = $request->userId;
+        $status = $request->saleStatus == 'Active' ? 'Blocked' : 'Active';
+
+        try {
+
+            User::where('id', $userId)->update([
+                'sale_status' => $status,
+            ]);
+
+            return response()->json([
+                'status' => $status == 'Active' ? true : false,
+                'loginStatus' => $status,
+                'message' => "Agent sale status changed to {$status}."
             ]);
 
         } catch (\Throwable $th) {

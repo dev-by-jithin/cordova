@@ -19,6 +19,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
 
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);
+    Route::post('/update-agent', [AuthController::class, 'updateAgent']);
     Route::put('/change-login-status', [AuthController::class, 'changeLoginStatus']);
     Route::put('/change-sale-status', [AuthController::class, 'changeSaleStatus']);
 
