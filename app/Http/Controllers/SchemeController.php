@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mode;
+use App\Models\Price;
 use App\Models\Rate;
 use App\Models\Scheme;
 use App\Models\Ticket;
@@ -161,5 +162,38 @@ class SchemeController extends Controller
 
         }
 
+    }
+
+    public function show(Request $request)
+    {
+        $scheme = Scheme::findOrFail($request->id);
+
+        $modes = Mode::with(['group:id,name'])->select('id', 'group_id', 'name')->orderBy('sort_order', 'DESC')->get();
+
+        $prices = Price::where('scheme_id', $request->id)->get();
+
+        $priceArray = [];
+
+        foreach ($modes as $mode) {
+
+            foreach ($prices as $price) {
+
+                if ($mode->id == $price->mode_id) {
+
+                    $priceArray[$mode->name . "@" . $mode->group->name][] = [
+                        'position' => $price->position,
+                        'count' => $price->count,
+                        'winnerAmount' => $price->winner_amount,
+                        'superAgentAmount' => $price->super_agent_amount,
+                        'agentAmount' => $price->agent_amount
+                    ];
+                }
+            }
+        }
+
+        return response([
+            'scheme' => $scheme,
+            'prices' => $priceArray
+        ]);
     }
 }

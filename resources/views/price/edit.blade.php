@@ -29,10 +29,10 @@
                         @method('PUT')
                         <input type="hidden" name="id" name="id" value="{{ $price->id }}">
                         <div class="col-md-6">
-                            <label for="ticket" class="form-label">Ticket</label>
-                            <select id="ticket" name="ticket_id" class="form-select" disabled>
-                                @foreach($tickets as $id => $ticket)
-                                    <option value="{{ $id }}" {{ $id == $price->ticket_id ? 'selected' : '' }}>{{ $ticket }}
+                            <label for="scheme_id" class="form-label">Scheme</label>
+                            <select id="scheme_id" name="scheme_id" class="form-select" disabled>
+                                @foreach($schemes as $id => $scheme)
+                                    <option value="{{ $id }}" {{ $id == $price->scheme_id ? 'selected' : '' }}>{{ $scheme }}
                                     </option>
                                 @endforeach
                             </select>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mode;
 use App\Models\Price;
-use App\Models\Ticket;
+use App\Models\Scheme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,15 +13,15 @@ class PriceController extends Controller
     public function index(Request $request)
     {
         $prices = Price::with([
-            'ticket:id,name',
+            'scheme:id,name',
             'mode:id,name'
         ])
             ->when($request->search, function ($query) use ($request) {
 
                 $query->where(function ($q) use ($request) {
 
-                    $q->whereHas('ticket', function ($ticket) use ($request) {
-                        $ticket->where('name', 'like', '%' . $request->search . '%');
+                    $q->whereHas('scheme', function ($scheme) use ($request) {
+                        $scheme->where('name', 'like', '%' . $request->search . '%');
                     })
                         ->orWhereHas('mode', function ($mode) use ($request) {
                             $mode->where('name', 'like', '%' . $request->search . '%');
@@ -37,12 +37,12 @@ class PriceController extends Controller
         return view('price.index', compact('prices'));
     }
 
-    public function edit($id)
+      public function edit($id)
     {
-        $tickets = Ticket::pluck('name', 'id');
+        $schemes = Scheme::pluck('name', 'id');
         $modes = Mode::pluck('name', 'id');
         $price = Price::findOrFail($id);
-        return view('price.edit', compact('price', 'tickets', 'modes'));
+        return view('price.edit', compact('price', 'schemes', 'modes'));
     }
 
     public function update(Request $request)
@@ -69,4 +69,5 @@ class PriceController extends Controller
             return redirect()->route('price.edit')->with('error', $th->getMessage());
         }
     }
+
 }

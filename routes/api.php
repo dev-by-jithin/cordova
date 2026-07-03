@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('schemes', [CommonController::class, 'schemes']);
     Route::get('tickets', [CommonController::class, 'tickets']);
     Route::get('rates', [CommonController::class, 'rates']);
+    Route::get('prices', [CommonController::class, 'prices']);
 
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);

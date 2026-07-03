@@ -58,9 +58,13 @@
                                         </td>
                                         <td>{{ $scheme->created_at->format('d-m-Y') }}</td>
                                         <td class="text-center">
+                                            <button data-id="{{ $scheme->id }}"
+                                                class="btn btn-secondary btn-sm py-0 px-1 view-scheme" title="View"><i
+                                                    class="icon cil-zoom-in"></i></button>
                                             <a href="{{ route('scheme.edit', $scheme->id) }}"
                                                 class="btn btn-secondary btn-sm py-0 px-1" title="Edit"><i
                                                     class="icon cil-pencil"></i></a>
+
                                         </td>
                                     </tr>
                                 @empty
@@ -83,7 +87,109 @@
         <!-- /.col-->
     </div>
 
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="schemeDetailsModal" data-coreui-backdrop="static" data-coreui-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#f8f8f9;">
+        <h5 class="modal-title" id="schemeName"></h5>
+        <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-2" id="tables">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <script>
+
+
+        $(document).on('click', '.view-scheme', function(){
+
+            let button = $(this);
+            let id = button.data('id');
+
+            $.ajax({
+                url: "{{ route('scheme.show') }}",
+                type: "GET",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    id: id
+                },
+                beforeSend: function () {
+                    button.prop('disabled', true);
+                },
+                success: function (response) {
+
+                    if(response){
+                        $('#schemeName').text(response.scheme.name);
+                        let table = '';
+
+                        $.each(response.prices, function(key, mode){
+                            let tr = '';
+                            $.each(mode, function(index, price){
+                                tr += `<tr>
+                                        <td>${price.position}</td>
+                                        <td>${price.count}</td>
+                                        <td>${price.winnerAmount}</td>
+                                        <td>${price.superAgentAmount}</td>
+                                    </tr>`;
+                            })
+                            const [modeName, groupName] = key.split('@');
+                            table += `<div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title">${modeName}</h5>
+                                                <h6 class="card-subtitle mb-2 text-body-secondary">${groupName}</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-sm mb-0 text-center">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Position</th>
+                                                                <th scope="col">Count</th>
+                                                                <th scope="col">Amount</th>
+                                                                <th scope="col">Super</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            ${tr}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`
+
+                        });
+                        $('#tables').html(table);
+                    }
+
+                    $('#schemeDetailsModal').modal('show');
+
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: xhr.responseJSON?.message ?? "Something went wrong."
+                    });
+                },
+                complete: function () {
+                    button.prop('disabled', false);
+                }
+            });
+
+        });
+
         $(document).on('change', '.is-active', function () {
 
             let toggle = $(this);

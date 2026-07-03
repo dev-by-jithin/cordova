@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
+            $table->foreignId('scheme_id')->constrained('schemes')->cascadeOnDelete();
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->tinyInteger('position');
             $table->tinyInteger('count')->default('1');

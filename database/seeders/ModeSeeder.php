@@ -16,7 +16,7 @@ class ModeSeeder extends Seeder
         Mode::insert([
             [
                 'group_id' => 1,
-                'name' => 'A',
+                'name' => 'C',
                 'sort_order' => 1,
                 'created_at' => now()
             ],
@@ -28,13 +28,13 @@ class ModeSeeder extends Seeder
             ],
             [
                 'group_id' => 1,
-                'name' => 'C',
+                'name' => 'A',
                 'sort_order' => 3,
                 'created_at' => now()
             ],
             [
                 'group_id' => 2,
-                'name' => 'AB',
+                'name' => 'AC',
                 'sort_order' => 4,
                 'created_at' => now()
             ],
@@ -46,7 +46,7 @@ class ModeSeeder extends Seeder
             ],
             [
                 'group_id' => 2,
-                'name' => 'AC',
+                'name' => 'AB',
                 'sort_order' => 6,
                 'created_at' => now()
             ],

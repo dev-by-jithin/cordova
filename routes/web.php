@@ -44,8 +44,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
     Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');
     Route::post('/scheme/store', [SchemeController::class, 'store'])->name('scheme.store');
+    Route::get('/scheme-details', [SchemeController::class, 'show'])->name('scheme.show');
     Route::get('/scheme/{id}/edit', [SchemeController::class, 'edit'])->name('scheme.edit');
-     Route::put('/scheme/update', [SchemeController::class, 'update'])->name('scheme.update');
+    Route::put('/scheme/update', [SchemeController::class, 'update'])->name('scheme.update');
     Route::put('/scheme/status', [SchemeController::class, 'status'])->name('scheme.status');
 
     Route::get('/price', [PriceController::class, 'index'])->name('price.index');

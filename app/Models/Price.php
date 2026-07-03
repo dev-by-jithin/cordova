@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Price extends Model
 {
-    public function ticket()
+    public function scheme()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(Scheme::class);
     }
 
     public function mode()
