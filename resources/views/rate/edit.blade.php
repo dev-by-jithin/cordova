@@ -34,48 +34,20 @@
                                 value="{{ $rate->ticket->name }} - {{ $rate->mode->name }}" disabled>
                         </div>
                         <div class="col-md-6">
-                            <label for="scheme" class="form-label">Scheme</label>
-                            <input type="text" class="form-control" id="scheme" name="scheme" value="{{ $rate->scheme->name }}"
+                            <label for="scheme" class="form-label">User</label>
+                            <input type="text" class="form-control" id="user" name="user" value="{{ $rate->user->username }}"
                                 disabled>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
+                            <label for="rate" class="form-label">Ticket Rate *</label>
+                            <input type="text" class="form-control @error('ticket_rate') is-invalid @enderror" id="ticket_rate"
+                                name="ticket_rate" value="{{ $rate->ticket_rate }}" disabled>
+                        </div>
+                        <div class="col-md-3">
                             <label for="rate" class="form-label">Rate *</label>
                             <input type="text" class="form-control @error('rate') is-invalid @enderror" id="rate"
                                 name="rate" value="{{ $rate->rate }}">
                             @error('rate')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-2 text-center">
-                            <span class="badge text-bg-secondary" style="margin-top:2.5rem">=</span>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="admin_amount" class="form-label text-primary">Admin Amount *</label>
-                            <input type="text" class="form-control @error('admin_amount') is-invalid @enderror"
-                                id="admin_amount" name="admin_amount" value="{{ $rate->admin_amount }}">
-                            @error('admin_amount')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-1 text-center">
-                            <span class="badge text-bg-secondary" style="margin-top:2.5rem">+</span>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="super_agent_amount" class="form-label text-primary">Super Agent Amount *</label>
-                            <input type="text" class="form-control @error('super_agent_amount') is-invalid @enderror"
-                                id="super_agent_amount" name="super_agent_amount" value="{{ $rate->super_agent_amount }}">
-                            @error('super_agent_amount')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-1 text-center">
-                            <span class="badge text-bg-secondary" style="margin-top:2.5rem">+</span>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="agent_amount" class="form-label text-primary">Agent Amount *</label>
-                            <input type="text" class="form-control @error('agent_amount') is-invalid @enderror"
-                                id="agent_amount" name="agent_amount" value="{{ $rate->agent_amount }}">
-                            @error('agent_amount')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

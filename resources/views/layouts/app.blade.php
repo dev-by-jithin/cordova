@@ -29,7 +29,9 @@
     <div class="sidebar sidebar-light sidebar-fixed border-end" id="sidebar">
         <div class="sidebar-header border-bottom" style="padding-bottom:14px;">
             <div class="sidebar-brand me-auto">
-                <div class="sidebar-brand-full"><i class="icon icon-xxl cil-apps ms-2"></i> <h3 class="d-inline fw-bold">Admin</h3></div>
+                <div class="sidebar-brand-full"><i class="icon icon-xxl cil-apps ms-2"></i>
+                    <h3 class="d-inline fw-bold">Admin</h3>
+                </div>
                 <div class="sidebar-brand-narrow"><i class="icon icon-xxl cil-apps ms-3"></i></div>
             </div>
             <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close"
@@ -51,7 +53,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('result.index') ? 'active' : '' }}" href="{{ route('result.index') }}">
+                <a class="nav-link {{ request()->routeIs('result.index') ? 'active' : '' }}"
+                    href="{{ route('result.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M105.361 398.32A195.891 195.891 0 0 1 343.42 91.125l23.256-23.255A227.875 227.875 0 0 0 82.733 420.948 228.03 228.03 0 0 0 366.24 452.1l-23.312-23.312c-75.028 43.98-173.271 33.829-237.567-30.468"
@@ -64,7 +67,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('report.index') ? 'active' : '' }}" href="{{ route('report.index') }}">
+                <a class="nav-link {{ request()->routeIs('report.index') ? 'active' : '' }}"
+                    href="{{ route('report.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M112 152h288v32H112zm0 88h288v32H112zm0 88h152v32H112z" class="ci-primary" />
@@ -86,41 +90,45 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('group.index') ? 'active' : '' }}"
-                    href="{{ route('group.index') }}">
-                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path fill="var(--ci-primary-color, currentcolor)"
-                            d="m496.059 182.581-.025-70.7-32 .012.017 48.172-66.288 23.779-45.729.007v-30.964A96.55 96.55 0 0 0 329.92 91.3l43.129-43.413h42.84v-32h-56.157l-53.987 54.344a96.82 96.82 0 0 0-100.511-.554l-53.056-53.84-56.158.05.029 32 42.748-.038L180.824 90.5a96.56 96.56 0 0 0-22.79 62.39v30.99l-43.235.007L48 160.093v-48.172H16v70.742l80.035 28.509.007 84.715H16.034v32h80.01v8.01a159.7 159.7 0 0 0 9.7 54.979l-89.71 34.572v70.439h32v-48.476l71.73-27.642a159.794 159.794 0 0 0 249.578 29.044 161.5 161.5 0 0 0 23.058-29.146l71.638 27.727v48.493h32v-70.421l-89.618-34.685a159.2 159.2 0 0 0 9.614-55.1v-7.794h80v-32h-80v-84.6ZM240 463.029C176.991 455.235 128.045 401.2 128.045 335.9l-.01-120.011h30v.007H240Zm-49.966-279.154v-30.988a65 65 0 0 1 130 0v30.968Zm194 151.849A128.28 128.28 0 0 1 272 462.979V215.887h80.032v-.036h32Z"
-                            class="ci-primary"></path>
-                    </svg>
-                    Group
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('mode.index') ? 'active' : '' }}"
-                    href="{{ route('mode.index') }}">
+                <a class="nav-link {{ request()->routeIs('number.index') ? 'active' : '' }}"
+                    href="{{ route('number.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M112 152h288v32H112zm0 88h288v32H112zm0 88h152v32H112z" class="ci-primary"></path>
                         <path fill="var(--ci-primary-color, currentcolor)" d="M480 48H32v416h448Zm-32 384H64V80h384Z"
                             class="ci-primary"></path>
                     </svg>
-                    Mode
+                    Numbers
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('ticket.index') ? 'active' : '' }}"
-                    href="{{ route('ticket.index') }}">
+                <a class="nav-link {{ request()->routeIs('number.fake') ? 'active' : '' }}"
+                    href="{{ route('number.fake') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
-                            d="M494 198.671a40.54 40.54 0 0 0-32.174-27.592l-115.909-18.837-53.732-104.414a40.7 40.7 0 0 0-72.37 0l-53.732 104.414-115.907 18.837a40.7 40.7 0 0 0-22.364 68.827l82.7 83.368-17.9 116.055a40.672 40.672 0 0 0 58.548 42.538L256 428.977l104.843 52.89a40.69 40.69 0 0 0 58.548-42.538l-17.9-116.055 82.7-83.368A40.54 40.54 0 0 0 494 198.671m-32.53 18.7L367.4 312.2l20.364 132.01a8.671 8.671 0 0 1-12.509 9.088L256 393.136 136.744 453.3a8.671 8.671 0 0 1-12.509-9.088L144.6 312.2l-94.069-94.83a8.7 8.7 0 0 1 4.778-14.706l131.841-21.426 61.119-118.767a8.694 8.694 0 0 1 15.462 0l61.119 118.767 131.841 21.426a8.7 8.7 0 0 1 4.778 14.706Z"
+                            d="m496.059 182.581-.025-70.7-32 .012.017 48.172-66.288 23.779-45.729.007v-30.964A96.55 96.55 0 0 0 329.92 91.3l43.129-43.413h42.84v-32h-56.157l-53.987 54.344a96.82 96.82 0 0 0-100.511-.554l-53.056-53.84-56.158.05.029 32 42.748-.038L180.824 90.5a96.56 96.56 0 0 0-22.79 62.39v30.99l-43.235.007L48 160.093v-48.172H16v70.742l80.035 28.509.007 84.715H16.034v32h80.01v8.01a159.7 159.7 0 0 0 9.7 54.979l-89.71 34.572v70.439h32v-48.476l71.73-27.642a159.794 159.794 0 0 0 249.578 29.044 161.5 161.5 0 0 0 23.058-29.146l71.638 27.727v48.493h32v-70.421l-89.618-34.685a159.2 159.2 0 0 0 9.614-55.1v-7.794h80v-32h-80v-84.6ZM240 463.029C176.991 455.235 128.045 401.2 128.045 335.9l-.01-120.011h30v.007H240Zm-49.966-279.154v-30.988a65 65 0 0 1 130 0v30.968Zm194 151.849A128.28 128.28 0 0 1 272 462.979V215.887h80.032v-.036h32Z"
                             class="ci-primary"></path>
                     </svg>
-                    Ticket
+                    Find Fake
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('scheme.index') ? 'active' : '' }}" href="{{ route('scheme.index') }}">
+                <a class="nav-link {{ request()->routeIs('price.index') ? 'active' : '' }}"
+                    href="{{ route('price.index') }}">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path fill="var(--ci-primary-color,currentColor)"
+                            d="M176 152h224v32H176zm0 88h224v32H176zm0 88h224v32H176zm0 88h128v32H176z"
+                            class="ci-primary"></path>
+                        <path fill="var(--ci-primary-color,currentColor)"
+                            d="M480 48H32v416h448ZM64 432V80h384v352ZM96 144h48v48H96zm0 88h48v48H96zm0 88h48v48H96zm24-188c18 0 32 14 32 32s-14 32-32 32-32-14-32-32 14-32 32-32Z"
+                            class="ci-primary"></path>
+                    </svg>
+                    Price
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('scheme.index') ? 'active' : '' }}"
+                    href="{{ route('scheme.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentcolor)"
                             d="M472 40H40a24.03 24.03 0 0 0-24 24v384a24.03 24.03 0 0 0 24 24h432a24.03 24.03 0 0 0 24-24V64a24.03 24.03 0 0 0-24-24m-8 400H48V72h416Z"
@@ -133,7 +141,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('rate.index') ? 'active' : '' }}" href="{{ route('rate.index') }}">
+                <a class="nav-link {{ request()->routeIs('rate.index') ? 'active' : '' }}"
+                    href="{{ route('rate.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color, currentColor)" d="M480 48H32v416h448ZM64 432V80h384v352Z"
                             class="ci-primary" />
@@ -148,18 +157,38 @@
                     Rate
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('price.index') ? 'active' : '' }}" href="{{ route('price.index') }}">
+            <li class="nav-group {{ (request()->routeIs('group.index') || request()->routeIs('mode.index') || request()->routeIs('ticket.index')) ? 'show' : '' }}"
+                aria-expanded="{{ (request()->routeIs('group.index') || request()->routeIs('mode.index') || request()->routeIs('ticket.index')) ? 'true' : 'false' }}">
+                <a class="nav-link nav-group-toggle" href="#">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path fill="var(--ci-primary-color,currentColor)"
-                            d="M176 152h224v32H176zm0 88h224v32H176zm0 88h224v32H176zm0 88h128v32H176z"
-                            class="ci-primary"></path>
-                        <path fill="var(--ci-primary-color,currentColor)"
-                            d="M480 48H32v416h448ZM64 432V80h384v352ZM96 144h48v48H96zm0 88h48v48H96zm0 88h48v48H96zm24-188c18 0 32 14 32 32s-14 32-32 32-32-14-32-32 14-32 32-32Z"
+                        <path fill="var(--ci-primary-color, currentcolor)"
+                            d="M494 198.671a40.54 40.54 0 0 0-32.174-27.592l-115.909-18.837-53.732-104.414a40.7 40.7 0 0 0-72.37 0l-53.732 104.414-115.907 18.837a40.7 40.7 0 0 0-22.364 68.827l82.7 83.368-17.9 116.055a40.672 40.672 0 0 0 58.548 42.538L256 428.977l104.843 52.89a40.69 40.69 0 0 0 58.548-42.538l-17.9-116.055 82.7-83.368A40.54 40.54 0 0 0 494 198.671m-32.53 18.7L367.4 312.2l20.364 132.01a8.671 8.671 0 0 1-12.509 9.088L256 393.136 136.744 453.3a8.671 8.671 0 0 1-12.509-9.088L144.6 312.2l-94.069-94.83a8.7 8.7 0 0 1 4.778-14.706l131.841-21.426 61.119-118.767a8.694 8.694 0 0 1 15.462 0l61.119 118.767 131.841 21.426a8.7 8.7 0 0 1 4.778 14.706Z"
                             class="ci-primary"></path>
                     </svg>
-                    Price
+                    Masters
                 </a>
+                <ul class="nav-group-items compact"
+                    style="height: {{ (request()->routeIs('group.index') || request()->routeIs('mode.index') || request()->routeIs('ticket.index')) ? 'auto' : '0px' }};">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('group.index') ? 'active' : '' }}"
+                            href="{{ route('group.index') }}">
+                            <span class="nav-icon"><span class="nav-icon-bullet"></span></span>
+                            Group
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('mode.index') }}">
+                            <span class="nav-icon"><span class="nav-icon-bullet"></span></span>
+                            Mode
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('ticket.index') }}">
+                            <span class="nav-icon"><span class="nav-icon-bullet"></span></span>
+                            Ticket
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
         <div class="sidebar-footer border-top d-none d-md-flex">

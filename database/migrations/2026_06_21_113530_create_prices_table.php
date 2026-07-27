@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->tinyInteger('position');
             $table->tinyInteger('count')->default('1');
-            $table->decimal('winner_amount', 10, 2);
+            $table->decimal('winner_amount', 10, 2)->nullable();
             $table->decimal('super_agent_amount', 10, 2)->nullable();
             $table->decimal('agent_amount', 10, 2)->nullable();
             $table->timestamps();

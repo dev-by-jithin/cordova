@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rate extends Model
+class Number extends Model
 {
-    protected $fillable = ['rate'];
-
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
@@ -18,9 +16,13 @@ class Rate extends Model
         return $this->belongsTo(Mode::class);
     }
 
-    public function user()
+    public function superAgent()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'super_agent_id');
     }
 
+    public function agent()
+    {
+        return $this->belongsTo(User::class, 'agent_id');
+    }
 }

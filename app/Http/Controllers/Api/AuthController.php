@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mode;
+use App\Models\Rate;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +28,7 @@ class AuthController extends Controller
         $superAgentId = $request->user()->id;
 
         try {
-            User::create([
+            $user = User::create([
                 'username' => $request->user_name,
                 'super_agent_id' => $superAgentId,
                 'scheme_id' => $request->scheme_id,
@@ -33,6 +36,44 @@ class AuthController extends Controller
                 'password' => bcrypt($request->password),
                 'decrypted' => $request->password
             ]);
+
+            $tickets = Ticket::pluck('id');
+            $modes = Mode::pluck('id');
+
+            $data = [];
+
+            foreach ($tickets as $ticketId) {
+                foreach ($modes as $modeId) {
+
+                    if (in_array($modeId, [1, 2, 3])) {
+                        $ticketRate = 12;
+                        $rate = $user->role == 'Agent' ? 11 : 10.5;
+                    } else {
+                        $ticketRate = 10;
+                        $rate = $user->role == 'Agent' ? 8 : 7.5;
+                    }
+
+                    $data[] = [
+                        'ticket_id' => $ticketId,
+                        'mode_id' => $modeId,
+                        'user_id' => $user->id,
+                        'ticket_rate' => $ticketRate,
+                        'rate' => $rate,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            Rate::upsert(
+                $data,
+                ['ticket_id', 'mode_id', 'user_id'],
+                [
+                    'rate',
+                    'updated_at'
+                ]
+            );
+
             return response([
                 'status' => true,
                 'message' => 'The agent has been created successfully.'

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mode;
+use App\Models\Rate;
 use App\Models\Scheme;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -56,7 +59,7 @@ class UserController extends Controller
         }
 
         try {
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'username' => $request->username,
@@ -69,7 +72,46 @@ class UserController extends Controller
                 'scheme_id' => $request->scheme_id,
                 'description' => $request->description
             ]);
+
+            $tickets = Ticket::pluck('id');
+            $modes = Mode::pluck('id');
+
+            $data = [];
+
+            foreach ($tickets as $ticketId) {
+                foreach ($modes as $modeId) {
+
+                    if (in_array($modeId, [1, 2, 3])) {
+                        $ticketRate = 12;
+                        $rate = $user->role == 'Agent' ? 11 : 10.5;
+                    } else {
+                        $ticketRate = 10;
+                        $rate = $user->role == 'Agent' ? 8 : 7.5;
+                    }
+
+                    $data[] = [
+                        'ticket_id' => $ticketId,
+                        'mode_id' => $modeId,
+                        'user_id' => $user->id,
+                        'ticket_rate' => $ticketRate,
+                        'rate' => $rate,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            Rate::upsert(
+                $data,
+                ['ticket_id', 'mode_id', 'user_id'],
+                [
+                    'rate',
+                    'updated_at'
+                ]
+            );
+
             return redirect()->route('user.index')->with('success', 'New user created successfully.');
+
         } catch (\Throwable $th) {
 
             return redirect()->route('user.create')->with('error', $th->getMessage());

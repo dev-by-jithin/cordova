@@ -30,14 +30,15 @@ class SchemeController extends Controller
 
     public function create(Request $request)
     {
-        return view('scheme.create');
+        $modes = Mode::with(['group:id,name'])->select('id', 'group_id', 'name')->orderBy('sort_order', 'DESC')->get();
+        return view('scheme.create', compact('modes'));
     }
 
     public function store(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:schemes,name|max:20',
+            'name' => 'required|unique:schemes,name|max:20'
         ]);
 
         if ($validator->fails()) {
@@ -54,26 +55,124 @@ class SchemeController extends Controller
                     'is_active' => 'No',
                 ]);
 
-                $tickets = Ticket::pluck('id');
-                $modes = Mode::pluck('id');
+                $modes = Mode::select('id', 'group_id')->get();
 
-                $data = [];
-
-                foreach ($tickets as $ticketId) {
-                    foreach ($modes as $modeId) {
-                        $rate = in_array($modeId, [1, 2, 3]) ? 30 : 10;
-                        $data[] = [
-                            'ticket_id' => $ticketId,
-                            'mode_id' => $modeId,
+                foreach ($modes as $mode) {
+                    if ($mode->group_id == 1) {
+                        Price::insert([
                             'scheme_id' => $scheme->id,
-                            'rate' => $rate,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                            'mode_id' => $mode->id,
+                            'position' => 1,
+                            'count' => 1,
+                            'created_at' => now()
+                        ]);
+                    }
+
+                    if ($mode->group_id == 2) {
+                        Price::insert([
+                            'scheme_id' => $scheme->id,
+                            'mode_id' => $mode->id,
+                            'position' => 1,
+                            'count' => 1,
+                            'created_at' => now()
+                        ]);
+                    }
+
+                    if ($mode->group_id == 3 && $mode->id == 7) {
+                        Price::insert([
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 1,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 2,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 3,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 4,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 5,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 6,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                        ]);
+                    }
+
+                    if ($mode->group_id == 3 && $mode->id == 8) {
+                        Price::insert([
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 1,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 2,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 3,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 4,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 5,
+                                'count' => 1,
+                                'created_at' => now()
+                            ],
+                            [
+                                'scheme_id' => $scheme->id,
+                                'mode_id' => $mode->id,
+                                'position' => 6,
+                                'count' => 30,
+                                'created_at' => now()
+                            ],
+                        ]);
                     }
                 }
 
-                Rate::insert($data);
             });
 
             return redirect()
@@ -83,7 +182,7 @@ class SchemeController extends Controller
         } catch (\Throwable $th) {
 
             return redirect()
-                ->route('scheme.create')
+                ->back()
                 ->withInput()
                 ->with('error', $th->getMessage());
         }
@@ -123,16 +222,16 @@ class SchemeController extends Controller
 
         if ($isActive == 'Yes') {
 
-            $nullRatesCount = Rate::where('scheme_id', $id)
-                ->whereNull('admin_amount')
+            $nullPriceCount = Price::where('scheme_id', $id)
+                ->whereNull('winner_amount')
                 ->whereNull('super_agent_amount')
                 ->whereNull('agent_amount')
                 ->count();
 
-            if ($nullRatesCount > 0) {
+            if ($nullPriceCount > 0) {
                 return response([
                     'status' => false,
-                    'message' => 'Please add rates, admin rate, super agent rate and agent rate to activate this scheme.'
+                    'message' => 'Please add price, winner price, super agent price and agent price to activate this scheme.'
                 ]);
             } else {
 
@@ -164,6 +263,7 @@ class SchemeController extends Controller
 
     }
 
+
     public function show(Request $request)
     {
         $scheme = Scheme::findOrFail($request->id);
@@ -184,7 +284,7 @@ class SchemeController extends Controller
                         'position' => $price->position,
                         'count' => $price->count,
                         'winnerAmount' => $price->winner_amount,
-                        'superAgentAmount' => $price->super_agent_amount,
+                   'superAgentAmount' => $price->super_agent_amount,
                         'agentAmount' => $price->agent_amount
                     ];
                 }

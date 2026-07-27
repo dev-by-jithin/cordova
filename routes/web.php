@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModeController;
+use App\Http\Controllers\NumberController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReportController;
@@ -58,6 +59,10 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
     Route::get('/result', [ResultController::class, 'index'])->name('result.index');
+    Route::get('/numbers', [NumberController::class, 'index'])->name('number.index');
+    Route::get('/number-fake', [NumberController::class, 'fake'])->name('number.fake');
+    Route::get('/find-fake', [NumberController::class, 'findFake'])->name('number.find.fake');
+    Route::delete('/fake-delete', [NumberController::class, 'fakeDelete'])->name('fake.delete');
 
 });
 

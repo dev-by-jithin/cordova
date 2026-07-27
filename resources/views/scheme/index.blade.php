@@ -217,15 +217,15 @@
                         toggle.prop('checked', false);
 
                         Swal.fire({
-                            icon: "error",
-                            title: "Failed",
+                            icon: "info",
+                            title: "Deactivated",
                             text: response.message
                         });
                     } else {
                         toggle.prop('checked', true);
                         Swal.fire({
                             icon: "success",
-                            title: "Success",
+                            title: "Activated",
                             text: response.message
                         });
                     }

@@ -158,7 +158,7 @@ class PriceSeeder extends Seeder
                         'mode_id' => $mode->id,
                         'position' => 5,
                         'count' => 1,
-                        'winner_amount' => 500,
+                        'winner_amount' => 50,
                         'super_agent_amount' => 0,
                         'agent_amount' => 20,
                         'created_at' => now()

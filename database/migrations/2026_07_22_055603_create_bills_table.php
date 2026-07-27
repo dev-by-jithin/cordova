@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('short_name')->unique();
-            $table->time('result_time');
-            $table->tinyInteger('sort_order');
-            $table->enum('is_active',['Yes', 'No'])->default('Yes');
+            $table->foreignId('super_agent_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('agent_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('bills');
     }
 };

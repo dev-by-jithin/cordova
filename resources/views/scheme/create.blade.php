@@ -24,20 +24,25 @@
                 </div>
                 <div class="card-body pt-3 pb-2">
 
-                    <form class="row g-3" action="{{ route('scheme.store') }}" method="POST" autocomplete="off">
+                    <form action="{{ route('scheme.store') }}" method="POST" autocomplete="off">
                         @csrf
-                        <div class="col-md-6">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name') }}">
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+
+                        <div class="class="row">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                                    name="name" value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="submit" class="btn btn-primary mt-3">Save</button>
                         </div>
+
+
                     </form>
                 </div>
             </div>

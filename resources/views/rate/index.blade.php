@@ -24,10 +24,10 @@
                     <form action="{{ route('rate.index') }}" method="GET">
                         <div class="row mb-1 g-1">
                             <div class="col-md-3">
-                                <select class="form-select" name="scheme" aria-label="Scheme">
-                                    <option value=" " selected>Select Scheme</option>
-                                    @foreach ($schemes as $id => $scheme )
-                                        <option value="{{ $id }}" {{ $id == request('scheme') ? 'selected' : '' }}>{{ $scheme }}</option>
+                                <select class="form-select" name="user_id" aria-label="User">
+                                    <option value=" " selected>Select User</option>
+                                    @foreach ($users as $id => $username )
+                                        <option value="{{ $id }}" {{ $id == request('user_id') ? 'selected' : '' }}>{{ $username }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -45,13 +45,13 @@
                             <thead>
                                 <tr>
                                     <th scope="col">S.NO</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Scheme</th>
-                                    <th scope="col">Rate</th>
-                                    <th scope="col">Admin Commission</th>
-                                    <th scope="col">Super Agent Commission</th>
-                                    <th scope="col">Agent Commission</th>
+                                    <th scope="col">Ticket-Name</th>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Ticket Rate</th>
+                                    <th scope="col">Commission Rate</th>
                                     <th scope="col">Created</th>
+                                    <th scope="col">Updated</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -60,12 +60,12 @@
                                     <tr>
                                         <td>{{ $rates->firstItem() + $loop->index }}</td>
                                         <td>{{ $rate->ticket->name }} - {{ $rate->mode->name }}</td>
-                                        <td>{{ $rate->scheme->name }}</td>
+                                        <td>{{ $rate->user->username }}</td>
+                                        <td>{{ $rate->user->role }}</td>
+                                        <td>{{ $rate->ticket_rate }}</td>
                                         <td>{{ $rate->rate }}</td>
-                                        <td>{{ $rate->admin_amount }}</td>
-                                        <td>{{ $rate->super_agent_amount }}</td>
-                                        <td>{{ $rate->agent_amount }}</td>
                                         <td>{{ $rate->created_at->format('d-m-Y') }}</td>
+                                        <td>{{ $rate->updated_at->format('d-m-Y') }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('rate.edit', $rate->id) }}"
                                                 class="btn btn-secondary btn-sm py-0 px-1" title="Edit"><i
