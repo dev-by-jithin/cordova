@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('/profile/update', [AuthController::class, 'update'])->name('profile.update');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard-details', [DashboardController::class, 'dashboardDetails'])->name('dashboard.details');
 
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');

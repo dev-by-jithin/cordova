@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::put('rates/{rate}', [CommonController::class, 'updateAgentRate']);
     Route::get('prices', [CommonController::class, 'prices']);
     Route::post('save-number', [CommonController::class, 'saveNumber']);
+    Route::post('update-number', [CommonController::class, 'updateNumber']);
     Route::delete('delete-number', [CommonController::class, 'deleteNumber']);
     Route::delete('delete-bill', [CommonController::class, 'deleteBill']);
     Route::get('bill-details', [CommonController::class, 'billDetails']);

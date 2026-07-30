@@ -4,12 +4,12 @@
 
 @section('breadcrumb')
     <!-- <div class="container-fluid px-4">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb my-0">
-                        <li class="breadcrumb-item active"><span>Users</span></li>
-                    </ol>
-                </nav>
-            </div> -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb my-0">
+                            <li class="breadcrumb-item active"><span>Users</span></li>
+                        </ol>
+                    </nav>
+                </div> -->
 @endsection
 
 @section('content')
@@ -27,7 +27,8 @@
                             <input type="date" class="form-control" id="created_at" placeholder="Date" aria-label="Date">
                         </div>
                         <div class="col">
-                            <button class="btn btn-success" type="button" id="find_fake"><i class="icon cil-search"></i> Find Fake</button>
+                            <button class="btn btn-success" type="button" id="find_fake"><i class="icon cil-search"></i>
+                                Find Fake</button>
                         </div>
                     </div>
 
@@ -43,8 +44,8 @@
                                     <th scope="col">Number</th>
                                     <th scope="col">Count</th>
                                     <!-- <th scope="col">Rate</th>
-                                    <th scope="col">Collection</th>
-                                    <th scope="col">Commission</th> -->
+                                        <th scope="col">Collection</th>
+                                        <th scope="col">Commission</th> -->
                                     <th scope="col">Amount</th>
                                     <th scope="col">Bill No</th>
                                     <th scope="col">Result Time</th>
@@ -55,7 +56,9 @@
                             <tbody>
                                 <tr>
                                     <td colspan="12" class="text-center">
-                                        Fake Numbers not found
+                                        <div class="alert alert-warning" role="alert">
+                                            Fake Numbers not found!
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -68,10 +71,10 @@
         <!-- /.col-->
     </div>
     <script>
-        $(document).on('click', '#find_fake', function(){
+        $(document).on('click', '#find_fake', function () {
             const $btn = $(this);
             let createdAt = $('#created_at').val();
-            if(createdAt == ''){
+            if (createdAt == '') {
                 Swal.fire({
                     icon: "error",
                     title: "Please select date",
@@ -84,43 +87,45 @@
             $.ajax({
                 url: "{{ route('number.find.fake') }}",
                 method: "get",
-                data:{createdAt},
-                beforeSend:function(){
+                data: { createdAt },
+                beforeSend: function () {
                     $btn.prop('disabled', true);
                 },
-                success:function(response){
+                success: function (response) {
 
                     let tr = '';
 
-                    if(response.length > 0){
+                    if (response.length > 0) {
 
-                        $.each(response, function(index, number){
+                        $.each(response, function (index, number) {
                             tr += `<tr>
-                                    <td class="s-no">${index+1}</td>
-                                    <td>${number.group_id}</td>
-                                    <td>${number.ticket.name} - ${number.mode.name}</td>
-                                    <td>${number.super_agent.username}</td>
-                                    <td>${number.agent.username}</td>
-                                    <td>${number.number}</td>
-                                    <td>${number.count}</td>
-                                    <td>
-                                        Rate:${number.rate}<br>
-                                        Collection:${number.collection}<br>
-                                        Commission:${number.commission}
-                                    </td>
-                                    <td>${number.bill_id}</td>
-                                    <td>${number.ticket.result_time}</td>
-                                    <td>${number.created}</td>
-                                    <td><button class="btn btn-danger btn-sm delete" data-id="${number.id}" title="Delete"><i class="icon cil-trash"></i></button></td>
-                                </tr>`;
+                                        <td class="s-no">${index + 1}</td>
+                                        <td>${number.group_id}</td>
+                                        <td>${number.ticket.name} - ${number.mode.name}</td>
+                                        <td>${number.super_agent.username}</td>
+                                        <td>${number.agent.username}</td>
+                                        <td>${number.number}</td>
+                                        <td>${number.count}</td>
+                                        <td>
+                                            Rate:${number.rate}<br>
+                                            Collection:${number.collection}<br>
+                                            Commission:${number.commission}
+                                        </td>
+                                        <td>${number.bill_id}</td>
+                                        <td>${number.ticket.result_time}</td>
+                                        <td>${number.created}</td>
+                                        <td><button class="btn btn-danger btn-sm delete" data-id="${number.id}" title="Delete"><i class="icon cil-trash"></i></button></td>
+                                    </tr>`;
                         });
 
-                    }else{
-                        tr =`<tr>
-                                <td colspan="12" class="text-center">
-                                    Fake Numbers not found on <strong>${createdAt}</strong>
-                                </td>
-                            </tr>`;
+                    } else {
+                        tr = `<tr>
+                                    <td colspan="12" class="text-center">
+                                        <div class="alert alert-warning" role="alert">
+                                            Fake Numbers not found on <strong>${createdAt}</strong>
+                                        </div>
+                                    </td>
+                                </tr>`;
                     }
 
                     $('#fake_table tbody').html(tr);
@@ -140,7 +145,7 @@
 
         });
 
-        $(document).on('click', '.delete', function(){
+        $(document).on('click', '.delete', function () {
             let $btn = $(this);
             let id = $btn.data('id');
 
@@ -154,7 +159,7 @@
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
 
-                if (result.isConfirmed){
+                if (result.isConfirmed) {
 
                     $.ajax({
                         url: "{{ route('fake.delete') }}",
@@ -163,11 +168,11 @@
                             id: id,
                             _token: "{{ csrf_token() }}"
                         },
-                        beforeSend: function(){
+                        beforeSend: function () {
                             $btn.prop('disabled', true);
                         },
-                        success: function(response){
-                            if(response.status){
+                        success: function (response) {
+                            if (response.status) {
                                 Swal.fire({
                                     title: "Deleted!",
                                     text: `${response.message}`,
@@ -177,7 +182,7 @@
                                 generateSno();
                             }
                         },
-                        error:function(xhr){
+                        error: function (xhr) {
                             Swal.fire({
                                 icon: "error",
                                 title: xhr.responseJSON?.message || "Something went wrong",
@@ -185,7 +190,7 @@
                                 timer: 1500
                             });
                         },
-                        complete:function(){
+                        complete: function () {
                             $btn.prop('disabled', false);
                         }
                     });
@@ -195,8 +200,7 @@
 
         });
 
-        function generateSno()
-        {
+        function generateSno() {
             let i = 1;
             $('#fake_table tbody tr').each(function () {
                 $(this).find('.s-no').text(i++);

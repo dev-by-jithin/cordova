@@ -76,7 +76,7 @@ class AuthController extends Controller
 
             return response([
                 'status' => true,
-                'message' => 'The agent has been created successfully.'
+                'message' => 'New agent created successfully.'
             ]);
         } catch (\Throwable $th) {
             return response([

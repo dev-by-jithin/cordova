@@ -216,13 +216,14 @@ class CommonController extends Controller
             ->first();
         if ($rates) {
             $rate = $rates->rate;
-            $collect = $rates->ticket_rate;
-            $commission = $collect - $rate;
+            $collection = $rates->ticket_rate;
+            $commission = $collection - $rate;
         }
 
-
         if ($groupId == 1) {
-            $tr = '';
+
+            $rows = [];
+
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
@@ -232,8 +233,8 @@ class CommonController extends Controller
                     ->where('mode_id', 1)
                     ->first();
                 $rateA = $ratesA->rate;
-                $collectA = $ratesA->ticket_rate;
-                $commissionA = $collectA - $rateA;
+                $collectionA = $ratesA->ticket_rate;
+                $commissionA = $collectionA - $rateA;
 
                 $ratesB = Rate::select('ticket_rate', 'rate')
                     ->where('ticket_id', $ticketId)
@@ -241,8 +242,8 @@ class CommonController extends Controller
                     ->where('mode_id', 2)
                     ->first();
                 $rateB = $ratesB->rate;
-                $collectB = $ratesB->ticket_rate;
-                $commissionB = $collectB - $rateB;
+                $collectionB = $ratesB->ticket_rate;
+                $commissionB = $collectionB - $rateB;
 
                 $ratesC = Rate::select('ticket_rate', 'rate')
                     ->where('ticket_id', $ticketId)
@@ -250,184 +251,60 @@ class CommonController extends Controller
                     ->where('mode_id', 3)
                     ->first();
                 $rateC = $ratesC->rate;
-                $collectC = $ratesC->ticket_rate;
-                $commissionC = $collectC - $rateC;
+                $collectionC = $ratesC->ticket_rate;
+                $commissionC = $collectionC - $rateC;
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateA) . '" data-collect="' . ($count * $collectA) . '" data-commission="' . ($count * $commissionA) . '">
-                                    <td>' . $ticket . ' A </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateA) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="1">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateA . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateA) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectA) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionA) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' A', $number, $count, $groupId, 1, $rateA, $collectionA, $commissionA);
+
                     }
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateB) . '" data-collect="' . ($count * $collectB) . '" data-commission="' . ($count * $commissionB) . '">
-                                    <td>' . $ticket . ' B </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="2">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionB) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' B', $number, $count, $groupId, 2, $rateB, $collectionB, $commissionB);
+
                     }
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateC) . '" data-collect="' . ($count * $collectC) . '" data-commission="' . ($count * $commissionC) . '">
-                                    <td>' . $ticket . ' C </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="3">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionC) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' C', $number, $count, $groupId, 3, $rateC, $collectionC, $commissionC);
+
                     }
+
                 } else {
 
-                    $tr = '<tr data-count="' . $count . '" data-rate="' . ($count * $rateA) . '" data-collect="' . ($count * $collectA) . '" data-commission="' . ($count * $commissionA) . '">
-                                    <td>' . $ticket . ' A</td>
-                                    <td>' . $number . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateA) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="1">
-                                        <input type="hidden" class="number" value="' . $number . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateA . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateA) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectA) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionA) . '">
-                                    </td>
-                                </tr>';
+                    $rows[] = $this->makeRow($ticket . ' A', $number, $count, $groupId, 1, $rateA, $collectionA, $commissionA);
+                    $rows[] = $this->makeRow($ticket . ' B', $number, $count, $groupId, 2, $rateB, $collectionB, $commissionB);
+                    $rows[] = $this->makeRow($ticket . ' C', $number, $count, $groupId, 3, $rateC, $collectionC, $commissionC);
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateB) . '" data-collect="' . ($count * $collectB) . '" data-commission="' . ($count * $commissionB) . '">
-                                    <td>' . $ticket . ' B</td>
-                                    <td>' . $number . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="2">
-                                        <input type="hidden" class="number" value="' . $number . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionB) . '">
-                                    </td>
-                                </tr>';
-
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateC) . '" data-collect="' . ($count * $collectC) . '" data-commission="' . ($count * $commissionC) . '">
-                                    <td>' . $ticket . ' C</td>
-                                    <td>' . $number . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="3">
-                                        <input type="hidden" class="number" value="' . $number . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionC) . '">
-                                    </td>
-                                </tr>';
                 }
 
             } else {
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
                 } else {
-                    $tr = '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $number . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $number . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+
+                    $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                 }
             }
 
-            return response($tr);
+            return response()->json(['status' => true, 'rows' => $rows]);
         }
 
         if ($groupId == 2) {
-            $tr = '';
+
+            $rows = [];
+
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
@@ -437,8 +314,8 @@ class CommonController extends Controller
                     ->where('mode_id', 4)
                     ->first();
                 $rateAB = $ratesAB->rate;
-                $collectAB = $ratesAB->ticket_rate;
-                $commissionAB = $collectAB - $rateAB;
+                $collectionAB = $ratesAB->ticket_rate;
+                $commissionAB = $collectionAB - $rateAB;
 
                 $ratesBC = Rate::select('ticket_rate', 'rate')
                     ->where('ticket_id', $ticketId)
@@ -446,8 +323,8 @@ class CommonController extends Controller
                     ->where('mode_id', 5)
                     ->first();
                 $rateBC = $ratesBC->rate;
-                $collectBC = $ratesBC->ticket_rate;
-                $commissionBC = $collectBC - $rateBC;
+                $collectionBC = $ratesBC->ticket_rate;
+                $commissionBC = $collectionBC - $rateBC;
 
                 $ratesAC = Rate::select('ticket_rate', 'rate')
                     ->where('ticket_id', $ticketId)
@@ -455,72 +332,27 @@ class CommonController extends Controller
                     ->where('mode_id', 6)
                     ->first();
                 $rateAC = $ratesAC->rate;
-                $collectAC = $ratesAC->ticket_rate;
-                $commissionAC = $collectAC - $rateAC;
+                $collectionAC = $ratesAC->ticket_rate;
+                $commissionAC = $collectionAC - $rateAC;
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAB) . '" data-collect="' . ($count * $collectAB) . '" data-commission="' . ($count * $commissionAB) . '">
-                                    <td>' . $ticket . ' AB </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="4">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAB) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' AB', $number, $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+
                     }
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBC) . '" data-collect="' . ($count * $collectBC) . '" data-commission="' . ($count * $commissionBC) . '">
-                                    <td>' . $ticket . ' BC </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="5">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBC) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' BC', $number, $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+
                     }
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAC) . '" data-collect="' . ($count * $collectAC) . '" data-commission="' . ($count * $commissionAC) . '">
-                                    <td>' . $ticket . ' AC </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="6">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAC) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' AC', $number, $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
+
                     }
 
                 } elseif ($combination == 'set') {
@@ -529,68 +361,20 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAB) . '" data-collect="' . ($count * $collectAB) . '" data-commission="' . ($count * $commissionAB) . '">
-                                    <td>' . $ticket . ' AB</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="4">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAB) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AB', $collections[$i], $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+
                     }
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBC) . '" data-collect="' . ($count * $collectBC) . '" data-commission="' . ($count * $commissionBC) . '">
-                                    <td>' . $ticket . ' BC</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="5">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' BC', $collections[$i], $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+
                     }
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAC) . '" data-collect="' . ($count * $collectAC) . '" data-commission="' . ($count * $commissionAC) . '">
-                                    <td>' . $ticket . ' AC</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="6">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AC', $collections[$i], $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
+
                     }
 
                 } elseif ($combination == '10') {
@@ -599,68 +383,20 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAB) . '" data-collect="' . ($count * $collectAB) . '" data-commission="' . ($count * $commissionAB) . '">
-                                    <td>' . $ticket . ' AB</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="4">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAB) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AB', $digits[$i], $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBC) . '" data-collect="' . ($count * $collectBC) . '" data-commission="' . ($count * $commissionBC) . '">
-                                    <td>' . $ticket . ' BC</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="5">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' BC', $digits[$i], $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAC) . '" data-collect="' . ($count * $collectAC) . '" data-commission="' . ($count * $commissionAC) . '">
-                                    <td>' . $ticket . ' AC</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="6">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AC', $digits[$i], $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
+
                     }
 
 
@@ -670,153 +406,38 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAB) . '" data-collect="' . ($count * $collectAB) . '" data-commission="' . ($count * $commissionAB) . '">
-                                    <td>' . $ticket . ' AB</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAB) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="4">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAB . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAB) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAB) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAB) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AB', $digits[$i], $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBC) . '" data-collect="' . ($count * $collectBC) . '" data-commission="' . ($count * $commissionBC) . '">
-                                    <td>' . $ticket . ' BC</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="5">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' BC', $digits[$i], $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAC) . '" data-collect="' . ($count * $collectAC) . '" data-commission="' . ($count * $commissionAC) . '">
-                                    <td>' . $ticket . ' AC</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateAC) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="6">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateAC . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateAC) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectAC) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionAC) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' AC', $digits[$i], $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
+
                     }
 
                 } else {
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAB) . '" data-collect="' . ($count * $collectAB) . '" data-commission="' . ($count * $commissionAB) . '">
-                                <td>' . $ticket . ' AB</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rateAB) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="4">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateAB . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rateAB) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collectAB) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commissionAB) . '">
-                                </td>
-                            </tr>';
+                    $rows[] = $this->makeRow($ticket . ' AB', $number, $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+                    $rows[] = $this->makeRow($ticket . ' BC', $number, $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+                    $rows[] = $this->makeRow($ticket . ' AC', $number, $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBC) . '" data-collect="' . ($count * $collectBC) . '" data-commission="' . ($count * $commissionBC) . '">
-                                <td>' . $ticket . ' BC</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rateBC) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="5">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateBC . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rateBC) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collectBC) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commissionBC) . '">
-                                </td>
-                            </tr>';
-
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateAC) . '" data-collect="' . ($count * $collectAC) . '" data-commission="' . ($count * $commissionAC) . '">
-                                <td>' . $ticket . ' AC</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rateAC) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="6">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateAC . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rateAC) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collectAC) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commissionAC) . '">
-                                </td>
-                            </tr>';
                 }
 
             } else {
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == 'set') {
@@ -825,24 +446,8 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $collections[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == '10') {
@@ -851,24 +456,8 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $digits[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == '11') {
@@ -877,54 +466,24 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $digits[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } else {
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                <td>' . $button . '</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rate) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                </td>
-                            </tr>';
+                    $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                 }
             }
 
-            return response($tr);
+            return response()->json(['status' => true, 'rows' => $rows]);
         }
 
         if ($groupId == 3) {
-            $tr = '';
+
+            $rows = [];
+
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
@@ -934,8 +493,8 @@ class CommonController extends Controller
                     ->where('mode_id', 8)
                     ->first();
                 $rateSuper = $ratesSuper->rate;
-                $collectSuper = $ratesSuper->ticket_rate;
-                $commissionSuper = $collectSuper - $rateSuper;
+                $collectionSuper = $ratesSuper->ticket_rate;
+                $commissionSuper = $collectionSuper - $rateSuper;
 
                 $ratesBox = Rate::select('ticket_rate', 'rate')
                     ->where('ticket_id', $ticketId)
@@ -943,51 +502,21 @@ class CommonController extends Controller
                     ->where('mode_id', 7)
                     ->first();
                 $rateBox = $ratesBox->rate;
-                $collectBox = $ratesBox->ticket_rate;
-                $commissionBox = $collectBox - $rateBox;
+                $collectionBox = $ratesBox->ticket_rate;
+                $commissionBox = $collectionBox - $rateBox;
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateSuper) . '" data-collect="' . ($count * $collectSuper) . '" data-commission="' . ($count * $commissionSuper) . '">
-                                    <td>' . $ticket . ' SUPER </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateSuper) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="8">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateSuper . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateSuper) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectSuper) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionSuper) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' SUPER', $number, $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
+
                     }
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBox) . '" data-collect="' . ($count * $collectBox) . '" data-commission="' . ($count * $commissionBox) . '">
-                                    <td>' . $ticket . ' BOX </td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBox) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="7">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBox) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBox) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBox) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($ticket . ' BOX', $number, $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                     }
 
                 } elseif ($combination == 'set') {
@@ -996,70 +525,23 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateSuper) . '" data-collect="' . ($count * $collectSuper) . '" data-commission="' . ($count * $commissionSuper) . '">
-                                    <td>' . $ticket . ' SUPER</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateSuper) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="8">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateSuper . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateSuper) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectSuper) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionSuper) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' SUPER', $collections[$i], $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
+
                     }
 
                     if (isset($box)) {
+
                         for ($i = 0; $i < count($collections); $i++) {
 
-                            $tr .= '<tr data-count="' . $box . '" data-rate="' . ($box * $rateBox) . '" data-collect="' . ($box * $collectBox) . '" data-commission="' . ($box * $commissionBox) . '">
-                                        <td>' . $ticket . ' BOX</td>
-                                        <td>' . $collections[$i] . '</td>
-                                        <td>' . $box . '</td>
-                                        <td>' . ($box * $rateBox) . '</td>
-                                        <td>
-                                            <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                            <input type="hidden" class="group_id" value="' . $groupId . '">
-                                            <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                            <input type="hidden" class="mode_id" value="7">
-                                            <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                            <input type="hidden" class="count" value="' . $box . '">
-                                            <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                            <input type="hidden" class="rate" value="' . ($box * $rateBox) . '">
-                                            <input type="hidden" class="collection" value="' . ($box * $collectBox) . '">
-                                            <input type="hidden" class="commission" value="' . ($box * $commissionBox) . '">
-                                        </td>
-                                    </tr>';
+                            $rows[] = $this->makeRow($ticket . ' BOX', $collections[$i], $box, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                         }
                     } else {
 
                         for ($i = 0; $i < count($collections); $i++) {
 
-                            $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBox) . '" data-collect="' . ($count * $collectBox) . '" data-commission="' . ($count * $commissionBox) . '">
-                                        <td>' . $ticket . ' BOX</td>
-                                        <td>' . $collections[$i] . '</td>
-                                        <td>' . $count . '</td>
-                                        <td>' . ($count * $rateBox) . '</td>
-                                        <td>
-                                            <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                            <input type="hidden" class="group_id" value="' . $groupId . '">
-                                            <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                            <input type="hidden" class="mode_id" value="7">
-                                            <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                            <input type="hidden" class="count" value="' . $count . '">
-                                            <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                            <input type="hidden" class="rate" value="' . ($count * $rateBox) . '">
-                                            <input type="hidden" class="collection" value="' . ($count * $collectBox) . '">
-                                            <input type="hidden" class="commission" value="' . ($count * $commissionBox) . '">
-                                        </td>
-                                    </tr>';
+                            $rows[] = $this->makeRow($ticket . ' BOX', $collections[$i], $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                         }
                     }
 
@@ -1071,46 +553,14 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateSuper) . '" data-collect="' . ($count * $collectSuper) . '" data-commission="' . ($count * $commissionSuper) . '">
-                                    <td>' . $ticket . ' SUPER</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateSuper) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="8">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateSuper . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateSuper) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectSuper) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionSuper) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' SUPER', $digits[$i], $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBox) . '" data-collect="' . ($count * $collectBox) . '" data-commission="' . ($count * $commissionBox) . '">
-                                    <td>' . $ticket . ' BOX</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBox) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="7">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBox) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBox) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBox) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' BOX', $digits[$i], $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                     }
 
                 } elseif ($combination == '111') {
@@ -1119,107 +569,28 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateSuper) . '" data-collect="' . ($count * $collectSuper) . '" data-commission="' . ($count * $commissionSuper) . '">
-                                    <td>' . $ticket . ' SUPER</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateSuper) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="8">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateSuper . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateSuper) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectSuper) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionSuper) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' SUPER', $digits[$i], $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
+
                     }
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBox) . '" data-collect="' . ($count * $collectBox) . '" data-commission="' . ($count * $commissionBox) . '">
-                                    <td>' . $ticket . ' BOX</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rateBox) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="7">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rateBox) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collectBox) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commissionBox) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($ticket . ' BOX', $digits[$i], $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                     }
 
                 } else {
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateSuper) . '" data-collect="' . ($count * $collectSuper) . '" data-commission="' . ($count * $commissionSuper) . '">
-                                <td>' . $ticket . ' SUPER</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rateSuper) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="8">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateSuper . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rateSuper) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collectSuper) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commissionSuper) . '">
-                                </td>
-                            </tr>';
+                    $rows[] = $this->makeRow($ticket . ' SUPER', $number, $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
 
                     if (isset($box)) {
-                        $tr .= '<tr data-count="' . $box . '" data-rate="' . ($box * $rateBox) . '" data-collect="' . ($box * $collectBox) . '" data-commission="' . ($box * $commissionBox) . '">
-                                <td>' . $ticket . ' BOX</td>
-                                <td>' . $number . '</td>
-                                <td>' . $box . '</td>
-                                <td>' . ($box * $rateBox) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="7">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $box . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                    <input type="hidden" class="rate" value="' . ($box * $rateBox) . '">
-                                    <input type="hidden" class="collection" value="' . ($box * $collectBox) . '">
-                                    <input type="hidden" class="commission" value="' . ($box * $commissionBox) . '">
-                                </td>
-                            </tr>';
+
+                        $rows[] = $this->makeRow($ticket . ' BOX', $number, $box, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                     } else {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rateBox) . '" data-collect="' . ($count * $collectBox) . '" data-commission="' . ($count * $commissionBox) . '">
-                                <td>' . $ticket . ' BOX</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rateBox) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="7">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rateBox . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rateBox) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collectBox) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commissionBox) . '">
-                                </td>
-                            </tr>';
+
+                        $rows[] = $this->makeRow($ticket . ' BOX', $number, $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+
                     }
                 }
 
@@ -1227,25 +598,10 @@ class CommonController extends Controller
 
                 if ($combination === 'range') {
 
-                    for ($i = $start; $i <= $end; $i++) {
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $i . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $i . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                    for ($number = $start; $number <= $end; $number++) {
+
+                        $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == 'set') {
@@ -1254,24 +610,8 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($collections); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $collections[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $collections[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $collections[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == '100') {
@@ -1280,24 +620,8 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $digits[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } elseif ($combination == '111') {
@@ -1306,52 +630,19 @@ class CommonController extends Controller
 
                     for ($i = 0; $i < count($digits); $i++) {
 
-                        $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                    <td>' . $button . '</td>
-                                    <td>' . $digits[$i] . '</td>
-                                    <td>' . $count . '</td>
-                                    <td>' . ($count * $rate) . '</td>
-                                    <td>
-                                        <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                        <input type="hidden" class="group_id" value="' . $groupId . '">
-                                        <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                        <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                        <input type="hidden" class="number" value="' . $digits[$i] . '">
-                                        <input type="hidden" class="count" value="' . $count . '">
-                                        <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                        <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                        <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                        <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                    </td>
-                                </tr>';
+                        $rows[] = $this->makeRow($button, $digits[$i], $count, $groupId, $modeId, $rate, $collection, $commission);
+
                     }
 
                 } else {
 
-                    $tr .= '<tr data-count="' . $count . '" data-rate="' . ($count * $rate) . '" data-collect="' . ($count * $collect) . '" data-commission="' . ($count * $commission) . '">
-                                <td>' . $button . '</td>
-                                <td>' . $number . '</td>
-                                <td>' . $count . '</td>
-                                <td>' . ($count * $rate) . '</td>
-                                <td>
-                                    <i class="bi bi-trash-fill text-danger delete-row"></i>
-                                    <input type="hidden" class="group_id" value="' . $groupId . '">
-                                    <input type="hidden" class="ticket_id" value="' . $ticketId . '">
-                                    <input type="hidden" class="mode_id" value="' . $modeId . '">
-                                    <input type="hidden" class="number" value="' . $number . '">
-                                    <input type="hidden" class="count" value="' . $count . '">
-                                    <input type="hidden" class="agent_rate" value="' . $rate . '">
-                                    <input type="hidden" class="rate" value="' . ($count * $rate) . '">
-                                    <input type="hidden" class="collection" value="' . ($count * $collect) . '">
-                                    <input type="hidden" class="commission" value="' . ($count * $commission) . '">
-                                </td>
-                            </tr>';
+                    $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+
                 }
             }
 
-            return response($tr);
+            return response()->json(['status' => true, 'rows' => $rows]);
         }
-
     }
 
     public function saveNumber(Request $request)
@@ -1359,6 +650,10 @@ class CommonController extends Controller
         $request->validate([
             'ticketId' => 'required|exists:tickets,id',
             'numbers' => 'required|array|min:1',
+            'numbers.*.group_id' => 'required|exists:groups,id',
+            'numbers.*.mode_id' => 'required|exists:modes,id',
+            'numbers.*.number' => 'required|string|max:3',
+            'numbers.*.count' => 'required|integer|min:1|max:1000'
         ]);
 
         $ticket = Ticket::findOrFail($request->ticketId);
@@ -1380,39 +675,57 @@ class CommonController extends Controller
             $superAgentId = Auth::id();
         }
 
-
-
         try {
 
             $bill = DB::transaction(function () use ($request, $agentId, $superAgentId) {
 
                 $bill = Bill::create([
                     'super_agent_id' => $superAgentId,
-                    'agent_id'       => $agentId,
+                    'agent_id' => $agentId,
                     'ticket_id' => $request->ticketId
                 ]);
 
                 $now = now();
+                $ticketId = $request->ticketId;
 
                 $numbers = collect($request->numbers)
-                    ->map(function ($row) use ($bill, $agentId, $superAgentId, $now) {
+                    ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
 
-                        return [
-                            'bill_id'          => $bill->id,
-                            'super_agent_id'   => $superAgentId,
-                            'agent_id'         => $agentId,
-                            'group_id'         => $row['group_id'],
-                            'ticket_id'        => $row['ticket_id'],
-                            'mode_id'          => $row['mode_id'],
-                            'number'           => $row['number'],
-                            'count'            => $row['count'],
-                            'agent_rate'       => $row['agent_rate'],
-                            'rate'             => $row['rate'],
-                            'collection'       => $row['collection'],
-                            'commission'       => $row['commission'],
-                            'created_at'       => $now,
-                            'updated_at'       => $now,
-                        ];
+                        $aRate = Rate::select('ticket_rate', 'rate')
+                            ->where('ticket_id', $ticketId)
+                            ->where('user_id', $agentId)
+                            ->where('mode_id', $row['mode_id'])
+                            ->first();
+                        $saRate = Rate::select('rate')
+                            ->where('ticket_id', $ticketId)
+                            ->where('user_id', $superAgentId)
+                            ->where('mode_id', $row['mode_id'])
+                            ->first();
+                        if (strlen($row['number']) == $row['group_id']) {
+
+                            return [
+                                'bill_id' => $bill->id,
+                                'super_agent_id' => $superAgentId,
+                                'agent_id' => $agentId,
+                                'group_id' => $row['group_id'],
+                                'ticket_id' => $ticketId,
+                                'mode_id' => $row['mode_id'],
+                                'number' => $row['number'],
+                                'count' => $row['count'],
+                                'collection' => $aRate->ticket_rate,
+                                'collection_total' => ($aRate->ticket_rate * $row['count']),
+                                'a_rate' => $aRate->rate,
+                                'a_rate_total' => ($aRate->rate * $row['count']),
+                                'a_commission' => ($aRate->ticket_rate - $aRate->rate),
+                                'a_commission_total' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
+                                'sa_rate' => $saRate->rate,
+                                'sa_rate_total' => ($saRate->rate * $row['count']),
+                                'sa_commission' => ($aRate->rate - $saRate->rate),
+                                'sa_commission_total' => ($aRate->rate - $saRate->rate) * $row['count'],
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
+                        }
                     })
                     ->toArray();
 
@@ -1436,86 +749,114 @@ class CommonController extends Controller
         }
     }
 
-    public function deleteNumber(Request $request)
+    public function updateNumber(Request $request)
     {
-        $billId = $request->billId;
-        $numberId = $request->numberId;
+        $request->validate([
+            'billId' => 'required|exists:bills,id',
+            'numberId' => 'required|exists:numbers,id',
+            'count' => 'required|integer|min:1|max:1000',
+        ]);
 
-        $bill = Bill::with(['ticket:id,result_time'])->find($billId);
+        $count = (int) $request->count;
 
+        // Load bill with ownership check
         if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::id();
-            $superAgentId = Auth::user()->super_agent_id;
+            $bill = Bill::with('ticket:id,result_time')
+                ->where('agent_id', Auth::id())
+                ->find($request->billId);
         } else {
-            $agentId = $request->agentId;
-            $superAgentId = Auth::id();
+            $bill = Bill::with('ticket:id,result_time')
+                ->where('super_agent_id', Auth::id())
+                ->find($request->billId);
         }
 
-        $currentTime = now()->format('H:i:s');
-        $closeTime = Carbon::parse($bill->ticket->result_time)->format('H:i:s');
+        if (!$bill) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized.'], 403);
+        }
 
-        if(now()->isSameDay($bill->created_at) && $currentTime < $closeTime)
-        {
-            try {
-                Number::where('agent_id', $agentId)
-                ->where('id', $numberId)
+        // Lock check
+        if ($this->isBillLocked($bill)) {
+            return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
+        }
+
+        try {
+            $number = Number::where('bill_id', $bill->id)
+                ->where('id', $request->numberId)
+                ->firstOrFail();
+
+            $number->update([
+                'count' => $count,
+                'collection_total' => $number->collection * $count,
+                'a_rate_total' => $number->a_rate * $count,
+                'a_commission_total' => $number->a_commission * $count,
+                'sa_rate_total' => $number->sa_rate * $count,
+                'sa_commission_total' => $number->sa_commission * $count,
+            ]);
+            return response()->json(['status' => true]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteNumber(Request $request)
+    {
+        $bill = Bill::findOrFail($request->billId);
+        // ownership check
+        if (Auth::user()->role == 'Agent') {
+            if ($bill->agent_id != Auth::id()) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+            }
+        } else {
+            if ($bill->super_agent_id != Auth::id()) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+            }
+        }
+        // lock check
+        if ($this->isBillLocked($bill)) {
+            return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
+        }
+
+        try {
+            $deleted = Number::where('bill_id', $bill->id)
+                ->where('id', $request->numberId)
                 ->delete();
-                return response([
-                    'status' => true
-                ]);
-            } catch (\Throwable $th) {
-                return response([
-                    'status' => false,
-                    'message' => $th->getMessage()
-                ]);
+
+            $message = "Number deleted.";
+
+            // delete bill automatically if no numbers left
+            if (!$bill->numbers()->exists()) {
+                $bill->delete();
+                $message = "Bill deleted.";
             }
 
-        }else{
-            return response([
-                'status' => false,
-                'message' => 'Bill locked'
-            ]);
+            return response()->json(['status' => $deleted > 0, 'message' => $message]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
     public function deleteBill(Request $request)
     {
-
-        $billId = $request->billId;
-        $bill = Bill::with(['ticket:id,result_time'])->find($billId);
-
+        $bill = Bill::findOrFail($request->billId);
+        // ownership check
         if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::id();
-            $superAgentId = Auth::user()->super_agent_id;
-        } else {
-            $agentId = $request->agentId;
-            $superAgentId = Auth::id();
-        }
-
-        $currentTime = now()->format('H:i:s');
-        $closeTime = Carbon::parse($bill->ticket->result_time)->format('H:i:s');
-
-        if(now()->isSameDay($bill->created_at) && $currentTime < $closeTime)
-        {
-            try {
-                Bill::where('agent_id', $agentId)
-                ->where('id', $billId)
-                ->delete();
-                return response([
-                    'status' => true
-                ]);
-            } catch (\Throwable $th) {
-                return response([
-                    'status' => false,
-                    'message' => $th->getMessage()
-                ]);
+            if ($bill->agent_id != Auth::id()) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
             }
-
-        }else{
-            return response([
-                'status' => false,
-                'message' => 'Bill locked'
-            ]);
+        } else {
+            if ($bill->super_agent_id != Auth::id()) {
+                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
+            }
+        }
+        // lock check
+        if ($this->isBillLocked($bill)) {
+            return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
+        }
+        try {
+            $bill->delete();
+            return response()->json(['status' => true]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -1524,75 +865,54 @@ class CommonController extends Controller
         if (Auth::user()->role == 'Agent') {
             $agentId = Auth::user()->id;
             $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-            ->where('agent_id', $agentId)
-            ->where('bill_id', $request->billId)
-            ->get();
+                ->where('agent_id', $agentId)
+                ->where('bill_id', $request->billId)
+                ->get();
         } else {
             $superAgentId = Auth::user()->id;
             $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-            ->where('super_agent_id', $superAgentId)
-            ->where('bill_id', $request->billId)
-            ->get();
+                ->where('super_agent_id', $superAgentId)
+                ->where('bill_id', $request->billId)
+                ->get();
         }
 
         $bill = Bill::with(['ticket:id,result_time',])->find($request->billId);
 
-        if(count($numbers) > 0){
+        if (count($numbers) > 0) {
 
             $currentTime = now()->format('H:i:s');
             $closeTime = Carbon::parse($bill->ticket->result_time)->format('H:i:s');
 
-            if(date('Y-m-d') == date('Y-m-d', strtotime($bill->created_at)) && $currentTime < $closeTime)
-            {
-                $deleteBtn = true;
-                $deleteBillBtn = '<button data-bill-id="'.$bill->id.'" class="btn btn-sm btn-danger w-100" id="delete-bill-btn">
-                                    <i class="bi bi-trash-fill pe-1"></i> Delete Bill</button>';
-
-            }else{
-                $deleteBtn = null;
-                $deleteBillBtn = null;
+            if (date('Y-m-d') == date('Y-m-d', strtotime($bill->created_at)) && $currentTime < $closeTime) {
+                $deleteButtons = true;
+            } else {
+                $deleteButtons = false;
             }
 
-            $tr = '';
+            $rows = [];
 
-            foreach($numbers as $number) {
-
-                if(isset($deleteBtn)){
-                    $delete = '<i data-number-id="'.$number->id.'" class="bi bi-pencil-fill text-danger edit-row"></i>
-                                <i data-number-id="'.$number->id.'" data-bill-id="'.$bill->id.'" class="bi bi-trash-fill text-danger delete-row"></i>';
-                }else{
-                    $delete = '';
-                }
-
-                $tr .= '<tr id="row-'.$number->id.'" data-count="' . $number->count . '" data-rate="' . $number->rate . '" data-collect="' . $number->collection . '" data-commission="' . $number->commission . '">
-                            <td class="ticket-name">' . $number->ticket->short_name . ' &nbsp;' . $number->mode->name . '</td>
-                            <td>' . $number->number . '</td>
-                            <td>' . $number->count . '</td>
-                            <td>' . $number->rate . '</td>
-                            <td>
-                                '.$delete.'
-                                <input type="hidden" class="group_id" value="' . $number->group_id . '">
-                                <input type="hidden" class="ticket_id" value="' . $number->ticket_id . '">
-                                <input type="hidden" class="mode_id" value="'. $number->mode_id .'">
-                                <input type="hidden" class="number" value="' . $number->number . '">
-                                <input type="hidden" class="count" value="' . $number->count . '">
-                                <input type="hidden" class="rate" value="' . ($number->rate) . '">
-                                <input type="hidden" class="collection" value="' . ($number->collection) . '">
-                                <input type="hidden" class="commission" value="' . ($number->commission) . '">
-                            </td>
-                        </tr>';
+            foreach ($numbers as $number) {
+                $rows[] = [
+                    'ticket' => $number->ticket->short_name . ' ' . $number->mode->name,
+                    'number' => $number->number,
+                    'number_id' => $number->id,
+                    'count' => $number->count,
+                    'rate' => $number->a_rate_total,
+                    'collection' => $number->collection_total,
+                    'commission' => $number->a_commission_total
+                ];
             }
-            $ticket = $bill->ticket->result_time;
+
             return response([
                 'status' => true,
-                'tr' => $tr,
-                'bill' => $bill->id,
-                'result' => date('Y-M-d', strtotime($numbers[0]['created_at'])) . ' ' . date('h:i A', strtotime($ticket)),
-                'created_at' => date('Y-M-d h:i A', strtotime($numbers[0]['created_at'])),
-                'delete_bill' => $deleteBillBtn
+                'rows' => $rows,
+                'bill_id' => $bill->id,
+                'result' => date('Y-M-d', strtotime($bill->created_at)) . ' ' . date('h:i A', strtotime($bill->ticket->result_time)),
+                'created_at' => date('Y-M-d h:i A', strtotime($bill->created_at)),
+                'delete_button' => $deleteButtons
             ]);
 
-        }else{
+        } else {
             return response([
                 'status' => false,
                 'message' => 'Unauthorized!'
@@ -1601,7 +921,26 @@ class CommonController extends Controller
 
     }
 
-    function permutations($string)
+    private function isBillLocked(Bill $bill): bool
+    {
+        return !(now()->isSameDay($bill->created_at) && now()->format('H:i:s') < $bill->ticket->result_time);
+    }
+
+    private function makeRow($ticket, $number, $count, $groupId, $modeId, $rate, $collection, $commission)
+    {
+        return [
+            'ticket_name' => $ticket,
+            'number' => (string) $number,
+            'count' => (int) $count,
+            'group_id' => $groupId,
+            'mode_id' => $modeId,
+            'rate' => round($rate * $count, 2),
+            'collection' => round($collection * $count, 2),
+            'commission' => round($commission * $count, 2),
+        ];
+    }
+
+    private function permutations($string)
     {
         if (strlen($string) <= 1) {
             return [$string];
@@ -1622,7 +961,7 @@ class CommonController extends Controller
         return array_values(array_unique($result));
     }
 
-    function combination10($start, $end)
+    private function combination10($start, $end)
     {
         $numbers = [];
 
@@ -1633,7 +972,7 @@ class CommonController extends Controller
         return $numbers;
     }
 
-    function combination100($start, $end)
+    private function combination100($start, $end)
     {
         $numbers = [];
 
@@ -1644,7 +983,7 @@ class CommonController extends Controller
         return $numbers;
     }
 
-    function combination11($start, $end)
+    private function combination11($start, $end)
     {
         $numbers = [];
 
@@ -1655,7 +994,7 @@ class CommonController extends Controller
         return $numbers;
     }
 
-    function combination111($start, $end)
+    private function combination111($start, $end)
     {
         $numbers = [];
 
