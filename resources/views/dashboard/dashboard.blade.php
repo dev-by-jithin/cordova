@@ -7,7 +7,7 @@
     <div class="container-fluid px-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb my-0">
-                <li class="breadcrumb-item active"><span>Dashboards</span></li>
+                <li class="breadcrumb-item active"><span>Dashboard</span></li>
             </ol>
         </nav>
         <input type="text" class="date-range" id="daterange" name="daterange" value="" />
