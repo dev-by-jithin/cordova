@@ -10,7 +10,10 @@
                 <li class="breadcrumb-item active"><span>Dashboard</span></li>
             </ol>
         </nav>
-        <input type="text" class="date-range" id="daterange" name="daterange" value="" />
+        <div class="input-group input-group-sm" style="width:auto;">
+            <input type="text" class="date-range form-control" id="daterange" name="daterange" value="" />
+            <span class="input-group-text"><i class="icon cil-calendar"></i></span>
+        </div>
     </div>
 
 @endsection
