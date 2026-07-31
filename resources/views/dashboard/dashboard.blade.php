@@ -428,7 +428,7 @@
                     }
                 },
                 error: function (xhr) {
-                    console.erro(xhr.responseJSON?.message ?? "Something went wrong.");
+                    console.error(xhr.responseJSON?.message ?? "Something went wrong.");
                 },
                 complete: function () {
 
