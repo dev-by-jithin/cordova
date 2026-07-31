@@ -64,7 +64,8 @@ class DashboardController extends Controller
             'bc_total' => $summary->mode_bc,
             'ac_total' => $summary->mode_ac,
             'box_total' => $summary->mode_box,
-            'super_total' => $summary->mode_super
+            'super_total' => $summary->mode_super,
+            'total_count' => $summary->total_numbers
         ]);
     }
 }

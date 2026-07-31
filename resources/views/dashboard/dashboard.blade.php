@@ -113,7 +113,7 @@
     </div>
 
     <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -131,7 +131,7 @@
             </div>
         </div>
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -149,7 +149,7 @@
             </div>
         </div>
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -167,7 +167,7 @@
             </div>
         </div>
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -185,10 +185,7 @@
             </div>
         </div>
         <!-- /.col-->
-    </div>
-
-    <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
+         <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -205,8 +202,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="row g-4 mb-4">
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -224,7 +224,7 @@
             </div>
         </div>
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -242,7 +242,7 @@
             </div>
         </div>
         <!-- /.col-->
-        <div class="col-sm-6 col-xl-3">
+        <div class="col">
             <div class="card text-white bg-primary shadow">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
                     <div>
@@ -260,6 +260,23 @@
             </div>
         </div>
         <!-- /.col-->
+         <div class="col">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body pb-0 d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="fs-4">
+                            <i class="icon icon-xl me-2 cil-tag"></i>
+                            Total Number
+                        </div>
+                        <div class="fs-6 fw-semibold mb-3 total-count">
+                            <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card mb-4">
@@ -380,6 +397,7 @@
                         $('.ac-count').text(`${response.ac_total}`);
                         $('.box-count').text(`${response.box_total}`);
                         $('.super-count').text(`${response.super_total}`);
+                        $('.total-count').text(`${response.total_count}`);
 
                         // 'A', 'B', 'C', 'AB', 'BC', 'AC', 'BOX', 'SUPER'
                         barChart([response.a_total,
