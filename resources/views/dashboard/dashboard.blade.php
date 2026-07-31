@@ -8,9 +8,9 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb my-0">
                 <li class="breadcrumb-item active"><span>Dashboard</span></li>
-                <li class="breadcrumb-item"><input type="text" id="daterange" name="daterange" value="" /></li>
             </ol>
         </nav>
+        <input type="text" class="date-range" id="daterange" name="daterange" value="" />
     </div>
 
 @endsection
@@ -309,6 +309,9 @@
         .card {
             cursor: default;
         }
+        .date-range{
+            cursor: pointer;
+        }
     </style>
 
 @endsection
@@ -447,7 +450,7 @@
                 data: {
                     labels: ['A', 'B', 'C', 'AB', 'BC', 'AC', 'BOX', 'SUPER'],
                     datasets: [{
-                        label: 'total',
+                        label: 'Mode',
                         data: data,
                         borderWidth: 1
                     }]
