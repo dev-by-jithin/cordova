@@ -16,23 +16,23 @@
 
     <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="sales-tab" data-coreui-toggle="tab" data-coreui-target="#sales"
+            <button class="nav-link fw-bold active" id="sales-tab" data-coreui-toggle="tab" data-coreui-target="#sales"
                 type="button" role="tab" aria-controls="home" aria-selected="true">Sales Report</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="winning-tab" data-coreui-toggle="tab" data-coreui-target="#winning" type="button"
+            <button class="nav-link fw-bold" id="winning-tab" data-coreui-toggle="tab" data-coreui-target="#winning" type="button"
                 role="tab" aria-controls="profile" aria-selected="false">Winning Report</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="number-wise-tab" data-coreui-toggle="tab" data-coreui-target="#number-wise"
+            <button class="nav-link fw-bold" id="number-wise-tab" data-coreui-toggle="tab" data-coreui-target="#number-wise"
                 type="button" role="tab" aria-controls="number-wise" aria-selected="false">Number Wise Report</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="account-tab" data-coreui-toggle="tab" data-coreui-target="#account" type="button"
+            <button class="nav-link fw-bold" id="account-tab" data-coreui-toggle="tab" data-coreui-target="#account" type="button"
                 role="tab" aria-controls="account" aria-selected="false">A/c Summary Report</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="net-pay-tab" data-coreui-toggle="tab" data-coreui-target="#net-pay" type="button"
+            <button class="nav-link fw-bold" id="net-pay-tab" data-coreui-toggle="tab" data-coreui-target="#net-pay" type="button"
                 role="tab" aria-controls="net-pay" aria-selected="false">Net Pay Report</button>
         </li>
     </ul>

@@ -16,11 +16,11 @@
 
     <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="result-tab" data-coreui-toggle="tab" data-coreui-target="#result"
+            <button class="nav-link fw-bold active" id="result-tab" data-coreui-toggle="tab" data-coreui-target="#result"
                 type="button" role="tab" aria-controls="home" aria-selected="true">Result Publish</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="history-tab" data-coreui-toggle="tab" data-coreui-target="#history" type="button"
+            <button class="nav-link fw-bold" id="history-tab" data-coreui-toggle="tab" data-coreui-target="#history" type="button"
                 role="tab" aria-controls="profile" aria-selected="false">Result History</button>
         </li>
     </ul>
@@ -414,129 +414,46 @@
                     <div class="row g-2 g-md-auto">
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select" id="history_ticket_id" aria-label="ticket">
+                                    <option value="" selected>Select Ticket</option>
+                                    @foreach ($tickets as $ticket)
+                                    <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                    @endforeach
                                 </select>
-                                <label for="floatingSelect">Ticket</label>
+                                <label for="history_ticket_id">Ticket</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select" id="history_mode_id" aria-label="mode">
+                                    <option value="" selected>Select Mode</option>
+                                    @foreach ($modes as $mode)
+                                    <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                    @endforeach
                                 </select>
-                                <label for="floatingSelect">Mode</label>
+                                <label for="history_mode_id">Mode</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">Date</label>
+                                <input type="date" class="form-control" id="history_result_date">
+                                <label for="history_result_date">Date</label>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button class="btn btn-primary h-100 w-100"><i class="icon cil-search me-1"></i>
+                            <button class="btn btn-primary h-100 w-100" onclick="result()"><i class="icon cil-search me-1"></i>
                                 Search</button>
                         </div>
                     </div>
 
-                    <div class="row mt-5 justify-content-center">
-                        <div class="col-md-2">
-                            <div class="card shadow border-primary">
-                                <div class="card-body text-center">
-                                    <h2 class="card-title fw-bold">1</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">748</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow border-primary">
-                                <div class="card-body text-center">
-                                    <h2 class="card-title fw-bold">2</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">289</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow border-primary">
-                                <div class="card-body text-center">
-                                    <h2 class="card-title fw-bold">3</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">008</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow border-primary">
-                                <div class="card-body text-center">
-                                    <h2 class="card-title fw-bold">4</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">157</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow border-primary">
-                                <div class="card-body text-center">
-                                    <h2 class="card-title fw-bold">5</h2>
-                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">335</h5>
-                                </div>
-                            </div>
-                        </div>
+
+                    <div class="result mt-5">
+
                     </div>
 
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <table class="table table-bordered border-primary">
-                                <tbody class="text-center">
-                                    <tr>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                    </tr>
-                                    <tr>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                    </tr>
-                                    <tr>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                    </tr>
-                                    <tr>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                    </tr>
-                                    <tr>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                        <td>007</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -557,6 +474,7 @@
         $(document).ready(function () {
             const today = new Date().toISOString().split('T')[0];
             $('#result_date').val(today);
+            $('#history_result_date').val(today);
         });
 
         $(document).on('input', '#super_position_1, #super_position_2, #super_position_3, #super_position_4, #super_position_5, input[name="encouragement_prizes[]"]', function () {
@@ -679,5 +597,137 @@
                 }
             });
         });
+
+        $(document).on('change', '#history_ticket_id, #history_result_date, #history_mode_id', function(){
+            result();
+        });
+
+        function result() {
+            let ticketId = $('#history_ticket_id').val();
+            let resultDate = $('#history_result_date').val();
+            let modeId = $('#history_mode_id').val();
+            $.ajax({
+            url: '{{ route('result.history') }}',
+            method: 'get',
+            data: { ticketId, resultDate, modeId },
+            beforeSend: function () {
+                $('.result').html(`<div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            </div>`);
+                $('.search-btn').prop('disabled', true);
+            },
+            success: function (response) {
+                if (response.status) {
+                let result = '';
+                if (modeId == 8) {
+                    let eprize = '';
+                    const prizes = JSON.parse(response.result.super_encouragement_prize || '[]');
+                    $.each(prizes, function (index, number) {
+                    eprize += `<div class="col-2 rounded border border-primary py-2">
+                               ${number}
+                            </div>`;
+                    });
+                    result = `<div class="row justify-content-center">
+                            ${positionCard(1, response.result.super_position_1)}
+                            ${positionCard(2, response.result.super_position_2)}
+                            ${positionCard(3, response.result.super_position_3)}
+                            ${positionCard(4, response.result.super_position_4)}
+                            ${positionCard(5, response.result.super_position_5)}
+                            </div>
+                            <div class="row text-center mt-4 mb-3 mx-2">
+                            ${eprize}
+                            </div>`;
+                }
+
+                if (modeId == 7) {
+
+                    let box_position_4 = '';
+                    let box_position_5 = '';
+                    let box_position_6 = '';
+
+                    if (response.result.box_position_4 != null) {
+                    box_position_4 = positionCard(4, response.result.box_position_4);
+                    }
+
+                    if (response.result.box_position_5 != null) {
+                    box_position_5 = positionCard(5, response.result.box_position_5);
+                    }
+
+                    if (response.result.box_position_6 != null) {
+                    box_position_6 = positionCard(6, response.result.box_position_6);
+                    }
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.box_position_1)}
+                                ${positionCard(2, response.result.box_position_2)}
+                                ${positionCard(3, response.result.box_position_3)}
+                                ${box_position_4}
+                                ${box_position_5}
+                                ${box_position_6}
+                            </div>`;
+                }
+
+                if (modeId == 6) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.ac)}
+                            </div>`;
+                }
+
+                if (modeId == 5) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.bc)}
+                            </div>`;
+                }
+
+                if (modeId == 4) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.ab)}
+                            </div>`;
+                }
+
+                if (modeId == 3) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.c)}
+                            </div>`;
+                }
+
+                if (modeId == 2) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.b)}
+                            </div>`;
+                }
+
+                if (modeId == 1) {
+                    result = `<div class="row justify-content-center">
+                                ${positionCard(1, response.result.a)}
+                            </div>`;
+                }
+
+
+                $('.result').html(result);
+                }
+            },
+            error: function (xhr) {
+                $('.result').html(`<div class="alert alert-danger" role="alert">
+                                ${xhr.responseJSON?.message || 'Something went wrong'}
+                                </div>`);
+            },
+            complete: function () {
+                $('.search-btn').prop('disabled', false);
+            }
+            });
+        }
+
+        function positionCard(position, value) {
+            return `<div class="col-md-2">
+                            <div class="card shadow border-primary">
+                                <div class="card-body text-center">
+                                    <h2 class="card-title fw-bold">${position}</h2>
+                                    <h5 class="card-subtitle my-2 text-body-secondary fw-semibold">${value}</h5>
+                                </div>
+                            </div>
+                        </div>`;
+        }
     </script>
 @endsection

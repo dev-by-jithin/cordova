@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mode;
 use App\Models\Number;
 use App\Models\Price;
 use App\Models\Result;
@@ -16,7 +17,8 @@ class ResultController extends Controller
     public function index(Request $request)
     {
         $tickets = Ticket::select('id', 'name')->orderBy('result_time', 'ASC')->get();
-        return view('result.index', compact('tickets'));
+        $modes = Mode::select('id', 'name')->orderBy('sort_order', 'DESC')->get();
+        return view('result.index', compact('tickets','modes'));
     }
 
     public function publish(Request $request)
@@ -130,7 +132,31 @@ class ResultController extends Controller
 
     public function history(Request $request)
     {
-
+        $request->validate([
+            'ticketId' => 'required|exists:tickets,id',
+            'resultDate' => 'required|date',
+            'modeId' => 'required|exists:modes,id',
+        ]);
+        try {
+            $result = Result::where('ticket_id', $request->ticketId)
+                ->whereDate('result_date', $request->resultDate)
+                ->first();
+            if (!$result) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Result not found.'
+                ], 404);
+            }
+            return response()->json([
+                'status' => true,
+                'result' => $result
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     private function getSchemeId($agentId)
