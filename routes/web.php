@@ -55,11 +55,14 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/price/{id}/edit', [PriceController::class, 'edit'])->name('price.edit');
     Route::put('/price/update', [PriceController::class, 'update'])->name('price.update');
 
+    Route::get('/result', [ResultController::class, 'index'])->name('result.index');
+    Route::post('/result/publish', [ResultController::class, 'publish'])->name('result.publish');
+    Route::get('/result/history', [ResultController::class, 'history'])->name('result.history');
+
     Route::get('/groups', [GroupController::class, 'index'])->name('group.index');
     Route::get('/modes', [ModeController::class, 'index'])->name('mode.index');
     Route::get('/tickets', [TicketController::class, 'index'])->name('ticket.index');
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
-    Route::get('/result', [ResultController::class, 'index'])->name('result.index');
     Route::get('/numbers', [NumberController::class, 'index'])->name('number.index');
     Route::get('/number-fake', [NumberController::class, 'fake'])->name('number.fake');
     Route::get('/find-fake', [NumberController::class, 'findFake'])->name('number.find.fake');

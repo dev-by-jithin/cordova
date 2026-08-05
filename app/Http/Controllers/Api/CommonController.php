@@ -9,6 +9,7 @@ use App\Models\Mode;
 use App\Models\Number;
 use App\Models\Price;
 use App\Models\Rate;
+use App\Models\Result;
 use App\Models\Scheme;
 use App\Models\Ticket;
 use App\Models\User;
@@ -17,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Response;
 
 class CommonController extends Controller
 {
@@ -155,7 +157,6 @@ class CommonController extends Controller
                         'position' => $price->position,
                         'count' => $price->count,
                         'winnerAmount' => $price->winner_amount,
-                        'superAgentAmount' => $price->super_agent_amount,
                         'agentAmount' => $price->agent_amount
                     ];
                 }
@@ -919,6 +920,34 @@ class CommonController extends Controller
             ]);
         }
 
+    }
+
+    public function result(Request $request)
+    {
+        $request->validate([
+            'ticketId' => 'required|exists:tickets,id',
+            'resultDate' => 'required|date',
+        ]);
+        try {
+            $result = Result::where('ticket_id', $request->ticketId)
+                ->whereDate('result_date', $request->resultDate)
+                ->first();
+            if (!$result) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Result not found.'
+                ], 404);
+            }
+            return response()->json([
+                'status' => true,
+                'result' => $result
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     private function isBillLocked(Bill $bill): bool

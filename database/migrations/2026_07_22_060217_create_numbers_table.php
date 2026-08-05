@@ -31,7 +31,14 @@ return new class extends Migration
             $table->decimal('sa_rate_total', 10, 2);
             $table->decimal('sa_commission', 10, 2);
             $table->decimal('sa_commission_total', 10, 2);
+            $table->tinyInteger('prize_position')->nullable();
+            $table->decimal('a_prize', 10, 2)->nullable();
+            $table->decimal('a_prize_total', 10, 2)->nullable();
+            $table->decimal('winner_prize', 10, 2)->nullable();
+            $table->decimal('winner_prize_total', 10, 2)->nullable();
             $table->timestamps();
+
+            $table->index(['ticket_id', 'number', 'created_at']);
         });
     }
 
