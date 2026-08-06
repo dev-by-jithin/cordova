@@ -8,6 +8,7 @@ use App\Models\Price;
 use App\Models\Result;
 use App\Models\Ticket;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -55,9 +56,21 @@ class ResultController extends Controller
                 $request->super_position_4,
                 $request->super_position_5,
             ];
+
             foreach ($request->encouragement_prizes ?? [] as $index => $prize) {
                 if (in_array($prize, $superPositions, true)) {
-                    $validator->errors()->add("encouragement_prizes.$index", "The encouragement prize $prize cannot match any super position number.");
+                    $validator->errors()->add( "encouragement_prizes" .$index+1, "Encouragement prize #" . ($index + 1) . " ($prize) cannot match any super position number." );
+                }
+            }
+
+            $ticket = Ticket::find($request->ticket_id);
+            if ($ticket) {
+
+                $now = Carbon::now();
+                $closeTime = Carbon::today()->setTimeFromTimeString($ticket->result_time);
+
+                if ($now->lt($closeTime)) {
+                    $validator->errors()->add( 'ticket_id', 'The ticket window is not closed yet.' );
                 }
             }
         });
@@ -66,9 +79,15 @@ class ResultController extends Controller
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
 
+
+
         try {
 
             DB::transaction(function () use ($request) {
+
+                $prizes = $request->encouragement_prizes;
+
+                sort($prizes, SORT_NUMERIC);
 
                 $result = Result::create([
                     'ticket_id' => $request->ticket_id,
@@ -78,7 +97,7 @@ class ResultController extends Controller
                     'super_position_3' => $request->super_position_3,
                     'super_position_4' => $request->super_position_4,
                     'super_position_5' => $request->super_position_5,
-                    'super_encouragement_prize' => json_encode($request->encouragement_prizes),
+                    'super_encouragement_prize' => json_encode($prizes),
                     'box_position_1' => $request->box_position_1,
                     'box_position_2' => $request->box_position_2,
                     'box_position_3' => $request->box_position_3,
