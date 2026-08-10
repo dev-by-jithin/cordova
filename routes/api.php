@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::delete('delete-bill', [CommonController::class, 'deleteBill']);
     Route::get('bill-details', [CommonController::class, 'billDetails']);
     Route::get('result', [CommonController::class, 'result']);
+    Route::get('sales-summary', [CommonController::class, 'salesSummary']);
+    Route::get('sales-users', [CommonController::class, 'salesUsers']);
+    Route::get('sales-report', [CommonController::class, 'salesReport']);
 
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);

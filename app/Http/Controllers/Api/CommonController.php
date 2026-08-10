@@ -683,7 +683,7 @@ class CommonController extends Controller
                 $bill = Bill::create([
                     'super_agent_id' => $superAgentId,
                     'agent_id' => $agentId,
-                    'ticket_id' => $request->ticketId
+                    'ticket_id' => $request->ticketId,
                 ]);
 
                 $now = now();
@@ -948,6 +948,142 @@ class CommonController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function salesSummary(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::selectRaw('
+                DATE(created_at) as sale_date,
+                SUM(`count`) as total_count,
+                SUM(a_rate_total) as total_amount'
+            )
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate);
+
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        }
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+
+        $result = $query->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('sale_date', 'asc')
+            ->get();
+
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    public function salesUsers(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::with(['agent:id,username'])
+            ->selectRaw('
+                agent_id,
+                SUM(`count`) as total_count,
+                SUM(a_rate_total) as total_amount'
+            )
+            ->whereDate('created_at', $request->saleDate);
+
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        }
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+
+        $result = $query ->groupBy('agent_id')
+                        ->orderByDesc('total_amount')
+                        ->get();
+
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    public function salesReport(Request $request) {
+        $bills = Bill::with(['ticket:id,short_name', 'agent:id,username',
+            'numbers' => function ($query) use ($request) {
+            // Select only required columns from numbers
+            $query->select([
+                'id',
+                'bill_id',
+                'ticket_id',
+                'mode_id',
+                'number',
+                'count',
+                'a_rate_total'
+            ])
+            ->with([ 'mode:id,name' ]);
+            if ($request->filled('ticketId')) {
+                $query->where('ticket_id', $request->ticketId);
+            }
+            if ($request->filled('ticketNumber')) {
+                $query->where('number', $request->ticketNumber);
+            }
+            if ($request->filled('groupId')) {
+                $query->where('group_id', $request->groupId);
+            }
+            if ($request->filled('modeId')) {
+                $query->where('mode_id', $request->modeId);
+            }
+            $query->orderBy('id');
+            }
+        ])
+        ->whereDate('created_at', $request->saleDate)
+        ->where('agent_id', $request->agentId)
+        ->orderBy('id')
+        ->get();
+        $report = $bills->map(function ($bill) {
+            return [
+                'bill_id' => $bill->id,
+                'ticket' => $bill->ticket?->short_name,
+                'agent' => $bill->agent?->username,
+                'create_time' => $bill->created_at->format('h:i:s A'),
+                'create_date' => $bill->created_at->format('Y-M-d'),
+                'numbers' => $bill->numbers
+            ];
+        });
+        return response()->json([ 'status' => true, 'data' => $report ]);
     }
 
     private function isBillLocked(Bill $bill): bool

@@ -19,7 +19,13 @@ class Bill extends Model
         return $this->belongsTo(Ticket::class);
     }
 
-    public function numbers() {
+    public function numbers()
+    {
         return $this->hasMany(Number::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class);
     }
 }

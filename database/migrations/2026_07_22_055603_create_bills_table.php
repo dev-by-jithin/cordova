@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('super_agent_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('agent_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
+            $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
+            $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->string('remarks')->nullable();
             $table->timestamps();
         });
