@@ -14,6 +14,7 @@ use App\Models\Scheme;
 use App\Models\Ticket;
 use App\Models\User;
 use Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -965,7 +966,7 @@ class CommonController extends Controller
                 DATE(created_at) as sale_date,
                 SUM(`count`) as total_count,
                 SUM(a_rate_total) as total_amount'
-            )
+        )
             ->whereDate('created_at', '>=', $request->fromDate)
             ->whereDate('created_at', '<=', $request->toDate);
 
@@ -1033,46 +1034,49 @@ class CommonController extends Controller
             $query->where('super_agent_id', $superAgentId);
         }
 
-        $result = $query ->groupBy('agent_id')
-                        ->orderByDesc('total_amount')
-                        ->get();
+        $result = $query->groupBy('agent_id')
+            ->orderByDesc('total_amount')
+            ->get();
 
         return response()->json(['status' => true, 'data' => $result]);
     }
 
-    public function salesReport(Request $request) {
-        $bills = Bill::with(['ticket:id,short_name', 'agent:id,username',
+    public function salesReport(Request $request)
+    {
+        $bills = Bill::with([
+            'ticket:id,short_name',
+            'agent:id,username',
             'numbers' => function ($query) use ($request) {
-            // Select only required columns from numbers
-            $query->select([
-                'id',
-                'bill_id',
-                'ticket_id',
-                'mode_id',
-                'number',
-                'count',
-                'a_rate_total'
-            ])
-            ->with([ 'mode:id,name' ]);
-            if ($request->filled('ticketId')) {
-                $query->where('ticket_id', $request->ticketId);
-            }
-            if ($request->filled('ticketNumber')) {
-                $query->where('number', $request->ticketNumber);
-            }
-            if ($request->filled('groupId')) {
-                $query->where('group_id', $request->groupId);
-            }
-            if ($request->filled('modeId')) {
-                $query->where('mode_id', $request->modeId);
-            }
-            $query->orderBy('id');
+                // Select only required columns from numbers
+                $query->select([
+                    'id',
+                    'bill_id',
+                    'ticket_id',
+                    'mode_id',
+                    'number',
+                    'count',
+                    'a_rate_total'
+                ])
+                    ->with(['mode:id,name']);
+                if ($request->filled('ticketId')) {
+                    $query->where('ticket_id', $request->ticketId);
+                }
+                if ($request->filled('ticketNumber')) {
+                    $query->where('number', $request->ticketNumber);
+                }
+                if ($request->filled('groupId')) {
+                    $query->where('group_id', $request->groupId);
+                }
+                if ($request->filled('modeId')) {
+                    $query->where('mode_id', $request->modeId);
+                }
+                $query->orderBy('id');
             }
         ])
-        ->whereDate('created_at', $request->saleDate)
-        ->where('agent_id', $request->agentId)
-        ->orderBy('id')
-        ->get();
+            ->whereDate('created_at', $request->saleDate)
+            ->where('agent_id', $request->agentId)
+            ->orderBy('id')
+            ->get();
         $report = $bills->map(function ($bill) {
             return [
                 'bill_id' => $bill->id,
@@ -1083,7 +1087,176 @@ class CommonController extends Controller
                 'numbers' => $bill->numbers
             ];
         });
-        return response()->json([ 'status' => true, 'data' => $report ]);
+        return response()->json(['status' => true, 'data' => $report]);
+    }
+
+    public function numberWiseReport(Request $request)
+    {
+        $result = $this->getNumberWiseData($request);
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    public function numberWisePdf(Request $request)
+    {
+        $ticket = 'All';
+        if ($request->filled('ticketId')) {
+            $ticket = Ticket::where('id', $request->ticketId)->value('short_name');
+        }
+        if ($request->filled('groupColumn') && $request->groupColumn == 1) {
+            $column = "no";
+        } else {
+            $column = "yes";
+        }
+        $rows = $this->getNumberWiseData($request);
+        $totalCount = $rows->sum('count');
+        $pdf = Pdf::loadView('report.number-wise-pdf', [
+            'rows' => $rows,
+            'date' => $request->resultDate,
+            'ticket' => $ticket,
+            'created_at' => date('Y-M-d h:i A'),
+            'count' => $totalCount,
+            'column' => $column
+        ]);
+        return $pdf->download('number-wise-report.pdf');
+    }
+
+    public function accountSummary(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::with(['agent:id,username'])
+            ->selectRaw('
+                agent_id,
+                SUM(COALESCE(winner_prize_total,0)) as winner_prize,
+                SUM(COALESCE(a_prize_total,0)) as agent_prize,
+                SUM(COALESCE(a_rate_total,0)) as rate_total
+                ')
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate);
+
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        }
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+        $result = $query->groupBy('agent_id')
+            ->orderByDesc('rate_total')
+            ->get();
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    public function winningSummary(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+        if (Auth::user()->role === 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::query()
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate);
+        // Optional filters
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        // User scope
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+        // If a specific mode is selected
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+            $result = $query->selectRaw(' COALESCE(SUM(`count`), 0) as total_count,
+                                            COALESCE(SUM(winner_prize_total), 0) as total_prize
+                                            ')->first();
+        } else {
+            // No mode selected: return separate totals for mode 7 and 8
+            $result = $query->selectRaw(' COALESCE(SUM(`count`), 0) as total_count,
+                COALESCE(SUM(winner_prize_total), 0) as total_prize,
+                COALESCE(SUM(CASE WHEN mode_id = 7 THEN winner_prize_total ELSE 0 END), 0) as mode7_prize_total,
+                COALESCE(SUM(CASE WHEN mode_id = 8 THEN winner_prize_total ELSE 0 END), 0) as mode8_prize_total'
+            )->first();
+        }
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    private function getNumberWiseData(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+        if (Auth::user()->role === 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::query()
+            ->join('tickets', 'tickets.id', '=', 'numbers.ticket_id')
+            ->join('modes', 'modes.id', '=', 'numbers.mode_id')
+            ->whereDate('numbers.created_at', $request->resultDate);
+        // Optional filters
+        if ($request->filled('ticketId')) {
+            $query->where('numbers.ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('numbers.number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('numbers.group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('numbers.mode_id', $request->modeId);
+        }
+        // User scope
+        if ($agentId) {
+            $query->where('numbers.agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('numbers.super_agent_id', $superAgentId);
+        }
+        return $query->selectRaw(' tickets.short_name as ticket_name,
+                            modes.name as mode_name,
+                            numbers.number,
+                            SUM(numbers.`count`) as count
+                        ')
+            ->groupBy(
+                'numbers.ticket_id',
+                'numbers.mode_id',
+                'numbers.number',
+                'tickets.short_name',
+                'modes.name'
+            )->orderBy('numbers.ticket_id')
+            ->orderBy('numbers.mode_id')
+            ->orderBy('numbers.number')
+            ->get();
     }
 
     private function isBillLocked(Bill $bill): bool

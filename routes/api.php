@@ -28,7 +28,10 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('sales-summary', [CommonController::class, 'salesSummary']);
     Route::get('sales-users', [CommonController::class, 'salesUsers']);
     Route::get('sales-report', [CommonController::class, 'salesReport']);
-
+    Route::get('winning-summary', [CommonController::class, 'winningSummary']);
+    Route::get('number-wise-report', [CommonController::class, 'numberWiseReport']);
+    Route::get('number-wise-pdf', [CommonController::class, 'numberWisePdf']);
+    Route::get('account-summary', [CommonController::class, 'accountSummary']);
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);
     Route::post('/update-agent', [AuthController::class, 'updateAgent']);
