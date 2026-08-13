@@ -1161,6 +1161,47 @@ class CommonController extends Controller
         return response()->json(['status' => true, 'data' => $result]);
     }
 
+    public function netPay(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::with(['agent:id,username'])
+            ->selectRaw('
+                agent_id,
+                SUM(COALESCE(winner_prize_total,0)) as winner_prize,
+                SUM(COALESCE(a_prize_total,0)) as agent_prize,
+                SUM(COALESCE(sa_rate_total,0)) as rate_total
+                ')
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate);
+
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        }
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+        $result = $query->groupBy('agent_id')
+            ->orderByDesc('rate_total')
+            ->get();
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
     public function winningSummary(Request $request)
     {
         $agentId = null;

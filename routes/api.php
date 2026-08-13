@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('number-wise-report', [CommonController::class, 'numberWiseReport']);
     Route::get('number-wise-pdf', [CommonController::class, 'numberWisePdf']);
     Route::get('account-summary', [CommonController::class, 'accountSummary']);
+    Route::get('net-pay', [CommonController::class, 'netPay']);
 
     Route::post('/create-agent', [AuthController::class, 'createAgent']);
     Route::post('/update-agent', [AuthController::class, 'updateAgent']);
