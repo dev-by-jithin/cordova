@@ -1117,7 +1117,7 @@ class CommonController extends Controller
             'count' => $totalCount,
             'column' => $column
         ]);
-        return $pdf->download('number-wise-report.pdf');
+        return $pdf->stream('number-wise-report.pdf');
     }
 
     public function accountSummary(Request $request)
