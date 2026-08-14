@@ -1211,7 +1211,6 @@ class CommonController extends Controller
         } else {
             $superAgentId = Auth::id();
         }
-
         $query = Number::query()
             ->whereDate('created_at', '>=', $request->fromDate)
             ->whereDate('created_at', '<=', $request->toDate);
@@ -1225,27 +1224,117 @@ class CommonController extends Controller
         if ($request->filled('groupId')) {
             $query->where('group_id', $request->groupId);
         }
-        // User scope
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        } // User scope
         if ($agentId) {
             $query->where('agent_id', $agentId);
         }
         if ($superAgentId) {
             $query->where('super_agent_id', $superAgentId);
         }
-        // If a specific mode is selected
+        $result = $query->selectRaw('
+                COALESCE(SUM(CASE WHEN winner_prize_total > 0 THEN `count` ELSE 0 END), 0) as winning_count,
+                COALESCE(SUM(winner_prize_total), 0) as winning_prize,
+                COALESCE(SUM(a_prize_total), 0) as agent_prize '
+        )->first();
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'winning_count' => (int) $result->winning_count,
+                'winning_prize' => (float) $result->winning_prize,
+                'agent_prize' => (float) $result->agent_prize,
+            ]
+        ]);
+    }
+
+    public function winningUsers(Request $request)
+    {
+        $agentId = null;
+        $superAgentId = null;
+
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::id();
+        } else {
+            $superAgentId = Auth::id();
+        }
+
+        $query = Number::with(['agent:id,username'])
+            ->selectRaw('
+                agent_id,
+                COALESCE(SUM(CASE WHEN winner_prize_total > 0 THEN `count` ELSE 0 END), 0) as winning_count,
+                COALESCE(SUM(winner_prize_total), 0) as winning_prize,
+                COALESCE(SUM(a_prize_total), 0) as agent_prize'
+            )
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate);
+
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
         if ($request->filled('modeId')) {
             $query->where('mode_id', $request->modeId);
-            $result = $query->selectRaw(' COALESCE(SUM(`count`), 0) as total_count,
-                                            COALESCE(SUM(winner_prize_total), 0) as total_prize
-                                            ')->first();
-        } else {
-            // No mode selected: return separate totals for mode 7 and 8
-            $result = $query->selectRaw(' COALESCE(SUM(`count`), 0) as total_count,
-                COALESCE(SUM(winner_prize_total), 0) as total_prize,
-                COALESCE(SUM(CASE WHEN mode_id = 7 THEN winner_prize_total ELSE 0 END), 0) as mode7_prize_total,
-                COALESCE(SUM(CASE WHEN mode_id = 8 THEN winner_prize_total ELSE 0 END), 0) as mode8_prize_total'
-            )->first();
         }
+        if ($agentId) {
+            $query->where('agent_id', $agentId);
+        }
+        if ($superAgentId) {
+            $query->where('super_agent_id', $superAgentId);
+        }
+
+        $result = $query->groupBy('agent_id')
+            ->get();
+
+        return response()->json(['status' => true, 'data' => $result]);
+    }
+
+    public function winningReport(Request $request)
+    {
+        $query = Number::with([
+            'ticket:id,short_name',
+            'mode:id,name',
+            'superAgent:id,username',
+            'agent:id,username'])
+            ->select([
+                    'ticket_id',
+                    'mode_id',
+                    'super_agent_id',
+                    'agent_id',
+                    'bill_id',
+                    'number',
+                    'count',
+                    'prize_position',
+                    'winner_prize_total',
+                    'a_prize_total'
+                ])
+            ->whereDate('created_at', '>=', $request->fromDate)
+            ->whereDate('created_at', '<=', $request->toDate)
+            ->where('winner_prize_total', '>', '0');
+
+            if ($request->filled('ticketId')) {
+                $query->where('ticket_id', $request->ticketId);
+            }
+            if ($request->filled('ticketNumber')) {
+                $query->where('number', $request->ticketNumber);
+            }
+            if ($request->filled('groupId')) {
+                $query->where('group_id', $request->groupId);
+            }
+            if ($request->filled('modeId')) {
+                $query->where('mode_id', $request->modeId);
+            }
+            if ($request->filled('agentId')) {
+                $query->where('agent_id', $request->agentId);
+            }
+            $result = $query->orderBy('bill_id')
+            ->get();
+
         return response()->json(['status' => true, 'data' => $result]);
     }
 
