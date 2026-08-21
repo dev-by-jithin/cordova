@@ -23,6 +23,10 @@
             <button class="nav-link fw-bold" id="history-tab" data-coreui-toggle="tab" data-coreui-target="#history" type="button"
                 role="tab" aria-controls="profile" aria-selected="false">Result History</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="cancel-tab" data-coreui-toggle="tab" data-coreui-target="#cancel" type="button"
+                role="tab" aria-controls="profile" aria-selected="false">Result Cancel</button>
+        </li>
     </ul>
     <div class="tab-content mb-2" id="myTabContent">
 
@@ -457,6 +461,41 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade bg-white border border-top-0" id="cancel" role="tabpanel" aria-labelledby="cancel-tab"
+            tabindex="1">
+            <div class="card border border-0 rounded-0">
+                <div class="card-body pb-2">
+                    <div class="row g-2 g-md-auto">
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <select class="form-select" id="cancel_ticket_id" aria-label="ticket">
+                                    <option value="" selected>Select Ticket</option>
+                                    @foreach ($tickets as $ticket)
+                                    <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="cancel_ticket_id">Ticket</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="cancel_result_date">
+                                <label for="cancel_result_date">Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary h-100 w-100" onclick="resultCancel()"><i class="icon cil-x-circle me-1"></i>
+                                Cancel Result</button>
+                        </div>
+                    </div>
+
+                    <div class="result-cancel mt-5">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <style>
@@ -716,6 +755,45 @@
             complete: function () {
                 $('.search-btn').prop('disabled', false);
             }
+            });
+        }
+
+        function resultCancel() {
+
+            let ticketId = $('#cancel_ticket_id').val();
+            let resultDate = $('#cancel_result_date').val();
+
+            $.ajax({
+                url: '{{ route('result.cancel') }}',
+                method: 'post',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    ticketId,
+                    resultDate
+                },
+                beforeSend: function () {
+                    $('.result-cancel').html(`<div class="text-center">
+                                                <div class="spinner-border" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </div>`);
+                    $('.search-btn').prop('disabled', true);
+                },
+                success: function (response) {
+                    if (response.status) {
+                        $('.result-cancel').html(`<div class="alert alert-success" role="alert">
+                                                    ${response.message}
+                                                </div>`);
+                    }
+                },
+                error: function (xhr) {
+                    $('.result-cancel').html(`<div class="alert alert-danger" role="alert">
+                                    ${xhr.responseJSON?.message || 'Something went wrong'}
+                                    </div>`);
+                },
+                complete: function () {
+                    $('.search-btn').prop('disabled', false);
+                }
             });
         }
 

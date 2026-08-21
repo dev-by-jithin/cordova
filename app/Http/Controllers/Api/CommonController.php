@@ -18,8 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Response;
+
 
 class CommonController extends Controller
 {
@@ -662,12 +661,12 @@ class CommonController extends Controller
         $currentTime = Carbon::now()->format('H:i:s');
         $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
 
-        if ($currentTime >= $closeTime) {
-            return response([
-                'status' => false,
-                'message' => 'Ticket window closed.'
-            ], 422);
-        }
+        // if ($currentTime >= $closeTime) {
+        //     return response([
+        //         'status' => false,
+        //         'message' => 'Ticket window closed.'
+        //     ], 422);
+        // }
 
         if (Auth::user()->role == 'Agent') {
             $agentId = Auth::id();
@@ -685,6 +684,7 @@ class CommonController extends Controller
                     'super_agent_id' => $superAgentId,
                     'agent_id' => $agentId,
                     'ticket_id' => $request->ticketId,
+                    'ticket_date' => date('Y-m-d')
                 ]);
 
                 $now = now();
@@ -714,16 +714,12 @@ class CommonController extends Controller
                                 'mode_id' => $row['mode_id'],
                                 'number' => $row['number'],
                                 'count' => $row['count'],
-                                'collection' => $aRate->ticket_rate,
-                                'collection_total' => ($aRate->ticket_rate * $row['count']),
-                                'a_rate' => $aRate->rate,
-                                'a_rate_total' => ($aRate->rate * $row['count']),
-                                'a_commission' => ($aRate->ticket_rate - $aRate->rate),
-                                'a_commission_total' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
-                                'sa_rate' => $saRate->rate,
-                                'sa_rate_total' => ($saRate->rate * $row['count']),
-                                'sa_commission' => ($aRate->rate - $saRate->rate),
-                                'sa_commission_total' => ($aRate->rate - $saRate->rate) * $row['count'],
+                                'collection' => $aRate->ticket_rate * $row['count'],
+                                'a_rate' => $aRate->rate * $row['count'],
+                                'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
+                                'sa_rate' => $saRate->rate * $row['count'],
+                                'sa_commission' => ($aRate->rate - $saRate->rate) * $row['count'],
+                                'ticket_date' => date('Y-m-d'),
                                 'created_at' => $now,
                                 'updated_at' => $now,
                             ];
@@ -782,17 +778,29 @@ class CommonController extends Controller
         }
 
         try {
+
             $number = Number::where('bill_id', $bill->id)
                 ->where('id', $request->numberId)
                 ->firstOrFail();
 
+            $aRate = Rate::select('ticket_rate', 'rate')
+                ->where('ticket_id', $number->ticket_id)
+                ->where('user_id', $number->agent_id)
+                ->where('mode_id', $number->mode_id)
+                ->first();
+            $saRate = Rate::select('rate')
+                ->where('ticket_id', $number->ticket_id)
+                ->where('user_id', $number->super_agent_id)
+                ->where('mode_id', $number->mode_id)
+                ->first();
+
             $number->update([
                 'count' => $count,
-                'collection_total' => $number->collection * $count,
-                'a_rate_total' => $number->a_rate * $count,
-                'a_commission_total' => $number->a_commission * $count,
-                'sa_rate_total' => $number->sa_rate * $count,
-                'sa_commission_total' => $number->sa_commission * $count,
+                'collection' => $aRate->ticket_rate * $count,
+                'a_rate' => $aRate->rate * $count,
+                'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $count,
+                'sa_rate' => $saRate->rate * $count,
+                'sa_commission' => ($aRate->rate - $saRate->rate) * $count,
             ]);
             return response()->json(['status' => true]);
         } catch (\Throwable $e) {
@@ -899,9 +907,9 @@ class CommonController extends Controller
                     'number' => $number->number,
                     'number_id' => $number->id,
                     'count' => $number->count,
-                    'rate' => $number->a_rate_total,
-                    'collection' => $number->collection_total,
-                    'commission' => $number->a_commission_total
+                    'rate' => $number->a_rate,
+                    'collection' => $number->collection,
+                    'commission' => $number->a_commission
                 ];
             }
 
@@ -963,12 +971,12 @@ class CommonController extends Controller
         }
 
         $query = Number::selectRaw('
-                DATE(created_at) as sale_date,
+                DATE(ticket_date) as sale_date,
                 SUM(`count`) as total_count,
-                SUM(a_rate_total) as total_amount'
+                SUM(a_rate) as total_amount'
         )
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate);
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate);
 
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -989,7 +997,7 @@ class CommonController extends Controller
             $query->where('super_agent_id', $superAgentId);
         }
 
-        $result = $query->groupBy(DB::raw('DATE(created_at)'))
+        $result = $query->groupBy(DB::raw('DATE(ticket_date)'))
             ->orderBy('sale_date', 'asc')
             ->get();
 
@@ -1011,9 +1019,9 @@ class CommonController extends Controller
             ->selectRaw('
                 agent_id,
                 SUM(`count`) as total_count,
-                SUM(a_rate_total) as total_amount'
+                SUM(a_rate) as total_amount'
             )
-            ->whereDate('created_at', $request->saleDate);
+            ->whereDate('ticket_date', $request->saleDate);
 
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -1055,7 +1063,7 @@ class CommonController extends Controller
                     'mode_id',
                     'number',
                     'count',
-                    'a_rate_total'
+                    'a_rate'
                 ])
                     ->with(['mode:id,name']);
                 if ($request->filled('ticketId')) {
@@ -1073,7 +1081,7 @@ class CommonController extends Controller
                 $query->orderBy('id');
             }
         ])
-            ->whereDate('created_at', $request->saleDate)
+            ->whereDate('ticket_date', $request->saleDate)
             ->where('agent_id', $request->agentId)
             ->orderBy('id')
             ->get();
@@ -1083,7 +1091,7 @@ class CommonController extends Controller
                 'ticket' => $bill->ticket?->short_name,
                 'agent' => $bill->agent?->username,
                 'create_time' => $bill->created_at->format('h:i:s A'),
-                'create_date' => $bill->created_at->format('Y-M-d'),
+                'create_date' => $bill->ticket_date,
                 'numbers' => $bill->numbers
             ];
         });
@@ -1133,12 +1141,12 @@ class CommonController extends Controller
         $query = Number::with(['agent:id,username'])
             ->selectRaw('
                 agent_id,
-                SUM(COALESCE(winner_prize_total,0)) as winner_prize,
-                SUM(COALESCE(a_prize_total,0)) as agent_prize,
-                SUM(COALESCE(a_rate_total,0)) as rate_total
+                SUM(COALESCE(winner_prize,0)) as winner_prize,
+                SUM(COALESCE(a_prize_commission,0)) as agent_prize,
+                SUM(COALESCE(a_rate,0)) as rate_total
                 ')
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate);
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate);
 
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -1174,12 +1182,12 @@ class CommonController extends Controller
         $query = Number::with(['agent:id,username'])
             ->selectRaw('
                 agent_id,
-                SUM(COALESCE(winner_prize_total,0)) as winner_prize,
-                SUM(COALESCE(a_prize_total,0)) as agent_prize,
-                SUM(COALESCE(sa_rate_total,0)) as rate_total
+                SUM(COALESCE(winner_prize,0)) as winner_prize,
+                SUM(COALESCE(a_prize_commission,0)) as agent_prize,
+                SUM(COALESCE(sa_rate,0)) as rate_total
                 ')
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate);
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate);
 
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -1212,8 +1220,8 @@ class CommonController extends Controller
             $superAgentId = Auth::id();
         }
         $query = Number::query()
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate);
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate);
         // Optional filters
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -1234,9 +1242,9 @@ class CommonController extends Controller
             $query->where('super_agent_id', $superAgentId);
         }
         $result = $query->selectRaw('
-                COALESCE(SUM(CASE WHEN winner_prize_total > 0 THEN `count` ELSE 0 END), 0) as winning_count,
-                COALESCE(SUM(winner_prize_total), 0) as winning_prize,
-                COALESCE(SUM(a_prize_total), 0) as agent_prize '
+                COALESCE(SUM(CASE WHEN winner_prize > 0 THEN `count` ELSE 0 END), 0) as winning_count,
+                COALESCE(SUM(winner_prize), 0) as winning_prize,
+                COALESCE(SUM(a_prize_commission), 0) as agent_prize '
         )->first();
         return response()->json([
             'status' => true,
@@ -1262,12 +1270,12 @@ class CommonController extends Controller
         $query = Number::with(['agent:id,username'])
             ->selectRaw('
                 agent_id,
-                COALESCE(SUM(CASE WHEN winner_prize_total > 0 THEN `count` ELSE 0 END), 0) as winning_count,
-                COALESCE(SUM(winner_prize_total), 0) as winning_prize,
-                COALESCE(SUM(a_prize_total), 0) as agent_prize'
+                COALESCE(SUM(CASE WHEN winner_prize > 0 THEN `count` ELSE 0 END), 0) as winning_count,
+                COALESCE(SUM(winner_prize), 0) as winning_prize,
+                COALESCE(SUM(a_prize_commission), 0) as agent_prize'
             )
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate);
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate);
 
         if ($request->filled('ticketId')) {
             $query->where('ticket_id', $request->ticketId);
@@ -1310,12 +1318,12 @@ class CommonController extends Controller
                     'number',
                     'count',
                     'prize_position',
-                    'winner_prize_total',
-                    'a_prize_total'
+                    'winner_prize',
+                    'a_prize_commission'
                 ])
-            ->whereDate('created_at', '>=', $request->fromDate)
-            ->whereDate('created_at', '<=', $request->toDate)
-            ->where('winner_prize_total', '>', '0');
+            ->whereDate('ticket_date', '>=', $request->fromDate)
+            ->whereDate('ticket_date', '<=', $request->toDate)
+            ->where('winner_prize', '>', '0');
 
             if ($request->filled('ticketId')) {
                 $query->where('ticket_id', $request->ticketId);
@@ -1351,7 +1359,7 @@ class CommonController extends Controller
         $query = Number::query()
             ->join('tickets', 'tickets.id', '=', 'numbers.ticket_id')
             ->join('modes', 'modes.id', '=', 'numbers.mode_id')
-            ->whereDate('numbers.created_at', $request->resultDate);
+            ->whereDate('numbers.ticket_date', $request->resultDate);
         // Optional filters
         if ($request->filled('ticketId')) {
             $query->where('numbers.ticket_id', $request->ticketId);

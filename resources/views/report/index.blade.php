@@ -42,85 +42,83 @@
             aria-labelledby="sales-tab" tabindex="0">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Ticket</label>
+                    <form action="{{ route('report.sales.summary') }}" method="GET" id="sales_summary" autocomplete="off">
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="ticketId">
+                                        <option value="" selected>All</option>
+                                        @foreach ($tickets as $ticket)
+                                            <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="ticketId">Ticket</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="ticketNumber" placeholder="Ticket Number">
+                                    <label for="ticketNumber">Ticket Numer</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="fromDate" placeholder="">
+                                    <label for="fromDate">From Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="toDate" placeholder="">
+                                    <label for="toDate">To Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="GroupId">
+                                        <option value="" selected>Group</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                    <label for="GroupId">Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="modeId">
+                                        <option selected>Mode</option>
+                                        @foreach ($modes as $mode)
+                                            <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="modeId">Mode</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select super-agent" name="super_agent_id">
+                                        <option selected>Super Agent</option>
+                                        @foreach ($superAgents as $superAgent)
+                                            <option value="{{ $superAgent->id }}">{{ $superAgent->username }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="super_agent_id">Super Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select agent" name="agent_id">
+                                        <option selected>Agent</option>
+                                    </select>
+                                    <label for="agent_id">Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate Report</button>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
-                                <label for="floatingInput">Ticket Numer</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">From Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">To Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Group</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Mode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Super Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
-                                Report</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -129,85 +127,83 @@
             tabindex="1">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Ticket</label>
+                    <form action="{{ route('report.winning.summary') }}" method="post" id="winning_summary" autocomplete="off">
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="ticketId">
+                                        <option value="" selected>All</option>
+                                        @foreach ($tickets as $ticket)
+                                            <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="ticketId">Ticket</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="ticketNumber" placeholder="Ticket Number">
+                                    <label for="ticketNumber">Ticket Numer</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="fromDate" placeholder="">
+                                    <label for="fromDate">From Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="toDate" placeholder="">
+                                    <label for="toDate">To Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="GroupId">
+                                        <option value="" selected>Group</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                    <label for="GroupId">Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="modeId">
+                                        <option selected>Mode</option>
+                                        @foreach ($modes as $mode)
+                                            <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="modeId">Mode</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select super-agent" name="super_agent_id">
+                                        <option selected>Super Agent</option>
+                                        @foreach ($superAgents as $superAgent)
+                                            <option value="{{ $superAgent->id }}">{{ $superAgent->username }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="super_agent_id">Super Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select agent" name="agent_id">
+                                        <option selected>Agent</option>
+                                    </select>
+                                    <label for="agent_id">Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate Report</button>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
-                                <label for="floatingInput">Ticket Numer</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">From Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">To Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Group</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Mode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Super Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
-                                Report</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -216,85 +212,85 @@
             aria-labelledby="number-wise-tab" tabindex="2">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Ticket</label>
+                    <form action="{{ route('report.number.wise') }}" method="post" id="number_wise" autocomplete="off">
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="ticketId">
+                                        <option value="" selected>All</option>
+                                        @foreach ($tickets as $ticket)
+                                            <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="ticketId">Ticket</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="ticketNumber" placeholder="Ticket Number">
+                                    <label for="ticketNumber">Ticket Numer</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="date" placeholder="">
+                                    <label for="date">Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="GroupId">
+                                        <option value="" selected>Group</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                    <label for="GroupId">Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="modeId">
+                                        <option selected>Mode</option>
+                                        @foreach ($modes as $mode)
+                                            <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="modeId">Mode</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select super-agent" name="super_agent_id">
+                                        <option selected>Super Agent</option>
+                                        @foreach ($superAgents as $superAgent)
+                                            <option value="{{ $superAgent->id }}">{{ $superAgent->username }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="super_agent_id">Super Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select agent" name="agent_id">
+                                        <option selected>Agent</option>
+                                    </select>
+                                    <label for="agent_id">Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-check mt-4 ms-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="column">
+                                    <label class="form-check-label" for="column">
+                                        Group without ticket name
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate Report</button>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
-                                <label for="floatingInput">Ticket Numer</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">From Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">To Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Group</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Mode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Super Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
-                                Report</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -303,85 +299,77 @@
             tabindex="3">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Ticket</label>
+                    <form action="{{ route('report.account.summary') }}" method="post" id="account_summary" autocomplete="off">
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="ticketId">
+                                        <option value="" selected>All</option>
+                                        @foreach ($tickets as $ticket)
+                                            <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="ticketId">Ticket</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="fromDate" placeholder="">
+                                    <label for="fromDate">From Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="toDate" placeholder="">
+                                    <label for="toDate">To Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="GroupId">
+                                        <option value="" selected>Group</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                    <label for="GroupId">Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="modeId">
+                                        <option selected>Mode</option>
+                                        @foreach ($modes as $mode)
+                                            <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="modeId">Mode</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select super-agent" name="super_agent_id">
+                                        <option selected>Super Agent</option>
+                                        @foreach ($superAgents as $superAgent)
+                                            <option value="{{ $superAgent->id }}">{{ $superAgent->username }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="super_agent_id">Super Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select agent" name="agent_id">
+                                        <option selected>Agent</option>
+                                    </select>
+                                    <label for="agent_id">Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate Report</button>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
-                                <label for="floatingInput">Ticket Numer</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">From Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">To Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Group</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Mode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Super Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-12">
-                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
-                                Report</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -390,88 +378,176 @@
             tabindex="4">
             <div class="card border border-0 rounded-0">
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>All</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Ticket</label>
+                    <form action="{{ route('report.net.pay') }}" method="post" id="net_pay" autocomplete="off">
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="ticketId">
+                                        <option value="" selected>All</option>
+                                        @foreach ($tickets as $ticket)
+                                            <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="ticketId">Ticket</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="fromDate" placeholder="">
+                                    <label for="fromDate">From Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" name="toDate" placeholder="">
+                                    <label for="toDate">To Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="GroupId">
+                                        <option value="" selected>Group</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                    <label for="GroupId">Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="modeId">
+                                        <option selected>Mode</option>
+                                        @foreach ($modes as $mode)
+                                            <option value="{{ $mode->id }}">{{ $mode->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="modeId">Mode</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select super-agent" name="super_agent_id">
+                                        <option selected>Super Agent</option>
+                                        @foreach ($superAgents as $superAgent)
+                                            <option value="{{ $superAgent->id }}">{{ $superAgent->username }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="super_agent_id">Super Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-floating">
+                                    <select class="form-select agent" name="agent_id">
+                                        <option selected>Agent</option>
+                                    </select>
+                                    <label for="agent_id">Agent</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <button type="submit" class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate Report</button>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Ticket Number">
-                                <label for="floatingInput">Ticket Numer</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">From Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <input type="date" class="form-control" id="floatingInput" placeholder="">
-                                <label for="floatingInput">To Date</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingSelect">Group</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Mode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Super Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                                    <option selected>Select</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
-                                </select>
-                                <label for="floatingInput">Agent</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3 cols-ms-12">
-                            <button class="btn btn-primary w-100"><i class="icon cil-description me-1"></i> Generate
-                                Report</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
+
+
+    <script>
+
+        $('#sales_summary').on('submit', function (e) {
+
+            e.preventDefault();
+
+            const $form = $(this);
+
+            $.ajax({
+                url: $form.attr('action'),
+                method: $form.attr('method'),
+                data: $form.serialize(),
+
+                beforeSend: function () {
+                    $form.find('button[type="submit"]').prop('disabled', true);
+                },
+
+                success: function (response) {
+                    console.log(response);
+                },
+
+                error: function (xhr) {
+                    console.error(
+                        xhr.responseJSON?.message || 'Something went wrong'
+                    );
+                },
+
+                complete: function () {
+                    $form.find('button[type="submit"]').prop('disabled', false);
+                }
+            });
+        });
+
+//         apiRequest({
+//       url: `${API}/sales-summary`,
+//       method: 'get',
+//       data: { ticketId,
+//               fromDate,
+//               toDate,
+//               ticketNumber,
+//               groupId,
+//               modeId,
+//               agentId
+//             },
+//       success: function (response) {
+//         let dates = '';
+//         let totalCount = 0;
+//         let totalAmount = 0;
+
+//         if (response.status) {
+
+//           $.each(response.data, function (index, result) {
+
+//             totalCount += Number(result.total_count || 0);
+//             totalAmount += parseFloat(result.total_amount || 0);
+
+//             const detailUrl = `sales-users.html?` + `ticket_id=${encodeURIComponent(ticketId || '')}&`
+//                             + `ticket_number=${encodeURIComponent(ticketNumber || '')}&`
+//                             + `group_id=${encodeURIComponent(groupId || '')}&`
+//                             + `mode_id=${encodeURIComponent(modeId || '')}&`
+//                             + `agent_id=${encodeURIComponent(agentId || '')}&`
+//                             + `sale_date=${encodeURIComponent(result.sale_date)}`;
+
+//             dates += ` <div class="card shadow-sm mt-2">
+//                         <div class="card-body text-center">
+//                           <div class="fw-bold mb-1">${result.sale_date}</div>
+//                             <div class="mb-1"> Sales Amount : ₹ ${parseFloat(result.total_amount || 0).toFixed(2)} </div>
+//                             <div class="mb-1"> Count : ${result.total_count} </div>
+//                             <button class="btn btn-primary btn-sm shadow mt-1" onclick="window.location.href='${detailUrl}'"> View Details </button>
+//                         </div>
+//                       </div> `;
+//           });
+
+//           $('#result').html(` <div class="card shadow-sm">
+//                                 <div class="card-body">
+//                                   <div class="row text-center">
+//                                     <div class="col border-end">
+//                                       <div class="fw-bold">Total Count</div> ${totalCount}
+//                                     </div>
+//                                     <div class="col">
+//                                       <div class="fw-bold">Total Amount</div> ₹ ${totalAmount.toFixed(2)}
+//                                     </div>
+//                                   </div>
+//                                 </div>
+//                               </div>
+//                               ${dates}`
+//                             );
+//           }
+//       },
+//       error: function (xhr) {
+//         toastr.error( xhr.responseJSON?.message || 'Something went wrong', 'Error!' );
+//       }
+//   });
+    </script>
 @endsection

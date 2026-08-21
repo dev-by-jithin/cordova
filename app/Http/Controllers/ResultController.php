@@ -178,6 +178,47 @@ class ResultController extends Controller
         }
     }
 
+    public function cancel(Request $request)
+    {
+        $request->validate([
+            'ticketId' => 'required|exists:tickets,id',
+            'resultDate' => 'required|date'
+        ]);
+
+        try {
+
+            $result = Result::where('ticket_id', $request->ticketId)
+                ->whereDate('result_date', $request->resultDate)
+                ->first();
+            if (!$result) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Result not found.'
+                ], 404);
+            }
+
+            Number::where('ticket_id', $request->ticketId)
+                    ->whereDate('ticket_date', $request->resultDate)
+                    ->update([
+                        'prize_position' => null,
+                        'a_prize_commission' => null,
+                        'winner_prize' => null
+                    ]);
+
+            $result->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Result cancelled successfully.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     private function getSchemeId($agentId)
     {
         return User::where('id', $agentId)->where('role', 'Agent')->value('scheme_id');
@@ -195,23 +236,22 @@ class ResultController extends Controller
     {
         Number::whereKey($id)->update([
             'prize_position' => $position,
-            'a_prize' => $agentAmount,
-            'a_prize_total' => round($agentAmount * $count, 2),
-            'winner_prize' => $winnerAmount,
-            'winner_prize_total' => round($winnerAmount * $count, 2),
+            'a_prize_commission' => round($agentAmount * $count, 2),
+            'winner_prize' => round($winnerAmount * $count, 2),
             'updated_at' => now(),
         ]);
     }
 
     private function processPrize($result, $numberValue, $modeId, $position): void
     {
-        if (!$numberValue) {
+        if ($numberValue === null || $numberValue === '') {
             return;
         }
 
         $numbers = Number::select('id', 'agent_id', 'count')
-            ->whereDate('created_at', $result->result_date)
+            ->whereDate('ticket_date', $result->result_date)
             ->where('ticket_id', $result->ticket_id)
+            ->where('mode_id', $modeId)
             ->where('number', $numberValue)
             ->get();
 

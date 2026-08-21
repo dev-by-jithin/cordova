@@ -383,11 +383,11 @@
                 success: function (response) {
                     console.log(response);
                     if (response) {
-                        $('.collection-amount').text(`₹ ${response.collection_total}`);
-                        $('.admin-amount').text(`₹ ${response.admin_total}`);
-                        $('.super-agent-amount').text(`₹ ${response.sa_commission_total}`);
-                        $('.agent-amount').text(`₹ ${response.a_commission_total}`);
-                        $('.winner-amount').text(`₹ ${response.winner_total}`);
+                        $('.collection-amount').text(`₹ ${response.collection}`);
+                        $('.admin-amount').text(`₹ ${response.admin}`);
+                        $('.super-agent-amount').text(`₹ ${response.sa_commission}`);
+                        $('.agent-amount').text(`₹ ${response.a_commission}`);
+                        $('.winner-amount').text(`₹ ${response.winner}`);
 
                         $('.a-count').text(`${response.a_total}`);
                         $('.b-count').text(`${response.b_total}`);
@@ -410,10 +410,10 @@
                         response.super_total]);
 
                         // 'Admin', 'Super Agent', 'Agent', 'Winner'
-                        pieChart([response.admin_total,
-                        response.sa_commission_total,
-                        response.a_commission_total,
-                        response.winner_total]);
+                        pieChart([response.admin,
+                        response.sa_commission,
+                        response.a_commission,
+                        response.winner]);
                     }
                 },
                 error: function (xhr) {
@@ -441,11 +441,11 @@
                 success: function (response) {
                     console.log(response);
                     if (response) {
-                        $('.total-amount').text(`₹ ${response.collection_total}`);
-                        $('.admin-total').text(`₹ ${response.admin_total}`);
-                        $('.super-agent-total').text(`₹ ${response.sa_commission_total}`);
-                        $('.agent-total').text(`₹ ${response.a_commission_total}`);
-                        $('.winner-total').text(`₹ ${response.winner_total}`);
+                        $('.total-amount').text(`₹ ${response.collection}`);
+                        $('.admin-total').text(`₹ ${response.admin}`);
+                        $('.super-agent-total').text(`₹ ${response.sa_commission}`);
+                        $('.agent-total').text(`₹ ${response.a_commission}`);
+                        $('.winner-total').text(`₹ ${response.winner}`);
                     }
                 },
                 error: function (xhr) {

@@ -35,6 +35,8 @@ return new class extends Migration
             $table->string('box_position_6', 3)->nullable();
             $table->unique(['ticket_id', 'result_date']);
             $table->timestamps();
+
+            $table->index(['ticket_id', 'result_date']);
         });
     }
 

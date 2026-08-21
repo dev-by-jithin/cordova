@@ -11,6 +11,7 @@ class Bill extends Model
         'super_agent_id',
         'agent_id',
         'ticket_id',
+        'ticket_date',
         'remarks'
     ];
 

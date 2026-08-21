@@ -18,13 +18,13 @@ class DashboardController extends Controller
         $endDate = $request->endDate;
 
         if (isset($startDate) && isset($endDate)) {
-            $summary = Number::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
-                ->selectRaw(' SUM(collection_total) as collection_total,
-        SUM(a_commission_total) as a_commission_total,
-        SUM(sa_commission_total) as sa_commission_total,
-        SUM(sa_rate_total) as sa_rate_total,
-        SUM(a_prize_total) as a_prize_total,
-        SUM(winner_prize_total) as winner_prize_total,
+            $summary = Number::whereBetween('ticket_date', [$startDate, $endDate])
+                ->selectRaw(' SUM(collection) as collection,
+        SUM(a_commission) as a_commission,
+        SUM(sa_commission) as sa_commission,
+        SUM(sa_rate) as sa_rate,
+        SUM(a_prize_commission) as a_prize_commission,
+        SUM(winner_prize) as winner_prize,
         sum(count) as total_numbers,
         SUM(CASE WHEN mode_id = 1 THEN 1 ELSE 0 END) as mode_a,
         SUM(CASE WHEN mode_id = 2 THEN 1 ELSE 0 END) as mode_b,
@@ -36,12 +36,12 @@ class DashboardController extends Controller
         SUM(CASE WHEN mode_id = 8 THEN 1 ELSE 0 END) as mode_super ')
                 ->first();
         } else {
-            $summary = Number::selectRaw(' SUM(collection_total) as collection_total,
-        SUM(a_commission_total) as a_commission_total,
-        SUM(sa_commission_total) as sa_commission_total,
-        SUM(sa_rate_total) as sa_rate_total,
-        SUM(a_prize_total) as a_prize_total,
-        SUM(winner_prize_total) as winner_prize_total,
+            $summary = Number::selectRaw(' SUM(collection) as collection,
+        SUM(a_commission) as a_commission,
+        SUM(sa_commission) as sa_commission,
+        SUM(sa_rate) as sa_rate,
+        SUM(a_prize_commission) as a_prize_commission,
+        SUM(winner_prize) as winner_prize,
         sum(count) as total_numbers,
         SUM(CASE WHEN mode_id = 1 THEN 1 ELSE 0 END) as mode_a,
         SUM(CASE WHEN mode_id = 2 THEN 1 ELSE 0 END) as mode_b,
@@ -56,11 +56,11 @@ class DashboardController extends Controller
 
 
         return response()->json([
-            'collection_total' => (float) $summary->collection_total,
-            'a_commission_total' => (float) $summary->a_commission_total,
-            'sa_commission_total' => (float) $summary->sa_commission_total,
-            'admin_total' => (float) ($summary->sa_rate_total - ($summary->a_prize_total + $summary->winner_prize_total)),
-            'winner_total' => (float) $summary->a_prize_total + $summary->winner_prize_total,
+            'collection' => (float) $summary->collection,
+            'a_commission' => (float) $summary->a_commission,
+            'sa_commission' => (float) $summary->sa_commission,
+            'admin' => (float) ($summary->sa_rate - ($summary->a_prize_commission + $summary->winner_prize)),
+            'winner' => (float) $summary->a_prize_commission + $summary->winner_prize,
             'a_total' => $summary->mode_a,
             'b_total' => $summary->mode_b,
             'c_total' => $summary->mode_c,

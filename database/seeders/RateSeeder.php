@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Mode;
 use App\Models\Rate;
 use App\Models\Ticket;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RateSeeder extends Seeder
@@ -28,7 +27,7 @@ class RateSeeder extends Seeder
                     $rate = 10.5;
                 } else {
                     $ticketRate = 10;
-                    $rate = 7.5;
+                    $rate = 7.7;
                 }
 
                 $data[] = [

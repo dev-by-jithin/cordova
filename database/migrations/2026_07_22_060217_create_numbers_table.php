@@ -22,23 +22,17 @@ return new class extends Migration
             $table->string('number', 3);
             $table->smallInteger('count');
             $table->decimal('collection', 10, 2);
-            $table->decimal('collection_total', 10, 2);
             $table->decimal('a_rate', 10, 2);
-            $table->decimal('a_rate_total', 10, 2);
             $table->decimal('a_commission', 10, 2);
-            $table->decimal('a_commission_total', 10, 2);
             $table->decimal('sa_rate', 10, 2);
-            $table->decimal('sa_rate_total', 10, 2);
             $table->decimal('sa_commission', 10, 2);
-            $table->decimal('sa_commission_total', 10, 2);
             $table->tinyInteger('prize_position')->nullable();
-            $table->decimal('a_prize', 10, 2)->nullable();
-            $table->decimal('a_prize_total', 10, 2)->nullable();
+            $table->decimal('a_prize_commission', 10, 2)->nullable();
             $table->decimal('winner_prize', 10, 2)->nullable();
-            $table->decimal('winner_prize_total', 10, 2)->nullable();
+            $table->date('ticket_date');
             $table->timestamps();
 
-            $table->index(['ticket_id', 'number', 'created_at']);
+            $table->index(['ticket_id', 'number', 'ticket_date']);
         });
     }
 

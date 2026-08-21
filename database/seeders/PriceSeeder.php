@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use App\Models\Mode;
 use App\Models\Price;
 use App\Models\Scheme;
-use App\Models\Ticket;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PriceSeeder extends Seeder
