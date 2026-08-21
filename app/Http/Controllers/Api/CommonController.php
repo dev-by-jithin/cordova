@@ -661,12 +661,12 @@ class CommonController extends Controller
         $currentTime = Carbon::now()->format('H:i:s');
         $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
 
-        // if ($currentTime >= $closeTime) {
-        //     return response([
-        //         'status' => false,
-        //         'message' => 'Ticket window closed.'
-        //     ], 422);
-        // }
+        if ($currentTime >= $closeTime) {
+            return response([
+                'status' => false,
+                'message' => 'Ticket window closed.'
+            ], 422);
+        }
 
         if (Auth::user()->role == 'Agent') {
             $agentId = Auth::id();

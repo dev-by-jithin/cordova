@@ -47,10 +47,10 @@ class AuthController extends Controller
 
                     if (in_array($modeId, [1, 2, 3])) {
                         $ticketRate = 12;
-                        $rate = 10.6;
+                        $rate = 10.5;
                     } else {
                         $ticketRate = 10;
-                        $rate = 8;
+                        $rate = 7.7;
                     }
 
                     $data[] = [
