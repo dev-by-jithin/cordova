@@ -178,4 +178,18 @@ class UserController extends Controller
         ]);
     }
 
+    public function agents(Request $request)
+    {
+        $agents = User::where('role', 'Agent')
+            ->where('super_agent_id', $request->superAgentId)
+            ->select('id', 'username')
+            ->orderBy('username')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $agents
+        ]);
+    }
+
 }

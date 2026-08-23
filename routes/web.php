@@ -66,15 +66,25 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 
     Route::get('/sales-summary', [ReportController::class, 'salesSummary'])->name('report.sales.summary');
-    Route::get('/winning-summary', [ReportController::class, 'salesSummary'])->name('report.winning.summary');
-    Route::get('/number-wise', [ReportController::class, 'salesSummary'])->name('report.number.wise');
-    Route::get('/account-summary', [ReportController::class, 'salesSummary'])->name('report.account.summary');
-    Route::get('/net-pay', [ReportController::class, 'salesSummary'])->name('report.net.pay');
+    Route::get('/sales-users', [ReportController::class, 'salesUsers'])->name('report.sales.users');
+    Route::get('/sales-report', [ReportController::class, 'salesReport'])->name('report.sales.report');
+
+    Route::get('/winning-summary', [ReportController::class, 'winningSummary'])->name('report.winning.summary');
+    Route::get('/winning-users', [ReportController::class, 'winningUsers'])->name('report.winning.users');
+    Route::get('/winning-report', [ReportController::class, 'winningReport'])->name('report.winning.report');
+
+    Route::get('/number-wise', [ReportController::class, 'numberReport'])->name('report.number.wise');
+    Route::get('/number-wise-pdf', [ReportController::class, 'numberReportPdf'])->name('report.number.pdf');
+
+    Route::get('/account-summary', [ReportController::class, 'accountSummary'])->name('report.account.summary');
+    Route::get('/net-pay', [ReportController::class, 'netPay'])->name('report.net.pay');
 
     Route::get('/numbers', [NumberController::class, 'index'])->name('number.index');
     Route::get('/number-fake', [NumberController::class, 'fake'])->name('number.fake');
     Route::get('/find-fake', [NumberController::class, 'findFake'])->name('number.find.fake');
     Route::delete('/fake-delete', [NumberController::class, 'fakeDelete'])->name('fake.delete');
+
+    Route::get('/agents', [UserController::class, 'agents'])->name('user.agents');
 
 });
 

@@ -410,10 +410,12 @@
                         response.super_total]);
 
                         // 'Admin', 'Super Agent', 'Agent', 'Winner'
-                        pieChart([response.admin,
-                        response.sa_commission,
-                        response.a_commission,
-                        response.winner]);
+                        pieChart([
+                            Math.max(0, Number(response.admin || 0)),
+                            Math.max(0, Number(response.sa_commission || 0)),
+                            Math.max(0, Number(response.a_commission || 0)),
+                            Math.max(0, Number(response.winner || 0))
+                        ]);
                     }
                 },
                 error: function (xhr) {
