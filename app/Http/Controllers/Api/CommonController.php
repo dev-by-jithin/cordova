@@ -648,7 +648,7 @@ class CommonController extends Controller
 
     public function saveNumber(Request $request)
     {
-        if(Auth::user()->sale_status == 'Active'){
+        if(Auth::user()->login_status == 'Active' && Auth::user()->sale_status == 'Active'){
 
             $request->validate([
                 'ticketId' => 'required|exists:tickets,id',
