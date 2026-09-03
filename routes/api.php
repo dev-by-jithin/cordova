@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum']], function(){
+Route::group(['middl
+eware' => ['auth:sanctum']], function(){
 
     Route::get('groups', [CommonController::class, 'groups']);
     Route::get('agents', [CommonController::class, 'agents']);
@@ -20,6 +21,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::put('rates/{rate}', [CommonController::class, 'updateAgentRate']);
     Route::get('prices', [CommonController::class, 'prices']);
     Route::post('save-number', [CommonController::class, 'saveNumber']);
+    Route::post('save-remark', [CommonController::class, 'saveRemark']);
     Route::post('update-number', [CommonController::class, 'updateNumber']);
     Route::delete('delete-number', [CommonController::class, 'deleteNumber']);
     Route::delete('delete-bill', [CommonController::class, 'deleteBill']);

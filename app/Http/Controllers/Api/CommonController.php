@@ -648,103 +648,139 @@ class CommonController extends Controller
 
     public function saveNumber(Request $request)
     {
-        $request->validate([
-            'ticketId' => 'required|exists:tickets,id',
-            'numbers' => 'required|array|min:1',
-            'numbers.*.group_id' => 'required|exists:groups,id',
-            'numbers.*.mode_id' => 'required|exists:modes,id',
-            'numbers.*.number' => 'required|string|max:3',
-            'numbers.*.count' => 'required|integer|min:1|max:1000'
-        ]);
+        if(Auth::user()->sale_status == 'Active'){
 
-        $ticket = Ticket::findOrFail($request->ticketId);
-        $currentTime = Carbon::now()->format('H:i:s');
-        $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
+            $request->validate([
+                'ticketId' => 'required|exists:tickets,id',
+                'numbers' => 'required|array|min:1',
+                'numbers.*.group_id' => 'required|exists:groups,id',
+                'numbers.*.mode_id' => 'required|exists:modes,id',
+                'numbers.*.number' => 'required|string|max:3',
+                'numbers.*.count' => 'required|integer|min:1|max:1000'
+            ]);
 
-        if ($currentTime >= $closeTime) {
+            $ticket = Ticket::findOrFail($request->ticketId);
+            $currentTime = Carbon::now()->format('H:i:s');
+            $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
+
+            if ($currentTime >= $closeTime) {
+                return response([
+                    'status' => false,
+                    'message' => 'Ticket window closed.'
+                ], 422);
+            }
+
+            if (Auth::user()->role == 'Agent') {
+                $agentId = Auth::id();
+                $superAgentId = Auth::user()->super_agent_id;
+            } else {
+                $agentId = $request->agentId;
+                $superAgentId = Auth::id();
+            }
+
+            try {
+
+                $bill = DB::transaction(function () use ($request, $agentId, $superAgentId) {
+
+                    $bill = Bill::create([
+                        'super_agent_id' => $superAgentId,
+                        'agent_id' => $agentId,
+                        'ticket_id' => $request->ticketId,
+                        'ticket_date' => date('Y-m-d')
+                    ]);
+
+                    $now = now();
+                    $ticketId = $request->ticketId;
+
+                    $numbers = collect($request->numbers)
+                        ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
+
+                            $aRate = Rate::select('ticket_rate', 'rate')
+                                ->where('ticket_id', $ticketId)
+                                ->where('user_id', $agentId)
+                                ->where('mode_id', $row['mode_id'])
+                                ->first();
+                            $saRate = Rate::select('rate')
+                                ->where('ticket_id', $ticketId)
+                                ->where('user_id', $superAgentId)
+                                ->where('mode_id', $row['mode_id'])
+                                ->first();
+                            if (strlen($row['number']) == $row['group_id']) {
+
+                                return [
+                                    'bill_id' => $bill->id,
+                                    'super_agent_id' => $superAgentId,
+                                    'agent_id' => $agentId,
+                                    'group_id' => $row['group_id'],
+                                    'ticket_id' => $ticketId,
+                                    'mode_id' => $row['mode_id'],
+                                    'number' => $row['number'],
+                                    'count' => $row['count'],
+                                    'collection' => $aRate->ticket_rate * $row['count'],
+                                    'a_rate' => $aRate->rate * $row['count'],
+                                    'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
+                                    'sa_rate' => $saRate->rate * $row['count'],
+                                    'sa_commission' => ($aRate->rate - $saRate->rate) * $row['count'],
+                                    'ticket_date' => date('Y-m-d'),
+                                    'created_at' => $now,
+                                    'updated_at' => $now,
+                                ];
+                            }
+                        })
+                        ->toArray();
+
+                    Number::insert($numbers);
+
+                    return $bill;
+
+                });
+
+                return response()->json([
+                    'status' => true,
+                    'bill' => $bill->id,
+                ]);
+
+            } catch (\Throwable $e) {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+        }else{
             return response([
+                    'status' => false,
+                    'message' => 'Your Sale Status Inactive.'
+                ], 422);
+        }
+    }
+
+    public function saveRemark(Request $request)
+    {
+        if (!$request->filled('billId')) {
+            return response()->json([
                 'status' => false,
-                'message' => 'Ticket window closed.'
+                'message' => 'Bill ID is required.',
             ], 422);
         }
 
-        if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::id();
-            $superAgentId = Auth::user()->super_agent_id;
-        } else {
-            $agentId = $request->agentId;
-            $superAgentId = Auth::id();
-        }
+        $bill = Bill::find($request->billId);
 
-        try {
-
-            $bill = DB::transaction(function () use ($request, $agentId, $superAgentId) {
-
-                $bill = Bill::create([
-                    'super_agent_id' => $superAgentId,
-                    'agent_id' => $agentId,
-                    'ticket_id' => $request->ticketId,
-                    'ticket_date' => date('Y-m-d')
-                ]);
-
-                $now = now();
-                $ticketId = $request->ticketId;
-
-                $numbers = collect($request->numbers)
-                    ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
-
-                        $aRate = Rate::select('ticket_rate', 'rate')
-                            ->where('ticket_id', $ticketId)
-                            ->where('user_id', $agentId)
-                            ->where('mode_id', $row['mode_id'])
-                            ->first();
-                        $saRate = Rate::select('rate')
-                            ->where('ticket_id', $ticketId)
-                            ->where('user_id', $superAgentId)
-                            ->where('mode_id', $row['mode_id'])
-                            ->first();
-                        if (strlen($row['number']) == $row['group_id']) {
-
-                            return [
-                                'bill_id' => $bill->id,
-                                'super_agent_id' => $superAgentId,
-                                'agent_id' => $agentId,
-                                'group_id' => $row['group_id'],
-                                'ticket_id' => $ticketId,
-                                'mode_id' => $row['mode_id'],
-                                'number' => $row['number'],
-                                'count' => $row['count'],
-                                'collection' => $aRate->ticket_rate * $row['count'],
-                                'a_rate' => $aRate->rate * $row['count'],
-                                'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
-                                'sa_rate' => $saRate->rate * $row['count'],
-                                'sa_commission' => ($aRate->rate - $saRate->rate) * $row['count'],
-                                'ticket_date' => date('Y-m-d'),
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                            ];
-                        }
-                    })
-                    ->toArray();
-
-                Number::insert($numbers);
-
-                return $bill;
-
-            });
-
-            return response()->json([
-                'status' => true,
-                'bill' => $bill->id,
-            ]);
-
-        } catch (\Throwable $e) {
-
+        if (!$bill) {
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
-            ], 500);
+                'message' => 'Bill not found.',
+            ], 404);
         }
+
+        $bill->update([
+            'remarks' => $request->remark,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Remark saved successfully.',
+        ]);
     }
 
     public function updateNumber(Request $request)
@@ -917,8 +953,9 @@ class CommonController extends Controller
                 'status' => true,
                 'rows' => $rows,
                 'bill_id' => $bill->id,
-                'result' => date('Y-M-d', strtotime($bill->created_at)) . ' ' . date('h:i A', strtotime($bill->ticket->result_time)),
+                'result' => date('Y-M-d', strtotime($bill->ticket_date)) . ' ' . date('h:i A', strtotime($bill->ticket->result_time)),
                 'created_at' => date('Y-M-d h:i A', strtotime($bill->created_at)),
+                'remarks' => $bill->remarks,
                 'delete_button' => $deleteButtons
             ]);
 
@@ -1092,6 +1129,7 @@ class CommonController extends Controller
                 'agent' => $bill->agent?->username,
                 'create_time' => $bill->created_at->format('h:i:s A'),
                 'create_date' => $bill->ticket_date,
+                'remark' => $bill->remarks,
                 'numbers' => $bill->numbers
             ];
         });
