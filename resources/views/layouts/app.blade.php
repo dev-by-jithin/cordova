@@ -67,6 +67,23 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('payment.index') ? 'active' : '' }}"
+                    href="{{ route('payment.index') }}">
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path fill="var(--ci-primary-color, currentColor)" d="M480 48H32v416h448ZM64 432V80h384v352Z"
+                            class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)"
+                            d="M120 136h104v24h-28.8c12.6 8.2 20.8 21.4 22.8 40H224v24h-6.5c-3.8 28.3-25.7 47.4-58.8 47.9L224 344h-42l-58-64v-24h30c17.7 0 29.2-8.8 33-24H120v-24h67c-4.8-14.5-16-24-35-24h-32Z"
+                            class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)"
+                            d="M280 152h120v24H280zm0 64h120v24H280zm0 64h80v24h-80z" class="ci-primary" />
+                        <path fill="var(--ci-primary-color, currentColor)" d="M120 344h160v24H120z"
+                            class="ci-primary" />
+                    </svg>
+                    Payment
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('report.index') ? 'active' : '' }}"
                     href="{{ route('report.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

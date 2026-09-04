@@ -750,7 +750,7 @@ class CommonController extends Controller
         }else{
             return response([
                     'status' => false,
-                    'message' => 'Your Sale Status Inactive.'
+                    'message' => 'Your Sale Status Blocked.'
                 ], 422);
         }
     }

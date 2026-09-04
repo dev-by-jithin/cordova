@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\NumberController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReportController;
@@ -42,6 +43,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/rates', [RateController::class, 'index'])->name('rate.index');
     Route::get('/rates/{id}/edit', [RateController::class, 'edit'])->name('rate.edit');
     Route::put('/rates/update', [RateController::class, 'update'])->name('rate.update');
+
+    Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
 
     Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
     Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');
