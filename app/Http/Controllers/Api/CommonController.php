@@ -30,7 +30,7 @@ class CommonController extends Controller
 
     public function agents(Request $request)
     {
-        $superAgentId = $request->user()->id;
+        $superAgentId = Auth::id();
         $agents = User::with([
             'superAgent:id,username',
             'scheme:id,name'

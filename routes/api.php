@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middl
-eware' => ['auth:sanctum']], function(){
+Route::group(['middleware' => ['auth:sanctum']], function(){
 
     Route::get('groups', [CommonController::class, 'groups']);
     Route::get('agents', [CommonController::class, 'agents']);
