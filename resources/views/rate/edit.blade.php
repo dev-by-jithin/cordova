@@ -31,7 +31,7 @@
                         <div class="col-md-6">
                             <label for="ticket" class="form-label">Ticket</label>
                             <input type="text" class="form-control" id="ticket" name="ticket"
-                                value="{{ $rate->ticket->name }} - {{ $rate->mode->name }}" disabled>
+                                value="{{ $rate->mode->name }}" disabled>
                         </div>
                         <div class="col-md-6">
                             <label for="scheme" class="form-label">User</label>
@@ -46,7 +46,7 @@
                         <div class="col-md-3">
                             <label for="rate" class="form-label">Rate *</label>
                             <input type="text" class="form-control @error('rate') is-invalid @enderror" id="rate"
-                                name="rate" value="{{ $rate->rate }}">
+                                name="rate" value="{{ $rate->super_agent_rate }}">
                             @error('rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
