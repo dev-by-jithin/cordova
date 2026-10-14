@@ -37,7 +37,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col">S.NO</th>
-                                    <th scope="col">Scheme</th>
                                     <th scope="col">Mode</th>
                                     <th scope="col">Position</th>
                                     <th scope="col">Winner Amount</th>
@@ -51,7 +50,6 @@
                                 @forelse($prices as $price)
                                 <tr>
                                     <td>{{ $prices->firstItem() + $loop->index }}</td>
-                                    <td>{{ $price->scheme->name }}</td>
                                     <td>{{ $price->mode->name }}</td>
                                     <td>{{ $price->position }}</td>
                                     <td>{{ $price->winner_amount }}</td>

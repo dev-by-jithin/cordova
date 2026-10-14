@@ -146,9 +146,9 @@
                                         <td>{{ $number->agent->username }}</td>
                                         <td>{{ $number->number }}</td>
                                         <td>{{ $number->count }}</td>
-                                        <td>{{ $number->a_rate_total }}</td>
-                                        <td>{{ $number->collection_total }}</td>
-                                        <td>{{ $number->a_commission_total }}</td>
+                                        <td>{{ $number->a_rate }}</td>
+                                        <td>{{ $number->collection }}</td>
+                                        <td>{{ $number->a_commission }}</td>
                                         <td>#{{ $number->bill_id }}</td>
                                         <td>{{ $number->created_at->format('d-m-Y h:i:s A') }}</td>
                                     </tr>

@@ -45,7 +45,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">S.NO</th>
-                                    <th scope="col">Ticket-Name</th>
+                                    <th scope="col">Mode</th>
                                     <th scope="col">User</th>
                                     <th scope="col">Role</th>
                                     <th scope="col">Ticket Rate</th>
@@ -59,11 +59,11 @@
                                 @forelse($rates as $rate)
                                     <tr>
                                         <td>{{ $rates->firstItem() + $loop->index }}</td>
-                                        <td>{{ $rate->ticket->name }} - {{ $rate->mode->name }}</td>
+                                        <td>{{ $rate->mode->name }}</td>
                                         <td>{{ $rate->user->username }}</td>
                                         <td>{{ $rate->user->role }}</td>
                                         <td>{{ $rate->ticket_rate }}</td>
-                                        <td>{{ $rate->rate }}</td>
+                                        <td>{{ $rate->super_agent_rate }}</td>
                                         <td>{{ $rate->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $rate->updated_at->format('d-m-Y') }}</td>
                                         <td class="text-center">

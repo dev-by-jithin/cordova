@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rate;
-use App\Models\Scheme;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +12,6 @@ class RateController extends Controller
     public function index(Request $request)
     {
         $rates = Rate::with([
-            'ticket:id,name',
             'mode:id,name',
             'user:id,username,role'
         ])
@@ -24,13 +22,10 @@ class RateController extends Controller
 
                 $query->where(function ($q) use ($request) {
 
-                    $q->whereHas('ticket', function ($ticket) use ($request) {
-                        $ticket->where('name', 'like', '%' . $request->search . '%');
+                    $q->orWhereHas('mode', function ($mode) use ($request) {
+                        $mode->where('name', 'like', '%' . $request->search . '%');
                     })
-                        ->orWhereHas('mode', function ($mode) use ($request) {
-                            $mode->where('name', 'like', '%' . $request->search . '%');
-                        })
-                        ->orWhere('rate', 'like', '%' . $request->search . '%');
+                    ->orWhere('rate', 'like', '%' . $request->search . '%');
 
                 });
 

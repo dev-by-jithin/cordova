@@ -42,7 +42,6 @@
                                     <th scope="col">User Name</th>
                                     <th scope="col">Super Agent</th>
                                     <th scope="col">Role</th>
-                                    <th scope="col">Scheme</th>
                                     <th scope="col">Login Status</th>
                                     <th scope="col">Sale Status</th>
                                     <th scope="col">Created</th>
@@ -57,7 +56,6 @@
                                     <td>{{ $user->username }}</td>
                                     <td>{{ $user->superAgent?->username ?? '-' }}</td>
                                     <td>{{ $user->role }}</td>
-                                    <td>{{ $user->scheme->name }}</td>
                                     <td><span class="badge rounded-pill text-bg-{{ $user->login_status == 'Active' ? 'success' : 'danger' }}">{{ $user->login_status }}</span></td>
                                     <td><span class="badge rounded-pill text-bg-{{ $user->sale_status == 'Active' ? 'success' : 'danger' }}">{{ $user->sale_status }}</span></td>
                                     <td>{{ $user->created_at->format('d-m-Y') }}</td>

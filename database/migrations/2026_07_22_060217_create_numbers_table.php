@@ -30,6 +30,8 @@ return new class extends Migration
             $table->decimal('a_prize_commission', 10, 2)->nullable();
             $table->decimal('winner_prize', 10, 2)->nullable();
             $table->date('ticket_date');
+            $table->enum('payment_status', ['Pending', 'Paid'])->default('Pending');
+            $table->bigInteger('payment_id')->nullable();
             $table->timestamps();
 
             $table->index(['ticket_id', 'number', 'ticket_date']);

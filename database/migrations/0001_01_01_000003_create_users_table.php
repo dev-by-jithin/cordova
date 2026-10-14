@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->integer('super_agent_id')->nullable();
-            $table->foreignId('scheme_id')->nullable()->constrained('schemes')->nullOnDelete();
             $table->string('name')->nullable();
             $table->string('username')->unique();
             $table->string('email')->unique()->nullable();

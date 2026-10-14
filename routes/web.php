@@ -45,6 +45,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('/rates/update', [RateController::class, 'update'])->name('rate.update');
 
     Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
+    Route::post('/payment/settled', [PaymentController::class, 'settled'])->name('payment.settled');
 
     Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
     Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');

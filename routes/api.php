@@ -13,7 +13,6 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('groups', [CommonController::class, 'groups']);
     Route::get('agents', [CommonController::class, 'agents']);
     Route::get('agent', [CommonController::class, 'agent']);
-    Route::get('schemes', [CommonController::class, 'schemes']);
     Route::get('tickets', [CommonController::class, 'tickets']);
     Route::get('rates', [CommonController::class, 'rates']);
     Route::get('add', [CommonController::class, 'add']);

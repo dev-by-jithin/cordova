@@ -27,7 +27,6 @@ class UserSeeder extends Seeder
             'username' => 'jit',
             'password' => bcrypt('122'),
             'decrypted' => '122',
-            'scheme_id' => 1,
             'role' => 'Super Agent',
             'created_at' => now()
         ]);

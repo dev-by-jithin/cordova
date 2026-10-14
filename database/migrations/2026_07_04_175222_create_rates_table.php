@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('tickets')->cascadeOnDelete();
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('ticket_rate', 10, 2)->nullable();
-            $table->decimal('rate', 10, 2)->nullable();
-            $table->unique(['ticket_id', 'mode_id', 'user_id']);
+            $table->decimal('super_agent_rate', 10, 2)->nullable();
+            $table->unique(['mode_id', 'user_id']);
             $table->timestamps();
         });
     }

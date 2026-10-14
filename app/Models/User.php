@@ -27,7 +27,6 @@ class User extends Authenticatable
         'decrypted',
         'role',
         'super_agent_id',
-        'scheme_id',
         'login_status',
         'sale_status'
     ];
@@ -53,11 +52,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function scheme()
-    {
-        return $this->belongsTo(Scheme::class);
     }
 
     public function superAgent()
