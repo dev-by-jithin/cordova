@@ -40,7 +40,6 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Group</th>
                                     <th scope="col">Order</th>
-                                    <th scope="col">Is Active</th>
                                     <th scope="col">Created</th>
                                 </tr>
                             </thead>
@@ -51,7 +50,6 @@
                                     <td>{{ $mode->name }}</td>
                                     <td>{{ $mode->group->name }}</td>
                                     <td>{{ $mode->sort_order }}</td>
-                                    <td><span class="badge rounded-pill text-bg-{{ $mode->is_active == 'Yes' ? 'success' : 'danger' }}">{{ $mode->is_active }}</span></td>
                                     <td>{{ $mode->created_at->format('d-m-Y') }}</td>
                                 </tr>
                                 @empty

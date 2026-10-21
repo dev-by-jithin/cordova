@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('ticket_rate', 10, 2)->nullable();
-            $table->decimal('super_agent_rate', 10, 2)->nullable();
+            $table->decimal('user_rate', 10, 2)->nullable()->comment('this act as super agent rate and agent rate');
             $table->unique(['mode_id', 'user_id']);
             $table->timestamps();
         });

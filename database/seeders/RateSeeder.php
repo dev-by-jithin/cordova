@@ -22,17 +22,17 @@ class RateSeeder extends Seeder
 
             if (in_array($modeId, [1, 2, 3])) {
                 $ticketRate = 12;
-                $SuperAgentRate = 10.5;
+                $userRate = 10.5;
             } else {
                 $ticketRate = 10;
-                $SuperAgentRate = 7.7;
+                $userRate = 7.7;
             }
 
             $data[] = [
                 'mode_id' => $modeId,
                 'user_id' => 2,
                 'ticket_rate' => $ticketRate,
-                'super_agent_rate' => $SuperAgentRate,
+                'user_rate' => $userRate,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -43,7 +43,7 @@ class RateSeeder extends Seeder
             $data,
             ['mode_id', 'user_id'],
             [
-                'super_agent_rate',
+                'user_rate',
                 'updated_at'
             ]
         );

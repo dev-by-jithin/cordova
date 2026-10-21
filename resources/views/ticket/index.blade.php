@@ -40,7 +40,6 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Result Time</th>
                                     <th scope="col">Order</th>
-                                    <th scope="col">Is Active</th>
                                     <th scope="col">Created</th>
                                 </tr>
                             </thead>
@@ -51,7 +50,6 @@
                                     <td>{{ $ticket->name }}</td>
                                     <td>{{ $ticket->result_time->format('h:i A') }}</td>
                                     <td>{{ $ticket->sort_order }}</td>
-                                    <td><span class="badge rounded-pill text-bg-{{ $ticket->is_active == 'Yes' ? 'success' : 'danger' }}">{{ $ticket->is_active }}</span></td>
                                     <td>{{ $ticket->created_at->format('d-m-Y') }}</td>
                                 </tr>
                                 @empty

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prices', function (Blueprint $table) {
+        Schema::create('prizes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mode_id')->constrained('modes')->cascadeOnDelete();
             $table->tinyInteger('position');
             $table->tinyInteger('count')->default('1');
-            $table->decimal('winner_amount', 10, 2)->nullable();
-            $table->decimal('super_agent_amount', 10, 2)->nullable();
-            $table->decimal('agent_amount', 10, 2)->nullable();
+            $table->decimal('prize', 10, 2)->nullable();
+            $table->decimal('agent_commission', 10, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('prices');
+        Schema::dropIfExists('prizes');
     }
 };

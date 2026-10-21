@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Prices')
+@section('title', 'Prizes')
 
 @section('breadcrumb')
     <!-- <div class="container-fluid px-4">
@@ -18,10 +18,10 @@
         <div class="col-md-12">
             <div class="card mb-2">
                 <div class="card-header d-flex justify-content-between">
-                    <h5 class="fw-bold mb-0">Prices</h5>
+                    <h5 class="fw-bold mb-0">Prizes</h5>
                 </div>
                 <div class="card-body pt-2 pb-1">
-                    <form action="{{ route('price.index') }}" method="GET">
+                    <form action="{{ route('prize.index') }}" method="GET">
                         <div class="row mb-1 g-1">
                             <div class="col-md-3">
                                     <input type="text" class="form-control" name="search" value="{{ request('search') }}"
@@ -39,31 +39,29 @@
                                     <th scope="col">S.NO</th>
                                     <th scope="col">Mode</th>
                                     <th scope="col">Position</th>
-                                    <th scope="col">Winner Amount</th>
-                                    <th scope="col">Super Agent Amount</th>
-                                    <th scope="col">Agent Amount</th>
+                                    <th scope="col">Prize Amount</th>
+                                    <th scope="col">Agent Commission</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($prices as $price)
+                                @forelse($prizes as $prize)
                                 <tr>
-                                    <td>{{ $prices->firstItem() + $loop->index }}</td>
-                                    <td>{{ $price->mode->name }}</td>
-                                    <td>{{ $price->position }}</td>
-                                    <td>{{ $price->winner_amount }}</td>
-                                    <td>{{ $price->super_agent_amount }}</td>
-                                    <td>{{ $price->agent_amount }}</td>
-                                    <td>{{ $price->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $prizes->firstItem() + $loop->index }}</td>
+                                    <td>{{ $prize->mode->name }}</td>
+                                    <td>{{ $prize->position }}</td>
+                                    <td>{{ $prize->prize }}</td>
+                                    <td>{{ $prize->agent_commission }}</td>
+                                    <td>{{ $prize->created_at->format('d-m-Y') }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('price.edit', $price->id) }}" class="btn btn-secondary btn-sm py-0 px-1" title="Edit"><i class="icon cil-pencil"></i></a>
+                                        <a href="{{ route('prize.edit', $prize->id) }}" class="btn btn-secondary btn-sm py-0 px-1" title="Edit"><i class="icon cil-pencil"></i></a>
                                     </td>
                                 </tr>
                                 @empty
                                     <tr>
                                         <td colspan="9" class="text-center">
-                                            No prices found
+                                            No prizes found
                                         </td>
                                     </tr>
                                 @endforelse
@@ -72,7 +70,7 @@
 
                     </div>
                     <div class="mt-1">
-                       {{ $prices->links() }}
+                       {{ $prizes->links() }}
                     </div>
                 </div>
             </div>

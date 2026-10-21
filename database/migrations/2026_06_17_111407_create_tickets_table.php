@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('short_name')->unique();
             $table->time('result_time');
             $table->tinyInteger('sort_order');
-            $table->enum('is_active',['Yes', 'No'])->default('Yes');
             $table->timestamps();
         });
     }

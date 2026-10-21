@@ -6,11 +6,10 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\NumberController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PriceController;
+use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResultController;
-use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -48,17 +47,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/payment/pending', [PaymentController::class, 'pending'])->name('payment.pending');
     Route::post('/payment/settled', [PaymentController::class, 'settled'])->name('payment.settled');
 
-    Route::get('/scheme', [SchemeController::class, 'index'])->name('scheme.index');
-    Route::get('/scheme/create', [SchemeController::class, 'create'])->name('scheme.create');
-    Route::post('/scheme/store', [SchemeController::class, 'store'])->name('scheme.store');
-    Route::get('/scheme-details', [SchemeController::class, 'show'])->name('scheme.show');
-    Route::get('/scheme/{id}/edit', [SchemeController::class, 'edit'])->name('scheme.edit');
-    Route::put('/scheme/update', [SchemeController::class, 'update'])->name('scheme.update');
-    Route::put('/scheme/status', [SchemeController::class, 'status'])->name('scheme.status');
-
-    Route::get('/price', [PriceController::class, 'index'])->name('price.index');
-    Route::get('/price/{id}/edit', [PriceController::class, 'edit'])->name('price.edit');
-    Route::put('/price/update', [PriceController::class, 'update'])->name('price.update');
+    Route::get('/prize', [PrizeController::class, 'index'])->name('prize.index');
+    Route::get('/prize/{id}/edit', [PrizeController::class, 'edit'])->name('prize.edit');
+    Route::put('/prize/update', [PrizeController::class, 'update'])->name('prize.update');
 
     Route::get('/result', [ResultController::class, 'index'])->name('result.index');
     Route::post('/result/publish', [ResultController::class, 'publish'])->name('result.publish');

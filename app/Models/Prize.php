@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Price extends Model
+class Prize extends Model
 {
     public function mode()
     {

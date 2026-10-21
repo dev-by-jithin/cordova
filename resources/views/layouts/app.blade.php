@@ -130,8 +130,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('price.index') ? 'active' : '' }}"
-                    href="{{ route('price.index') }}">
+                <a class="nav-link {{ request()->routeIs('prize.index') ? 'active' : '' }}"
+                    href="{{ route('prize.index') }}">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="var(--ci-primary-color,currentColor)"
                             d="M176 152h224v32H176zm0 88h224v32H176zm0 88h224v32H176zm0 88h128v32H176z"
@@ -140,10 +140,10 @@
                             d="M480 48H32v416h448ZM64 432V80h384v352ZM96 144h48v48H96zm0 88h48v48H96zm0 88h48v48H96zm24-188c18 0 32 14 32 32s-14 32-32 32-32-14-32-32 14-32 32-32Z"
                             class="ci-primary"></path>
                     </svg>
-                    Price
+                    Prize
                 </a>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('rate.index') ? 'active' : '' }}"
                     href="{{ route('rate.index') }}">

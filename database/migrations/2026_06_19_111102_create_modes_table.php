@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
             $table->string('name')->unique();
-            $table->enum('is_active', ['Yes', 'No'])->default('Yes');
             $table->tinyInteger('sort_order')->nullable();
             $table->timestamps();
         });

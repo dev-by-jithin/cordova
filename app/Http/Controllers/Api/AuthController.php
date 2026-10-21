@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Mode;
 use App\Models\Rate;
-use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,8 +16,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|unique:users,username',
-            'password' => 'min:3|max:10|confirmed',
-            'scheme_id' => 'required|exists:schemes,id'
+            'password' => 'min:3|max:10|confirmed'
         ]);
 
         if ($validator->fails()) {
@@ -28,48 +26,45 @@ class AuthController extends Controller
         $superAgentId = $request->user()->id;
 
         try {
+
             $user = User::create([
                 'username' => $request->user_name,
                 'super_agent_id' => $superAgentId,
-                'scheme_id' => $request->scheme_id,
                 'role' => 'Agent',
                 'password' => bcrypt($request->password),
                 'decrypted' => $request->password
             ]);
 
-            $tickets = Ticket::pluck('id');
             $modes = Mode::pluck('id');
 
             $data = [];
 
-            foreach ($tickets as $ticketId) {
-                foreach ($modes as $modeId) {
+            foreach ($modes as $modeId) {
 
-                    if (in_array($modeId, [1, 2, 3])) {
-                        $ticketRate = 12;
-                        $rate = 10.5;
-                    } else {
-                        $ticketRate = 10;
-                        $rate = 7.7;
-                    }
-
-                    $data[] = [
-                        'ticket_id' => $ticketId,
-                        'mode_id' => $modeId,
-                        'user_id' => $user->id,
-                        'ticket_rate' => $ticketRate,
-                        'rate' => $rate,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                if (in_array($modeId, [1, 2, 3])) {
+                    $ticketRate = 12;
+                    $rate = 10.5;
+                } else {
+                    $ticketRate = 10;
+                    $rate = 7.7;
                 }
+
+                $data[] = [
+                    'mode_id' => $modeId,
+                    'user_id' => $user->id,
+                    'ticket_rate' => $ticketRate,
+                    'super_agent_rate' => $rate,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
+
 
             Rate::upsert(
                 $data,
-                ['ticket_id', 'mode_id', 'user_id'],
+                ['mode_id', 'user_id'],
                 [
-                    'rate',
+                    'super_agent_rate',
                     'updated_at'
                 ]
             );
@@ -91,8 +86,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|unique:users,username,' . $request->user_id,
-            'password' => 'min:3|max:10',
-            'scheme_id' => 'required|exists:schemes,id'
+            'password' => 'min:3|max:10'
         ]);
 
         if ($validator->fails()) {
@@ -103,7 +97,6 @@ class AuthController extends Controller
             User::where('id', $request->user_id)
             ->update([
                 'username' => $request->user_name,
-                'scheme_id' => $request->scheme_id,
                 'password' => bcrypt($request->password),
                 'decrypted' => $request->password
             ]);

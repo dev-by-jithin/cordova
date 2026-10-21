@@ -38,7 +38,6 @@
                                 <tr>
                                     <th scope="col">S.NO</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Is Active</th>
                                     <th scope="col">Created</th>
                                 </tr>
                             </thead>
@@ -47,7 +46,6 @@
                                 <tr>
                                     <td>{{ $groups->firstItem() + $loop->index }}</td>
                                     <td>{{ $group->name }}</td>
-                                    <td><span class="badge rounded-pill text-bg-{{ $group->is_active == 'Yes' ? 'success' : 'danger' }}">{{ $group->is_active }}</span></td>
                                     <td>{{ $group->created_at->format('d-m-Y') }}</td>
                                 </tr>
                                 @empty

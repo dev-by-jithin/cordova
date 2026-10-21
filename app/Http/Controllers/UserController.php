@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Mode;
 use App\Models\Rate;
-use App\Models\Scheme;
-use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -79,17 +77,17 @@ class UserController extends Controller
 
                 if (in_array($modeId, [1, 2, 3])) {
                     $ticketRate = 12;
-                    $rate = $user->role == 'Agent' ? 11 : 10.5;
+                    $userRate = $user->role == 'Agent' ? 11 : 10.5;
                 } else {
                     $ticketRate = 10;
-                    $rate = $user->role == 'Agent' ? 8 : 7.5;
+                    $userRate = $user->role == 'Agent' ? 8 : 7.5;
                 }
 
                 $data[] = [
                     'mode_id' => $modeId,
                     'user_id' => $user->id,
                     'ticket_rate' => $ticketRate,
-                    'super_agent_rate' => $rate,
+                    'user_rate' => $userRate,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -100,7 +98,7 @@ class UserController extends Controller
                 $data,
                 ['mode_id', 'user_id'],
                 [
-                    'rate',
+                    'user_rate',
                     'updated_at'
                 ]
             );

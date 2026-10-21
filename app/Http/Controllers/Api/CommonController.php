@@ -10,7 +10,6 @@ use App\Models\Number;
 use App\Models\Price;
 use App\Models\Rate;
 use App\Models\Result;
-use App\Models\Scheme;
 use App\Models\Ticket;
 use App\Models\User;
 use Auth;
@@ -32,10 +31,9 @@ class CommonController extends Controller
     {
         $superAgentId = Auth::id();
         $agents = User::with([
-            'superAgent:id,username',
-            'scheme:id,name'
+            'superAgent:id,username'
         ])
-            ->select('id', 'username', 'super_agent_id', 'scheme_id')
+            ->select('id', 'username', 'super_agent_id')
             ->where('role', 'Agent')
             ->where('super_agent_id', $superAgentId)
             ->get();
@@ -59,15 +57,7 @@ class CommonController extends Controller
                 'role'
             )
             ->find($request->userId);
-
-        $schemes = Scheme::select('id', 'name')->where('is_active', 'Yes')->get();
-        return response(['agent' => $agent, 'schemes' => $schemes], 200);
-    }
-
-    public function schemes(Request $request)
-    {
-        $schemes = Scheme::select('id', 'name')->where('is_active', 'Yes')->get();
-        return response($schemes, 200);
+        return response(['agent' => $agent], 200);
     }
 
     public function tickets(Request $request)

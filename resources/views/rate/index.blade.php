@@ -49,7 +49,7 @@
                                     <th scope="col">User</th>
                                     <th scope="col">Role</th>
                                     <th scope="col">Ticket Rate</th>
-                                    <th scope="col">Commission Rate</th>
+                                    <th scope="col">User Rate</th>
                                     <th scope="col">Created</th>
                                     <th scope="col">Updated</th>
                                     <th scope="col">Action</th>
@@ -63,7 +63,7 @@
                                         <td>{{ $rate->user->username }}</td>
                                         <td>{{ $rate->user->role }}</td>
                                         <td>{{ $rate->ticket_rate }}</td>
-                                        <td>{{ $rate->super_agent_rate }}</td>
+                                        <td>{{ $rate->user_rate }}</td>
                                         <td>{{ $rate->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $rate->updated_at->format('d-m-Y') }}</td>
                                         <td class="text-center">
