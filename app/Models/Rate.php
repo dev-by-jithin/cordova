@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rate extends Model
 {
-    protected $fillable = ['rate'];
+    protected $fillable = ['user_rate'];
 
     public function ticket()
     {

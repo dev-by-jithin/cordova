@@ -43,17 +43,17 @@ class AuthController extends Controller
 
                 if (in_array($modeId, [1, 2, 3])) {
                     $ticketRate = 12;
-                    $rate = 10.5;
+                    $rate = 11;
                 } else {
                     $ticketRate = 10;
-                    $rate = 7.7;
+                    $rate = 8;
                 }
 
                 $data[] = [
                     'mode_id' => $modeId,
                     'user_id' => $user->id,
                     'ticket_rate' => $ticketRate,
-                    'super_agent_rate' => $rate,
+                    'user_rate' => $rate,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -64,7 +64,7 @@ class AuthController extends Controller
                 $data,
                 ['mode_id', 'user_id'],
                 [
-                    'super_agent_rate',
+                    'user_rate',
                     'updated_at'
                 ]
             );

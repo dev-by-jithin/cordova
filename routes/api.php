@@ -17,13 +17,14 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('rates', [CommonController::class, 'rates']);
     Route::get('add', [CommonController::class, 'add']);
     Route::put('rates/{rate}', [CommonController::class, 'updateAgentRate']);
-    Route::get('prices', [CommonController::class, 'prices']);
+    Route::get('prizes', [CommonController::class, 'prizes']);
     Route::post('save-number', [CommonController::class, 'saveNumber']);
     Route::post('save-remark', [CommonController::class, 'saveRemark']);
     Route::post('update-number', [CommonController::class, 'updateNumber']);
     Route::delete('delete-number', [CommonController::class, 'deleteNumber']);
     Route::delete('delete-bill', [CommonController::class, 'deleteBill']);
     Route::get('bill-details', [CommonController::class, 'billDetails']);
+    Route::get('bills', [CommonController::class, 'bills']);
     Route::get('result', [CommonController::class, 'result']);
     Route::get('sales-summary', [CommonController::class, 'salesSummary']);
     Route::get('sales-users', [CommonController::class, 'salesUsers']);

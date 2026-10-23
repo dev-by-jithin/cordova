@@ -136,7 +136,7 @@ class PrizeSeeder extends Seeder
                     [
                         'mode_id' => $mode->id,
                         'position' => 6,
-                        'count' => 30,
+                        'count' => 1,
                         'prize' => 20,
                         'agent_commission' => 10,
                         'created_at' => now()

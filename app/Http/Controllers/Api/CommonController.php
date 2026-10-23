@@ -7,7 +7,7 @@ use App\Models\Bill;
 use App\Models\Group;
 use App\Models\Mode;
 use App\Models\Number;
-use App\Models\Price;
+use App\Models\Prize;
 use App\Models\Rate;
 use App\Models\Result;
 use App\Models\Ticket;
@@ -43,15 +43,13 @@ class CommonController extends Controller
     public function agent(Request $request)
     {
         $agent = User::with([
-            'superAgent:id,username',
-            'scheme:id,name'
+            'superAgent:id,username'
         ])
             ->select(
                 'id',
                 'username',
                 'decrypted',
                 'super_agent_id',
-                'scheme_id',
                 'login_status',
                 'sale_status',
                 'role'
@@ -69,7 +67,6 @@ class CommonController extends Controller
     public function rates(Request $request)
     {
         $role = Auth::user()->role;
-        $ticketId = $request->ticket_id;
 
         if ($role == 'Super Agent') {
             $superAgentId = $request->user()->id;
@@ -81,22 +78,20 @@ class CommonController extends Controller
 
         $rates = DB::table('rates as sr')
             ->select(
-                'tickets.name as ticket_name',
                 'modes.name as mode_name',
 
                 'sr.id as super_rate_id',
                 'sr.ticket_rate',
-                'sr.rate as super_agent_rate',
+                'sr.user_rate as super_agent_rate',
 
                 'ar.id as agent_rate_id',
-                'ar.rate as agent_rate'
+                'ar.user_rate as agent_rate'
             )
-            ->join('tickets', 'tickets.id', '=', 'sr.ticket_id')
+
             ->join('modes', 'modes.id', '=', 'sr.mode_id')
 
             ->leftJoin('rates as ar', function ($join) use ($agentId) {
-                $join->on('ar.ticket_id', '=', 'sr.ticket_id')
-                    ->on('ar.mode_id', '=', 'sr.mode_id');
+                $join->on('ar.mode_id', '=', 'sr.mode_id');
 
                 if ($agentId) {
                     $join->where('ar.user_id', '=', $agentId);
@@ -104,8 +99,6 @@ class CommonController extends Controller
                     $join->whereRaw('1 = 0');
                 }
             })
-
-            ->where('sr.ticket_id', $ticketId)
             ->where('sr.user_id', $superAgentId)
             ->orderBy('sr.mode_id', 'DESC')
             ->get();
@@ -113,47 +106,44 @@ class CommonController extends Controller
 
     }
 
-    public function prices(Request $request)
+    public function prizes(Request $request)
     {
         $ticketId = $request->ticketId;
 
         $userId = Auth::user()->id;
 
-        $schemeId = Auth::user()->scheme_id;
-
         $modes = Mode::with(['group:id,name'])->select('id', 'group_id', 'name')->orderBy('sort_order', 'DESC')->get();
 
-        $prices = Price::where('scheme_id', $schemeId)->get();
+        $prizes = Prize::get();
 
-        $priceArray = [];
+        $prizeArray = [];
 
         foreach ($modes as $mode) {
 
             if (Auth::user()->role == 'Super Agent') {
-                $rate = Rate::where('ticket_id', $ticketId)
-                    ->where('user_id', $userId)
+                $rate = Rate::where('user_id', $userId)
                     ->where('mode_id', $mode->id)
-                    ->value('rate');
+                    ->value('user_rate');
             } else {
                 $rate = '';
             }
 
 
-            foreach ($prices as $price) {
+            foreach ($prizes as $prize) {
 
-                if ($mode->id == $price->mode_id) {
+                if ($mode->id == $prize->mode_id) {
 
-                    $priceArray[$mode->name . "@" . $mode->group->name . "@" . $rate][] = [
-                        'position' => $price->position,
-                        'count' => $price->count,
-                        'winnerAmount' => $price->winner_amount,
-                        'agentAmount' => $price->agent_amount
+                    $prizeArray[$mode->name . "@" . $mode->group->name . "@" . $rate][] = [
+                        'position' => $prize->position,
+                        'count' => $prize->count,
+                        'winnerAmount' => $prize->prize,
+                        'agentAmount' => $prize->agent_commission
                     ];
                 }
             }
         }
 
-        return response(['prices' => $priceArray], 200);
+        return response(['prices' => $prizeArray], 200);
     }
 
     public function updateAgentRate(Request $request, Rate $rate)
@@ -171,9 +161,13 @@ class CommonController extends Controller
             ], 422);
         }
 
-        $rate->update([
-            'rate' => $request->rate
-        ]);
+
+        // $rate->update([
+        //     'user_rate' => $request->rate
+        // ]);
+
+        $rate->user_rate = $request->rate;
+        $rate->save();
 
         return response()->json([
             'status' => true,
@@ -200,13 +194,12 @@ class CommonController extends Controller
         $end = $request->end;
         $box = $request->box;
 
-        $rates = Rate::select('ticket_rate', 'rate')
-            ->where('ticket_id', $ticketId)
+        $rates = Rate::select('ticket_rate', 'user_rate')
             ->where('user_id', $agentId)
             ->where('mode_id', $modeId)
             ->first();
         if ($rates) {
-            $rate = $rates->rate;
+            $rate = $rates->user_rate;
             $collection = $rates->ticket_rate;
             $commission = $collection - $rate;
         }
@@ -218,30 +211,27 @@ class CommonController extends Controller
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
-                $ratesA = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesA = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 1)
                     ->first();
-                $rateA = $ratesA->rate;
+                $rateA = $ratesA->user_rate;
                 $collectionA = $ratesA->ticket_rate;
                 $commissionA = $collectionA - $rateA;
 
-                $ratesB = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesB = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 2)
                     ->first();
-                $rateB = $ratesB->rate;
+                $rateB = $ratesB->user_rate;
                 $collectionB = $ratesB->ticket_rate;
                 $commissionB = $collectionB - $rateB;
 
-                $ratesC = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesC = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 3)
                     ->first();
-                $rateC = $ratesC->rate;
+                $rateC = $ratesC->user_rate;
                 $collectionC = $ratesC->ticket_rate;
                 $commissionC = $collectionC - $rateC;
 
@@ -299,30 +289,27 @@ class CommonController extends Controller
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
-                $ratesAB = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesAB = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 4)
                     ->first();
-                $rateAB = $ratesAB->rate;
+                $rateAB = $ratesAB->user_rate;
                 $collectionAB = $ratesAB->ticket_rate;
                 $commissionAB = $collectionAB - $rateAB;
 
-                $ratesBC = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesBC = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 5)
                     ->first();
-                $rateBC = $ratesBC->rate;
+                $rateBC = $ratesBC->user_rate;
                 $collectionBC = $ratesBC->ticket_rate;
                 $commissionBC = $collectionBC - $rateBC;
 
-                $ratesAC = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesAC = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 6)
                     ->first();
-                $rateAC = $ratesAC->rate;
+                $rateAC = $ratesAC->user_rate;
                 $collectionAC = $ratesAC->ticket_rate;
                 $commissionAC = $collectionAC - $rateAC;
 
@@ -478,21 +465,19 @@ class CommonController extends Controller
             if ($modeId == 'all') {
 
                 $ticket = Ticket::where('id', $ticketId)->value('short_name');
-                $ratesSuper = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesSuper = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 8)
                     ->first();
-                $rateSuper = $ratesSuper->rate;
+                $rateSuper = $ratesSuper->user_rate;
                 $collectionSuper = $ratesSuper->ticket_rate;
                 $commissionSuper = $collectionSuper - $rateSuper;
 
-                $ratesBox = Rate::select('ticket_rate', 'rate')
-                    ->where('ticket_id', $ticketId)
+                $ratesBox = Rate::select('ticket_rate', 'user_rate')
                     ->where('user_id', $agentId)
                     ->where('mode_id', 7)
                     ->first();
-                $rateBox = $ratesBox->rate;
+                $rateBox = $ratesBox->user_rate;
                 $collectionBox = $ratesBox->ticket_rate;
                 $commissionBox = $collectionBox - $rateBox;
 
@@ -685,13 +670,11 @@ class CommonController extends Controller
                     $numbers = collect($request->numbers)
                         ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
 
-                            $aRate = Rate::select('ticket_rate', 'rate')
-                                ->where('ticket_id', $ticketId)
+                            $aRate = Rate::select('ticket_rate', 'user_rate')
                                 ->where('user_id', $agentId)
                                 ->where('mode_id', $row['mode_id'])
                                 ->first();
-                            $saRate = Rate::select('rate')
-                                ->where('ticket_id', $ticketId)
+                            $saRate = Rate::select('user_rate')
                                 ->where('user_id', $superAgentId)
                                 ->where('mode_id', $row['mode_id'])
                                 ->first();
@@ -707,10 +690,10 @@ class CommonController extends Controller
                                     'number' => $row['number'],
                                     'count' => $row['count'],
                                     'collection' => $aRate->ticket_rate * $row['count'],
-                                    'a_rate' => $aRate->rate * $row['count'],
-                                    'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $row['count'],
-                                    'sa_rate' => $saRate->rate * $row['count'],
-                                    'sa_commission' => ($aRate->rate - $saRate->rate) * $row['count'],
+                                    'a_rate' => $aRate->user_rate * $row['count'],
+                                    'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $row['count'],
+                                    'sa_rate' => $saRate->user_rate * $row['count'],
+                                    'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $row['count'],
                                     'ticket_date' => date('Y-m-d'),
                                     'created_at' => $now,
                                     'updated_at' => $now,
@@ -771,6 +754,103 @@ class CommonController extends Controller
             'status' => true,
             'message' => 'Remark saved successfully.',
         ]);
+    }
+
+
+    public function bills(Request $request)
+    {
+        $ticketId = $request->ticketId;
+
+        if (Auth::user()->role == 'Agent') {
+
+            $agentId = Auth::id();
+            $bills = Bill::where('agent_id', $agentId)
+            ->whereDate('ticket_date', date('Y-m-d'))
+            ->where('ticket_id', $ticketId)
+            ->withSum('numbers as total_count', 'count')
+            ->withSum('numbers as total_collection', 'collection')
+            ->get()
+            ->map(function ($bill) {
+                $bill->formatted_created_at = $bill->created_at?->format('d-M-Y h:i A');
+                return $bill;
+            });
+             return response()->json(['status' => true,'bills' => $bills], 200);
+
+        } else {
+
+            $superAgentId = Auth::id();
+            $bills = Bill::where('super_agent_id', '=', $superAgentId)
+            ->whereDate('ticket_date', date('Y-m-d'))
+            ->where('ticket_id', $ticketId)
+            ->withSum('numbers as total_count', 'count')
+            ->withSum('numbers as total_collection', 'collection')
+            ->get()
+            ->map(function ($bill) {
+                $bill->formatted_created_at = $bill->created_at?->format('d-M-Y h:i A');
+                return $bill;
+            });
+            return response()->json(['status' => true,'bills' => $bills], 200);
+        }
+    }
+
+    public function billDetails(Request $request)
+    {
+        if (Auth::user()->role == 'Agent') {
+            $agentId = Auth::user()->id;
+            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
+                ->where('agent_id', $agentId)
+                ->where('bill_id', $request->billId)
+                ->get();
+        } else {
+            $superAgentId = Auth::user()->id;
+            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
+                ->where('super_agent_id', $superAgentId)
+                ->where('bill_id', $request->billId)
+                ->get();
+        }
+
+        $bill = Bill::with(['ticket:id,result_time',])->find($request->billId);
+
+        if (count($numbers) > 0) {
+
+            $currentTime = now()->format('H:i:s');
+            $closeTime = Carbon::parse($bill->ticket->result_time)->format('H:i:s');
+
+            if (date('Y-m-d') == date('Y-m-d', strtotime($bill->created_at)) && $currentTime < $closeTime) {
+                $deleteButtons = true;
+            } else {
+                $deleteButtons = false;
+            }
+
+            $rows = [];
+
+            foreach ($numbers as $number) {
+                $rows[] = [
+                    'mode' => $number->mode->name,
+                    'number' => $number->number,
+                    'number_id' => $number->id,
+                    'count' => $number->count,
+                    'collection' => $number->collection
+                ];
+            }
+
+            return response([
+                'status' => true,
+                'rows' => $rows,
+                'slot' => date('h:i A', strtotime($bill->ticket->result_time)),
+                'created_at' => date('Y-M-d h:i A', strtotime($bill->created_at)),
+                'bill_id' => $bill->id,
+                'remarks' => $bill->remarks,
+                'delete_button' => $deleteButtons
+            ]);
+
+        } else {
+            return response([
+                'status' => false,
+                'message' => 'Unauthorized!'
+            ]);
+        }
+
     }
 
     public function updateNumber(Request $request)
@@ -896,67 +976,9 @@ class CommonController extends Controller
         }
     }
 
-    public function billDetails(Request $request)
-    {
-        if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::user()->id;
-            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-                ->where('agent_id', $agentId)
-                ->where('bill_id', $request->billId)
-                ->get();
-        } else {
-            $superAgentId = Auth::user()->id;
-            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-                ->where('super_agent_id', $superAgentId)
-                ->where('bill_id', $request->billId)
-                ->get();
-        }
 
-        $bill = Bill::with(['ticket:id,result_time',])->find($request->billId);
 
-        if (count($numbers) > 0) {
 
-            $currentTime = now()->format('H:i:s');
-            $closeTime = Carbon::parse($bill->ticket->result_time)->format('H:i:s');
-
-            if (date('Y-m-d') == date('Y-m-d', strtotime($bill->created_at)) && $currentTime < $closeTime) {
-                $deleteButtons = true;
-            } else {
-                $deleteButtons = false;
-            }
-
-            $rows = [];
-
-            foreach ($numbers as $number) {
-                $rows[] = [
-                    'ticket' => $number->ticket->short_name . ' ' . $number->mode->name,
-                    'number' => $number->number,
-                    'number_id' => $number->id,
-                    'count' => $number->count,
-                    'rate' => $number->a_rate,
-                    'collection' => $number->collection,
-                    'commission' => $number->a_commission
-                ];
-            }
-
-            return response([
-                'status' => true,
-                'rows' => $rows,
-                'bill_id' => $bill->id,
-                'result' => date('Y-M-d', strtotime($bill->ticket_date)) . ' ' . date('h:i A', strtotime($bill->ticket->result_time)),
-                'created_at' => date('Y-M-d h:i A', strtotime($bill->created_at)),
-                'remarks' => $bill->remarks,
-                'delete_button' => $deleteButtons
-            ]);
-
-        } else {
-            return response([
-                'status' => false,
-                'message' => 'Unauthorized!'
-            ]);
-        }
-
-    }
 
     public function result(Request $request)
     {
