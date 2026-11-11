@@ -315,21 +315,27 @@ class CommonController extends Controller
 
                 if ($combination === 'range') {
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($ticket . ' AB', $number, $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
+                        $formattedNumber = str_pad($number, 2, '0', STR_PAD_LEFT);
 
-                    }
-
-                    for ($number = $start; $number <= $end; $number++) {
-
-                        $rows[] = $this->makeRow($ticket . ' BC', $number, $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+                        $rows[] = $this->makeRow($ticket . ' AB', $formattedNumber, $count, $groupId, 4, $rateAB, $collectionAB, $commissionAB);
 
                     }
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($ticket . ' AC', $number, $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
+                        $formattedNumber = str_pad($number, 2, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($ticket . ' BC', $formattedNumber, $count, $groupId, 5, $rateBC, $collectionBC, $commissionBC);
+
+                    }
+
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
+
+                        $formattedNumber = str_pad($number, 2, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($ticket . ' AC', $formattedNumber, $count, $groupId, 6, $rateAC, $collectionAC, $commissionAC);
 
                     }
 
@@ -412,9 +418,11 @@ class CommonController extends Controller
 
                 if ($combination === 'range') {
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+                        $formattedNumber = str_pad($number, 2, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($button, $formattedNumber, $count, $groupId, $modeId, $rate, $collection, $commission);
 
                     }
 
@@ -483,15 +491,19 @@ class CommonController extends Controller
 
                 if ($combination === 'range') {
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($ticket . ' SUPER', $number, $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
+                        $formattedNumber = str_pad($number, 3, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($ticket . ' SUPER', $formattedNumber, $count, $groupId, 8, $rateSuper, $collectionSuper, $commissionSuper);
 
                     }
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($ticket . ' BOX', $number, $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
+                        $formattedNumber = str_pad($number, 3, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($ticket . ' BOX', $formattedNumber, $count, $groupId, 7, $rateBox, $collectionBox, $commissionBox);
 
                     }
 
@@ -574,9 +586,11 @@ class CommonController extends Controller
 
                 if ($combination === 'range') {
 
-                    for ($number = $start; $number <= $end; $number++) {
+                    for ($number = (int) $start; $number <= (int) $end; $number++) {
 
-                        $rows[] = $this->makeRow($button, $number, $count, $groupId, $modeId, $rate, $collection, $commission);
+                        $formattedNumber = str_pad($number, 3, '0', STR_PAD_LEFT);
+
+                        $rows[] = $this->makeRow($button, $formattedNumber, $count, $groupId, $modeId, $rate, $collection, $commission);
 
                     }
 
@@ -889,13 +903,11 @@ class CommonController extends Controller
                 ->where('id', $request->numberId)
                 ->firstOrFail();
 
-            $aRate = Rate::select('ticket_rate', 'rate')
-                ->where('ticket_id', $number->ticket_id)
+            $aRate = Rate::select('ticket_rate', 'user_rate')
                 ->where('user_id', $number->agent_id)
                 ->where('mode_id', $number->mode_id)
                 ->first();
-            $saRate = Rate::select('rate')
-                ->where('ticket_id', $number->ticket_id)
+            $saRate = Rate::select('user_rate')
                 ->where('user_id', $number->super_agent_id)
                 ->where('mode_id', $number->mode_id)
                 ->first();
@@ -903,10 +915,10 @@ class CommonController extends Controller
             $number->update([
                 'count' => $count,
                 'collection' => $aRate->ticket_rate * $count,
-                'a_rate' => $aRate->rate * $count,
-                'a_commission' => ($aRate->ticket_rate - $aRate->rate) * $count,
-                'sa_rate' => $saRate->rate * $count,
-                'sa_commission' => ($aRate->rate - $saRate->rate) * $count,
+                'a_rate' => $aRate->user_rate * $count,
+                'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $count,
+                'sa_rate' => $saRate->user_rate * $count,
+                'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $count,
             ]);
             return response()->json(['status' => true]);
         } catch (\Throwable $e) {
@@ -927,6 +939,7 @@ class CommonController extends Controller
                 return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
             }
         }
+
         // lock check
         if ($this->isBillLocked($bill)) {
             return response()->json(['status' => false, 'message' => 'Bill locked'], 422);

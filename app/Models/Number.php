@@ -8,11 +8,11 @@ class Number extends Model
 {
     protected $fillable = [
         'count',
-        'collection_total',
-        'a_rate_total',
-        'a_commission_total',
-        'sa_rate_total',
-        'sa_commission_total'
+        'collection',
+        'a_rate',
+        'a_commission',
+        'sa_rate',
+        'sa_commission'
     ];
     public function bill()
     {
