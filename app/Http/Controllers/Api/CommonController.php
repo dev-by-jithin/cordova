@@ -177,12 +177,7 @@ class CommonController extends Controller
 
     public function add(Request $request)
     {
-        if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::user()->id;
-        } else {
-            $agentId = $request->agentId;
-        }
-
+        $agentId = Auth::user()->id;
         $groupId = $request->groupId;
         $ticketId = $request->ticketId;
         $modeId = $request->modeId;
@@ -659,11 +654,12 @@ class CommonController extends Controller
                 ], 422);
             }
 
-            if (Auth::user()->role == 'Agent') {
-                $agentId = Auth::id();
+
+            $agentId = Auth::id();
+
+            if(Auth::user()->role == 'Agent'){
                 $superAgentId = Auth::user()->super_agent_id;
-            } else {
-                $agentId = $request->agentId;
+            }else{
                 $superAgentId = Auth::id();
             }
 
@@ -688,10 +684,12 @@ class CommonController extends Controller
                                 ->where('user_id', $agentId)
                                 ->where('mode_id', $row['mode_id'])
                                 ->first();
+
                             $saRate = Rate::select('user_rate')
                                 ->where('user_id', $superAgentId)
                                 ->where('mode_id', $row['mode_id'])
                                 ->first();
+
                             if (strlen($row['number']) == $row['group_id']) {
 
                                 return [

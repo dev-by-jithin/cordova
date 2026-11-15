@@ -57,7 +57,7 @@ class RateController extends Controller
 
         try {
             Rate::where('id', $request->id)->update([
-                'rate' => $request->rate
+                'user_rate' => $request->rate
             ]);
             return redirect()->route('rate.index')->with('success', 'Rate updated successfully.');
         } catch (\Throwable $th) {

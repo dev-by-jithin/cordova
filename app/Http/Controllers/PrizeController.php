@@ -52,8 +52,8 @@ class PrizeController extends Controller
 
         try {
             Prize::where('id', $request->id)->update([
-                'prize' => $request->winner_amount,
-                'user_amount' => $request->agent_amount
+                'prize' => $request->prize,
+                'agent_commission' => $request->agent_commission
             ]);
             return redirect()->route('prize.index')->with('success', 'Prize details updated successfully.');
         } catch (\Throwable $th) {
