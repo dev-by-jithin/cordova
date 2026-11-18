@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mode;
 use App\Models\Number;
 use App\Models\Price;
+use App\Models\Prize;
 use App\Models\Result;
 use App\Models\Ticket;
 use App\Models\User;
@@ -224,12 +225,11 @@ class ResultController extends Controller
         return User::where('id', $agentId)->where('role', 'Agent')->value('scheme_id');
     }
 
-    private function getPrize($schemeId, $modeId, $position)
+    private function getPrize($modeId, $position)
     {
-        return Price::where('scheme_id', $schemeId)
-            ->where('mode_id', $modeId)
+        return Prize::where('mode_id', $modeId)
             ->where('position', $position)
-            ->first(['winner_amount', 'agent_amount']);
+            ->first(['prize', 'agent_commission']);
     }
 
     private function updatePrize($id, $position, $count, $agentAmount, $winnerAmount): void
@@ -256,17 +256,13 @@ class ResultController extends Controller
             ->get();
 
         foreach ($numbers as $number) {
-            $schemeId = $this->getSchemeId($number->agent_id);
-            if (!$schemeId) {
-                continue;
-            }
 
-            $prize = $this->getPrize($schemeId, $modeId, $position);
+            $prize = $this->getPrize($modeId, $position);
             if (!$prize) {
                 continue;
             }
 
-            $this->updatePrize($number->id, $position, $number->count, (float) $prize->agent_amount, (float) $prize->winner_amount);
+            $this->updatePrize($number->id, $position, $number->count, (float) $prize->agent_commission, (float) $prize->prize);
         }
     }
 
