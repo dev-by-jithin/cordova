@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             ModeSeeder::class,
             TicketSeeder::class,
             RateSeeder::class,
-            PrizeSeeder::class
+            PrizeSeeder::class,
+            LimitSeeder::class
         ]);
     }
 }

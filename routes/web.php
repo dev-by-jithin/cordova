@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\LimitController;
 use App\Http\Controllers\ModeController;
 use App\Http\Controllers\NumberController;
 use App\Http\Controllers\PaymentController;
@@ -50,6 +51,10 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/prize', [PrizeController::class, 'index'])->name('prize.index');
     Route::get('/prize/{id}/edit', [PrizeController::class, 'edit'])->name('prize.edit');
     Route::put('/prize/update', [PrizeController::class, 'update'])->name('prize.update');
+
+    Route::get('/limit', [LimitController::class, 'index'])->name('limit.index');
+    Route::get('/limit/{id}/edit', [LimitController::class, 'edit'])->name('limit.edit');
+    Route::put('/limit/update', [LimitController::class, 'update'])->name('limit.update');
 
     Route::get('/result', [ResultController::class, 'index'])->name('result.index');
     Route::post('/result/publish', [ResultController::class, 'publish'])->name('result.publish');

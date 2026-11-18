@@ -630,116 +630,280 @@ class CommonController extends Controller
         }
     }
 
-    public function saveNumber(Request $request)
+    // public function saveNumber(Request $request)
+    // {
+    //     if (Auth::user()->login_status == 'Active' && Auth::user()->sale_status == 'Active') {
+
+    //         $request->validate([
+    //             'ticketId' => 'required|exists:tickets,id',
+    //             'numbers' => 'required|array|min:1',
+    //             'numbers.*.group_id' => 'required|exists:groups,id',
+    //             'numbers.*.mode_id' => 'required|exists:modes,id',
+    //             'numbers.*.number' => 'required|string|max:3',
+    //             'numbers.*.count' => 'required|integer|min:1|max:1000'
+    //         ]);
+
+    //         $ticket = Ticket::findOrFail($request->ticketId);
+    //         $currentTime = Carbon::now()->format('H:i:s');
+    //         $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
+
+    //         if ($currentTime >= $closeTime) {
+    //             return response([
+    //                 'status' => false,
+    //                 'message' => 'Ticket window closed.'
+    //             ], 422);
+    //         }
+
+
+    //         $agentId = Auth::id();
+
+    //         if (Auth::user()->role == 'Agent') {
+    //             $superAgentId = Auth::user()->super_agent_id;
+    //         } else {
+    //             $superAgentId = Auth::id();
+    //         }
+
+    //         try {
+
+    //             $bill = DB::transaction(function () use ($request, $agentId, $superAgentId) {
+
+    //                 $bill = Bill::create([
+    //                     'super_agent_id' => $superAgentId,
+    //                     'agent_id' => $agentId,
+    //                     'ticket_id' => $request->ticketId,
+    //                     'ticket_date' => date('Y-m-d')
+    //                 ]);
+
+    //                 $now = now();
+    //                 $ticketId = $request->ticketId;
+
+    //                 $numbers = collect($request->numbers)
+    //                     ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
+
+    //                         $aRate = Rate::select('ticket_rate', 'user_rate')
+    //                             ->where('user_id', $agentId)
+    //                             ->where('mode_id', $row['mode_id'])
+    //                             ->first();
+
+    //                         $saRate = Rate::select('user_rate')
+    //                             ->where('user_id', $superAgentId)
+    //                             ->where('mode_id', $row['mode_id'])
+    //                             ->first();
+
+    //                         if (strlen($row['number']) == $row['group_id']) {
+
+    //                             return [
+    //                                 'bill_id' => $bill->id,
+    //                                 'super_agent_id' => $superAgentId,
+    //                                 'agent_id' => $agentId,
+    //                                 'group_id' => $row['group_id'],
+    //                                 'ticket_id' => $ticketId,
+    //                                 'mode_id' => $row['mode_id'],
+    //                                 'number' => $row['number'],
+    //                                 'count' => $row['count'],
+    //                                 'collection' => $aRate->ticket_rate * $row['count'],
+    //                                 'a_rate' => $aRate->user_rate * $row['count'],
+    //                                 'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $row['count'],
+    //                                 'sa_rate' => $saRate->user_rate * $row['count'],
+    //                                 'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $row['count'],
+    //                                 'ticket_date' => date('Y-m-d'),
+    //                                 'created_at' => $now,
+    //                                 'updated_at' => $now,
+    //                             ];
+    //                         }
+    //                     })
+    //                     ->toArray();
+
+    //                 Number::insert($numbers);
+
+    //                 return $bill;
+
+    //             });
+
+    //             return response()->json([
+    //                 'status' => true,
+    //                 'bill' => $bill->id,
+    //             ]);
+
+    //         } catch (\Throwable $e) {
+
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => $e->getMessage()
+    //             ], 500);
+    //         }
+    //     } else {
+    //         return response([
+    //             'status' => false,
+    //             'message' => 'Your Sale Status Blocked.'
+    //         ], 422);
+    //     }
+    // }
+
+
+     public function saveNumber(Request $request)
     {
-        if(Auth::user()->login_status == 'Active' && Auth::user()->sale_status == 'Active'){
+        if (
+            Auth::user()->login_status != 'Active' ||
+            Auth::user()->sale_status != 'Active'
+        ) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Your Sale Status Blocked.'
+            ], 422);
+        }
 
-            $request->validate([
-                'ticketId' => 'required|exists:tickets,id',
-                'numbers' => 'required|array|min:1',
-                'numbers.*.group_id' => 'required|exists:groups,id',
-                'numbers.*.mode_id' => 'required|exists:modes,id',
-                'numbers.*.number' => 'required|string|max:3',
-                'numbers.*.count' => 'required|integer|min:1|max:1000'
-            ]);
+        $request->validate([
+            'ticketId' => 'required|exists:tickets,id',
+            'numbers' => 'required|array|min:1',
+            'numbers.*.group_id' => 'required|exists:groups,id',
+            'numbers.*.mode_id' => 'required|exists:modes,id',
+            'numbers.*.number' => 'required|string|max:3',
+            'numbers.*.count' => 'required|integer|min:1|max:1000'
+        ]);
 
-            $ticket = Ticket::findOrFail($request->ticketId);
-            $currentTime = Carbon::now()->format('H:i:s');
-            $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
-
-            if ($currentTime >= $closeTime) {
-                return response([
+        // Check number length against group ID, as in your existing logic.
+        foreach ($request->numbers as $row) {
+            if (strlen($row['number']) != $row['group_id']) {
+                return response()->json([
                     'status' => false,
-                    'message' => 'Ticket window closed.'
+                    'message' => "Invalid number: {$row['number']}"
                 ], 422);
             }
+        }
 
+        $ticket = Ticket::findOrFail($request->ticketId);
 
-            $agentId = Auth::id();
+        $currentTime = Carbon::now()->format('H:i:s');
+        $closeTime = Carbon::parse($ticket->result_time)->format('H:i:s');
 
-            if(Auth::user()->role == 'Agent'){
-                $superAgentId = Auth::user()->super_agent_id;
-            }else{
-                $superAgentId = Auth::id();
-            }
+        if ($currentTime >= $closeTime) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ticket window closed.'
+            ], 422);
+        }
 
-            try {
+        $agentId = Auth::id();
 
-                $bill = DB::transaction(function () use ($request, $agentId, $superAgentId) {
+        if (Auth::user()->role == 'Agent') {
+            $superAgentId = Auth::user()->super_agent_id;
+        } else {
+            $superAgentId = Auth::id();
+        }
 
-                    $bill = Bill::create([
-                        'super_agent_id' => $superAgentId,
-                        'agent_id' => $agentId,
-                        'ticket_id' => $request->ticketId,
-                        'ticket_date' => date('Y-m-d')
-                    ]);
+        try {
 
-                    $now = now();
-                    $ticketId = $request->ticketId;
+            $result = DB::transaction(function () use ($request, $agentId, $superAgentId) {
 
-                    $numbers = collect($request->numbers)
-                        ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
+                $ticketId = $request->ticketId;
 
-                            $aRate = Rate::select('ticket_rate', 'user_rate')
-                                ->where('user_id', $agentId)
-                                ->where('mode_id', $row['mode_id'])
-                                ->first();
+                // Check limits before creating the bill.
+                $limitResult = $this->checkNumberLimit(
+                    $ticketId,
+                    $request->numbers
+                );
 
-                            $saRate = Rate::select('user_rate')
-                                ->where('user_id', $superAgentId)
-                                ->where('mode_id', $row['mode_id'])
-                                ->first();
+                $acceptedNumbers = $limitResult['accepted'];
+                $rejectedNumbers = $limitResult['rejected'];
 
-                            if (strlen($row['number']) == $row['group_id']) {
+                // Do not create an empty bill.
+                if (empty($acceptedNumbers)) {
+                    return [
+                        'bill' => null,
+                        'rejected' => $rejectedNumbers
+                    ];
+                }
 
-                                return [
-                                    'bill_id' => $bill->id,
-                                    'super_agent_id' => $superAgentId,
-                                    'agent_id' => $agentId,
-                                    'group_id' => $row['group_id'],
-                                    'ticket_id' => $ticketId,
-                                    'mode_id' => $row['mode_id'],
-                                    'number' => $row['number'],
-                                    'count' => $row['count'],
-                                    'collection' => $aRate->ticket_rate * $row['count'],
-                                    'a_rate' => $aRate->user_rate * $row['count'],
-                                    'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $row['count'],
-                                    'sa_rate' => $saRate->user_rate * $row['count'],
-                                    'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $row['count'],
-                                    'ticket_date' => date('Y-m-d'),
-                                    'created_at' => $now,
-                                    'updated_at' => $now,
-                                ];
-                            }
-                        })
-                        ->toArray();
-
-                    Number::insert($numbers);
-
-                    return $bill;
-
-                });
-
-                return response()->json([
-                    'status' => true,
-                    'bill' => $bill->id,
+                $bill = Bill::create([
+                    'super_agent_id' => $superAgentId,
+                    'agent_id' => $agentId,
+                    'ticket_id' => $ticketId,
+                    'ticket_date' => date('Y-m-d')
                 ]);
 
-            } catch (\Throwable $e) {
+                $now = now();
 
+                $insertData = collect($acceptedNumbers)
+                    ->map(function ($row) use ($ticketId, $bill, $agentId, $superAgentId, $now) {
+
+                        $aRate = Rate::select('ticket_rate', 'user_rate')
+                            ->where('user_id', $agentId)
+                            ->where('mode_id', $row['mode_id'])
+                            ->first();
+
+                        $saRate = Rate::select('user_rate')
+                            ->where('user_id', $superAgentId)
+                            ->where('mode_id', $row['mode_id'])
+                            ->first();
+
+                        if (!$aRate || !$saRate) {
+                            throw new \RuntimeException(
+                                "Rate not configured for mode ID: {$row['mode_id']}"
+                            );
+                        }
+
+                        $count = $row['count'];
+
+                        return [
+                            'bill_id' => $bill->id,
+                            'super_agent_id' => $superAgentId,
+                            'agent_id' => $agentId,
+                            'group_id' => $row['group_id'],
+                            'ticket_id' => $ticketId,
+                            'mode_id' => $row['mode_id'],
+                            'number' => $row['number'],
+                            'count' => $count,
+                            'collection' => $aRate->ticket_rate * $count,
+                            'a_rate' => $aRate->user_rate * $count,
+                            'a_commission' => (
+                                $aRate->ticket_rate - $aRate->user_rate
+                            ) * $count,
+                            'sa_rate' => $saRate->user_rate * $count,
+                            'sa_commission' => (
+                                $aRate->user_rate - $saRate->user_rate
+                            ) * $count,
+                            'ticket_date' => date('Y-m-d'),
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    })
+                    ->toArray();
+
+                Number::insert($insertData);
+
+                return [
+                    'bill' => $bill,
+                    'rejected' => $rejectedNumbers
+                ];
+
+            });
+
+            if (!$result['bill']) {
                 return response()->json([
                     'status' => false,
-                    'message' => $e->getMessage()
-                ], 500);
-            }
-        }else{
-            return response([
-                    'status' => false,
-                    'message' => 'Your Sale Status Blocked.'
+                    'message' => 'All requested numbers have reached their limits.',
+                    'unsaved' => $result['rejected']
                 ], 422);
+            }
+
+            return response()->json([
+                'status' => true,
+                'bill' => $result['bill']->id,
+                'message' => empty($result['rejected'])
+                    ? 'Numbers saved successfully.'
+                    : 'Numbers partially saved. Some counts exceeded the limit.',
+                'unsaved' => $result['rejected']
+            ]);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
-
     public function saveRemark(Request $request)
     {
         if (!$request->filled('billId')) {
@@ -773,53 +937,39 @@ class CommonController extends Controller
     {
         $ticketId = $request->ticketId;
 
-        if (Auth::user()->role == 'Agent') {
 
-            $agentId = Auth::id();
-            $bills = Bill::where('agent_id', $agentId)
+
+        $agentId = Auth::id();
+        $bills = Bill::where('agent_id', $agentId)
             ->whereDate('ticket_date', date('Y-m-d'))
             ->where('ticket_id', $ticketId)
             ->withSum('numbers as total_count', 'count')
             ->withSum('numbers as total_collection', 'collection')
+            ->latest('id')
             ->get()
             ->map(function ($bill) {
                 $bill->formatted_created_at = $bill->created_at?->format('d-M-Y h:i A');
                 return $bill;
             });
-             return response()->json(['status' => true,'bills' => $bills], 200);
+        return response()->json(['status' => true, 'bills' => $bills], 200);
 
-        } else {
-
-            $superAgentId = Auth::id();
-            $bills = Bill::where('super_agent_id', '=', $superAgentId)
-            ->whereDate('ticket_date', date('Y-m-d'))
-            ->where('ticket_id', $ticketId)
-            ->withSum('numbers as total_count', 'count')
-            ->withSum('numbers as total_collection', 'collection')
-            ->get()
-            ->map(function ($bill) {
-                $bill->formatted_created_at = $bill->created_at?->format('d-M-Y h:i A');
-                return $bill;
-            });
-            return response()->json(['status' => true,'bills' => $bills], 200);
-        }
     }
 
     public function billDetails(Request $request)
     {
-        if (Auth::user()->role == 'Agent') {
-            $agentId = Auth::user()->id;
-            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-                ->where('agent_id', $agentId)
-                ->where('bill_id', $request->billId)
-                ->get();
-        } else {
-            $superAgentId = Auth::user()->id;
-            $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
-                ->where('super_agent_id', $superAgentId)
-                ->where('bill_id', $request->billId)
-                ->get();
-        }
+        // if (Auth::user()->role == 'Agent') {
+        $agentId = Auth::user()->id;
+        $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
+            ->where('agent_id', $agentId)
+            ->where('bill_id', $request->billId)
+            ->get();
+        // } else {
+        //     $superAgentId = Auth::user()->id;
+        //     $numbers = Number::with(['ticket:id,short_name', 'mode:id,name'])
+        //         ->where('super_agent_id', $superAgentId)
+        //         ->where('bill_id', $request->billId)
+        //         ->get();
+        // }
 
         $bill = Bill::with(['ticket:id,result_time',])->find($request->billId);
 
@@ -865,6 +1015,60 @@ class CommonController extends Controller
 
     }
 
+    // public function updateNumber(Request $request)
+    // {
+    //     $request->validate([
+    //         'billId' => 'required|exists:bills,id',
+    //         'numberId' => 'required|exists:numbers,id',
+    //         'count' => 'required|integer|min:1|max:1000',
+    //     ]);
+
+    //     $count = (int) $request->count;
+
+    //     $bill = Bill::with('ticket:id,result_time')
+    //         ->where('agent_id', Auth::id())
+    //         ->find($request->billId);
+
+
+    //     if (!$bill) {
+    //         return response()->json(['status' => false, 'message' => 'Unauthorized.'], 403);
+    //     }
+
+    //     // Lock check
+    //     if ($this->isBillLocked($bill)) {
+    //         return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
+    //     }
+
+    //     try {
+
+    //         $number = Number::where('bill_id', $bill->id)
+    //             ->where('id', $request->numberId)
+    //             ->firstOrFail();
+
+    //         $aRate = Rate::select('ticket_rate', 'user_rate')
+    //             ->where('user_id', $number->agent_id)
+    //             ->where('mode_id', $number->mode_id)
+    //             ->first();
+    //         $saRate = Rate::select('user_rate')
+    //             ->where('user_id', $number->super_agent_id)
+    //             ->where('mode_id', $number->mode_id)
+    //             ->first();
+
+    //         $number->update([
+    //             'count' => $count,
+    //             'collection' => $aRate->ticket_rate * $count,
+    //             'a_rate' => $aRate->user_rate * $count,
+    //             'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $count,
+    //             'sa_rate' => $saRate->user_rate * $count,
+    //             'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $count,
+    //         ]);
+    //         return response()->json(['status' => true]);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+    //     }
+    // }
+
+
     public function updateNumber(Request $request)
     {
         $request->validate([
@@ -873,54 +1077,120 @@ class CommonController extends Controller
             'count' => 'required|integer|min:1|max:1000',
         ]);
 
-        $count = (int) $request->count;
-
-        // Load bill with ownership check
-        if (Auth::user()->role == 'Agent') {
-            $bill = Bill::with('ticket:id,result_time')
-                ->where('agent_id', Auth::id())
-                ->find($request->billId);
-        } else {
-            $bill = Bill::with('ticket:id,result_time')
-                ->where('super_agent_id', Auth::id())
-                ->find($request->billId);
-        }
+        $bill = Bill::with('ticket:id,result_time')
+            ->where('agent_id', Auth::id())
+            ->find($request->billId);
 
         if (!$bill) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized.'], 403);
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized.'
+            ], 403);
         }
 
-        // Lock check
         if ($this->isBillLocked($bill)) {
-            return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Bill locked'
+            ], 422);
         }
 
         try {
 
-            $number = Number::where('bill_id', $bill->id)
-                ->where('id', $request->numberId)
-                ->firstOrFail();
+            $result = DB::transaction(function () use ($request, $bill) {
 
-            $aRate = Rate::select('ticket_rate', 'user_rate')
-                ->where('user_id', $number->agent_id)
-                ->where('mode_id', $number->mode_id)
-                ->first();
-            $saRate = Rate::select('user_rate')
-                ->where('user_id', $number->super_agent_id)
-                ->where('mode_id', $number->mode_id)
-                ->first();
+                $number = Number::where('bill_id', $bill->id)
+                    ->where('id', $request->numberId)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-            $number->update([
-                'count' => $count,
-                'collection' => $aRate->ticket_rate * $count,
-                'a_rate' => $aRate->user_rate * $count,
-                'a_commission' => ($aRate->ticket_rate - $aRate->user_rate) * $count,
-                'sa_rate' => $saRate->user_rate * $count,
-                'sa_commission' => ($aRate->user_rate - $saRate->user_rate) * $count,
+                $count = (int) $request->count;
+
+                // Exclude this record from the existing total.
+                $limitResult = $this->checkNumberLimit(
+                    $number->ticket_id,
+                    [
+                        [
+                            'mode_id' => $number->mode_id,
+                            'number' => $number->number,
+                            'count' => $count
+                        ]
+                    ],
+                    [$number->id]
+                );
+
+                $accepted = $limitResult['accepted'];
+                $rejected = $limitResult['rejected'];
+
+                if (empty($accepted)) {
+                    return [
+                        'updated' => false,
+                        'rejected' => $rejected
+                    ];
+                }
+
+                // This is the count allowed by the limit.
+                $allowedCount = (int) $accepted[0]['count'];
+
+                $aRate = Rate::select('ticket_rate', 'user_rate')
+                    ->where('user_id', $number->agent_id)
+                    ->where('mode_id', $number->mode_id)
+                    ->first();
+
+                $saRate = Rate::select('user_rate')
+                    ->where('user_id', $number->super_agent_id)
+                    ->where('mode_id', $number->mode_id)
+                    ->first();
+
+                if (!$aRate || !$saRate) {
+                    throw new \RuntimeException(
+                        "Rate not configured for mode ID: {$number->mode_id}"
+                    );
+                }
+
+                $number->update([
+                    'count' => $allowedCount,
+                    'collection' => $aRate->ticket_rate * $allowedCount,
+                    'a_rate' => $aRate->user_rate * $allowedCount,
+                    'a_commission' => (
+                        $aRate->ticket_rate - $aRate->user_rate
+                    ) * $allowedCount,
+                    'sa_rate' => $saRate->user_rate * $allowedCount,
+                    'sa_commission' => (
+                        $aRate->user_rate - $saRate->user_rate
+                    ) * $allowedCount,
+                ]);
+
+                return [
+                    'updated' => true,
+                    'saved_count' => $allowedCount,
+                    'rejected' => $rejected
+                ];
+            });
+
+            if (!$result['updated']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No count available for this number.',
+                    'unsaved' => $result['rejected']
+                ], 422);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => empty($result['rejected'])
+                    ? 'Number updated successfully.'
+                    : 'Number partially updated. Some counts exceeded the limit.',
+                'saved_count' => $result['saved_count'],
+                'unsaved' => $result['rejected']
             ]);
-            return response()->json(['status' => true]);
+
         } catch (\Throwable $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -928,14 +1198,9 @@ class CommonController extends Controller
     {
         $bill = Bill::findOrFail($request->billId);
         // ownership check
-        if (Auth::user()->role == 'Agent') {
-            if ($bill->agent_id != Auth::id()) {
-                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
-            }
-        } else {
-            if ($bill->super_agent_id != Auth::id()) {
-                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
-            }
+
+        if ($bill->agent_id != Auth::id()) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
         }
 
         // lock check
@@ -965,16 +1230,12 @@ class CommonController extends Controller
     public function deleteBill(Request $request)
     {
         $bill = Bill::findOrFail($request->billId);
+
         // ownership check
-        if (Auth::user()->role == 'Agent') {
-            if ($bill->agent_id != Auth::id()) {
-                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
-            }
-        } else {
-            if ($bill->super_agent_id != Auth::id()) {
-                return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
-            }
+        if ($bill->agent_id != Auth::id()) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized'], 403);
         }
+
         // lock check
         if ($this->isBillLocked($bill)) {
             return response()->json(['status' => false, 'message' => 'Bill locked'], 422);
@@ -986,10 +1247,6 @@ class CommonController extends Controller
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
-
-
-
-
 
     public function result(Request $request)
     {
@@ -1369,43 +1626,48 @@ class CommonController extends Controller
             'ticket:id,short_name',
             'mode:id,name',
             'superAgent:id,username',
-            'agent:id,username'])
+            'agent:id,username'
+        ])
             ->select([
-                    'ticket_id',
-                    'mode_id',
-                    'super_agent_id',
-                    'agent_id',
-                    'bill_id',
-                    'number',
-                    'count',
-                    'prize_position',
-                    'winner_prize',
-                    'a_prize_commission'
-                ])
+                'ticket_id',
+                'mode_id',
+                'super_agent_id',
+                'agent_id',
+                'bill_id',
+                'number',
+                'count',
+                'prize_position',
+                'winner_prize',
+                'a_prize_commission'
+            ])
             ->whereDate('ticket_date', '>=', $request->fromDate)
             ->whereDate('ticket_date', '<=', $request->toDate)
             ->where('winner_prize', '>', '0');
 
-            if ($request->filled('ticketId')) {
-                $query->where('ticket_id', $request->ticketId);
-            }
-            if ($request->filled('ticketNumber')) {
-                $query->where('number', $request->ticketNumber);
-            }
-            if ($request->filled('groupId')) {
-                $query->where('group_id', $request->groupId);
-            }
-            if ($request->filled('modeId')) {
-                $query->where('mode_id', $request->modeId);
-            }
-            if ($request->filled('agentId')) {
-                $query->where('agent_id', $request->agentId);
-            }
-            $result = $query->orderBy('bill_id')
+        if ($request->filled('ticketId')) {
+            $query->where('ticket_id', $request->ticketId);
+        }
+        if ($request->filled('ticketNumber')) {
+            $query->where('number', $request->ticketNumber);
+        }
+        if ($request->filled('groupId')) {
+            $query->where('group_id', $request->groupId);
+        }
+        if ($request->filled('modeId')) {
+            $query->where('mode_id', $request->modeId);
+        }
+        if ($request->filled('agentId')) {
+            $query->where('agent_id', $request->agentId);
+        }
+        $result = $query->orderBy('bill_id')
             ->get();
 
         return response()->json(['status' => true, 'data' => $result]);
     }
+
+
+
+
 
     private function getNumberWiseData(Request $request)
     {
@@ -1541,4 +1803,99 @@ class CommonController extends Controller
 
         return $numbers;
     }
+
+    private function checkNumberLimit($ticketId, $numbers, $excludeIds = [])
+    {
+        $modeIds = collect($numbers)
+            ->pluck('mode_id')
+            ->unique()
+            ->values();
+
+        // Lock configured limits during this transaction.
+        $limits = DB::table('limits')
+            ->whereIn('mode_id', $modeIds)
+            ->lockForUpdate()
+            ->get()
+            ->keyBy('mode_id');
+
+        // Get existing totals for each mode + number.
+        $existingCounts = Number::where('ticket_id', $ticketId)
+            ->whereIn('mode_id', $modeIds)
+            ->when(!empty($excludeIds), function ($query) use ($excludeIds) {
+                $query->whereNotIn('id', $excludeIds);
+            })
+            ->select(
+                'mode_id',
+                'number',
+                DB::raw('SUM(`count`) as total_count')
+            )
+            ->groupBy('mode_id', 'number')
+            ->get()
+            ->keyBy(function ($row) {
+                return $row->mode_id . '|' . $row->number;
+            });
+
+        $accepted = [];
+        $rejected = [];
+
+        foreach ($numbers as $row) {
+            $modeId = $row['mode_id'];
+            $number = (string) $row['number'];
+            $requestedCount = (int) $row['count'];
+
+            $limit = $limits->get($modeId);
+
+            if (!$limit) {
+                throw new \RuntimeException(
+                    "Limit not configured for mode ID: {$modeId}"
+                );
+            }
+
+            $key = $modeId . '|' . $number;
+
+            $existing = $existingCounts->get($key);
+            $alreadySaved = $existing ? (int) $existing->total_count : 0;
+
+            $remaining = max(0, (int) $limit->limit - $alreadySaved);
+
+            $saveCount = min($requestedCount, $remaining);
+            $unsavedCount = $requestedCount - $saveCount;
+
+            if ($saveCount > 0) {
+                $accepted[] = array_merge($row, [
+                    'count' => $saveCount
+                ]);
+
+                // Important when the same number appears more than once
+                // in the same request.
+                $existingCounts->put($key, (object) [
+                    'total_count' => $alreadySaved + $saveCount
+                ]);
+            }
+
+            if ($unsavedCount > 0) {
+                $rejected[] = [
+                    'mode_id' => $modeId,
+                    'number' => $number,
+                    'requested_count' => $requestedCount,
+                    'saved_count' => $saveCount,
+                    'unsaved_count' => $unsavedCount,
+                    'limit' => (int) $limit->limit,
+                    'message' => "Limit exceeded for mode {$modeId}, number {$number}."
+                ];
+            }
+        }
+
+        return [
+            'accepted' => $accepted,
+            'rejected' => $rejected
+        ];
+    }
+
+
+
+
+
+
+
 }

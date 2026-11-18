@@ -32,7 +32,7 @@ class PrizeController extends Controller
         return view('prize.index', compact('prizes'));
     }
 
-      public function edit($id)
+    public function edit($id)
     {
         $modes = Mode::pluck('name', 'id');
         $prize = Prize::findOrFail($id);
